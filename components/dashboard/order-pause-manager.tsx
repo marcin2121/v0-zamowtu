@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { PauseCircle, PlayCircle, Info } from 'lucide-react'
+import { PauseCircle, PlayCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 
@@ -56,13 +56,13 @@ export function OrderPauseManager({ userId, initialOpen }: OrderPauseManagerProp
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {isOpen ? <PlayCircle className="w-5 h-5 text-green-600" /> : <PauseCircle className="w-5 h-5 text-orange-600" />}
-          Szybkie wstrzymanie zamówień
+          Wstrzymanie przyjmowania zamówień
         </CardTitle>
         <CardDescription>
-          Możesz tymczasowo wstrzymać przyjmowanie zamówień jednym kliknięciem
+          Szybko wstrzymaj zamówienia gdy kuchnia jest przeciążona
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent>
         <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
           <div className="space-y-0.5">
             <Label className="font-semibold">
@@ -78,17 +78,10 @@ export function OrderPauseManager({ userId, initialOpen }: OrderPauseManagerProp
             variant={isOpen ? 'outline' : 'default'}
             onClick={toggleStatus}
             disabled={loading}
-            className="gap-2"
+            className="gap-2 whitespace-nowrap"
           >
-            {loading ? 'Ładowanie...' : isOpen ? 'Wstrzymaj zamówienia' : 'Wznów zamówienia'}
+            {loading ? 'Ładowanie...' : isOpen ? 'Wstrzymaj' : 'Wznów'}
           </Button>
-        </div>
-
-        <div className="flex gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-900">
-          <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
-          <p>
-            Status restauracji jest również kontrolowany automatycznie przez harmonogram godzin otwarcia poniżej.
-          </p>
         </div>
       </CardContent>
     </Card>

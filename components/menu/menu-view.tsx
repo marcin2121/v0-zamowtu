@@ -1,5 +1,7 @@
 'use client'
 
+import { Label } from "@/components/ui/label"
+
 import { useState, useMemo } from 'react'
 import { UtensilsCrossed, Clock, MapPin, Phone, ShoppingCart, Star } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -243,19 +245,48 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
         className="border-b"
         style={{ borderColor: `${customStyles.primaryColor}30` }}
       >
-        <div className="max-w-4xl mx-auto px-4 py-3">
-          <div className="flex flex-wrap items-center gap-4 text-sm opacity-80">
-            <span className="flex items-center gap-1.5">
-              <Clock className="w-4 h-4" />
-              Min. zamówienie: <strong>{settings.min_order_value.toFixed(2)} zł</strong>
-            </span>
-            <span className="flex items-center gap-1.5">
-              <MapPin className="w-4 h-4" />
-              Dostawa do: <strong>{settings.max_delivery_distance_km} km</strong>
-            </span>
-            <span>
-              Koszt dostawy: <strong>{settings.delivery_fee.toFixed(2)} zł</strong>
-            </span>
+        <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm opacity-80">
+            <div className="space-y-2">
+              <div className="flex items-center gap-1.5">
+                <Clock className="w-4 h-4" />
+                <span>Min. zamówienie: <strong>{settings.min_order_value.toFixed(2)} zł</strong></span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-4 h-4" />
+                <span>Dostawa do: <strong>{settings.max_delivery_distance_km} km</strong></span>
+              </div>
+              <div>
+                <span>Koszt dostawy: <strong>{settings.delivery_fee.toFixed(2)} zł</strong></span>
+              </div>
+            </div>
+            
+            {/* Opening Hours */}
+            <div>
+              <Label className="text-xs font-semibold mb-2 block">Godziny otwarcia:</Label>
+              <div className="space-y-1">
+                {settings.opening_hours && Object.entries(settings.opening_hours).map(([day, hours]: [string, any]) => {
+                  const dayLabel = {
+                    'monday': 'Pon',
+                    'tuesday': 'Wt',
+                    'wednesday': 'Śr',
+                    'thursday': 'Czw',
+                    'friday': 'Pt',
+                    'saturday': 'Sob',
+                    'sunday': 'Niedz'
+                  }[day] || day
+                  
+                  return (
+                    <div key={day} className="text-xs flex justify-between">
+                      <span className="font-medium">{dayLabel}:</span>
+                      <span>
+                        {hours.open && hours.close ? `${hours.open} - ${hours.close}` : 'Zamknięte'}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </div>
