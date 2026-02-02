@@ -165,8 +165,10 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                   borderColor: customStyles.primaryColor,
                   color: customStyles.textColor,
                   backgroundColor: 'transparent',
+                  opacity: settings.orders_paused ? 0.5 : 1,
                 }}
                 onClick={() => setCartOpen(true)}
+                disabled={settings.orders_paused}
               >
                 <ShoppingCart className="w-4 h-4" />
                 {itemCount > 0 && (
@@ -210,6 +212,30 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                 <span className="text-sm opacity-60">({reviews.length} opinii)</span>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Orders Paused Warning */}
+      {settings.orders_paused && (
+        <div 
+          className="border-b"
+          style={{ 
+            backgroundColor: '#fef3c7',
+            borderColor: '#f59e0b',
+            color: '#92400e'
+          }}
+        >
+          <div className="max-w-4xl mx-auto px-4 py-3">
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5" />
+              <div>
+                <p className="font-semibold">Zamówienia tymczasowo wstrzymane</p>
+                {settings.pause_reason && (
+                  <p className="text-sm">{settings.pause_reason}</p>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}
