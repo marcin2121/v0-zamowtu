@@ -3,47 +3,33 @@
 import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Switch } from '@/components/ui/switch'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { PauseCircle, PlayCircle } from 'lucide-react'
+import { PauseCircle, PlayCircle, Info } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { useToast } from '@/hooks/use-toast'
 
 interface OrderPauseManagerProps {
   userId: string
-  initialPaused: boolean
-  initialReason: string | null
+  initialOpen: boolean
 }
 
-export function OrderPauseManager({ userId, initialPaused, initialReason }: OrderPauseManagerProps) {
-  const [isPaused, setIsPaused] = useState(initialPaused)
-  const [pauseReason, setPauseReason] = useState(initialReason || '')
+export function OrderPauseManager({ userId, initialOpen }: OrderPauseManagerProps) {
+  const [isOpen, setIsOpen] = useState(initialOpen)
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
 
-  const togglePause = async () => {
+  const toggleStatus = async () => {
     setLoading(true)
     const supabase = createClient()
     
-    const newPausedState = !isPaused
+    const newOpenState = !isOpen
     
-    console.log('[v0] Attempting to update pause_orders:', {
-      userId,
-      newPausedState,
-      pauseReason: newPausedState ? pauseReason : null
-    })
-    
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('restaurant_settings')
       .update({
-        pause_orders: newPausedState,
-        pause_reason: newPausedState ? pauseReason : null,
+        is_open: newOpenState,
       })
       .eq('user_id', userId)
-      .select()
-
-    console.log('[v0] Update response:', { data, error })
 
     if (error) {
       console.error('[v0] Database error:', error)
@@ -53,12 +39,12 @@ export function OrderPauseManager({ userId, initialPaused, initialReason }: Orde
         variant: 'destructive',
       })
     } else {
-      setIsPaused(newPausedState)
+      setIsOpen(newOpenState)
       toast({
-        title: newPausedState ? 'Zamówienia wstrzymane' : 'Zamówienia wznowione',
-        description: newPausedState 
-          ? 'Klienci nie będą mogli składać nowych zamówień'
-          : 'Klienci mogą znowu składać zamówienia',
+        title: newOpenState ? 'Restauracja otwarta' : 'Restauracja zamknięta',
+        description: newOpenState 
+          ? 'Klienci mogą składać zamówienia'
+          : 'Zamówienia są tymczasowo wstrzymane',
       })
     }
     
@@ -69,64 +55,41 @@ export function OrderPauseManager({ userId, initialPaused, initialReason }: Orde
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          {isPaused ? <PauseCircle className="w-5 h-5 text-orange-600" /> : <PlayCircle className="w-5 h-5 text-green-600" />}
-          Wstrzymanie przyjmowania zamówień
+          {isOpen ? <PlayCircle className="w-5 h-5 text-green-600" /> : <PauseCircle className="w-5 h-5 text-orange-600" />}
+          Szybkie wstrzymanie zamówień
         </CardTitle>
         <CardDescription>
-          Możesz tymczasowo wstrzymać przyjmowanie zamówień gdy kuchnia jest przeciążona
+          Możesz tymczasowo wstrzymać przyjmowanie zamówień jednym kliknięciem
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
           <div className="space-y-0.5">
-            <Label htmlFor="pause-toggle" className="font-semibold">
-              {isPaused ? 'Zamówienia wstrzymane' : 'Zamówienia aktywne'}
+            <Label className="font-semibold">
+              {isOpen ? 'Zamówienia aktywne' : 'Zamówienia wstrzymane'}
             </Label>
             <p className="text-sm text-muted-foreground">
-              {isPaused 
-                ? 'Klienci widzą komunikat o niedostępności'
-                : 'Klienci mogą składać zamówienia normalnie'}
+              {isOpen 
+                ? 'Klienci mogą składać zamówienia normalnie'
+                : 'Klienci widzą komunikat o niedostępności'}
             </p>
           </div>
           <Button
-            variant={isPaused ? 'destructive' : 'default'}
-            onClick={togglePause}
+            variant={isOpen ? 'outline' : 'default'}
+            onClick={toggleStatus}
             disabled={loading}
             className="gap-2"
           >
-            {loading ? 'Ładowanie...' : isPaused ? 'Wznów zamówienia' : 'Wstrzymaj zamówienia'}
+            {loading ? 'Ładowanie...' : isOpen ? 'Wstrzymaj zamówienia' : 'Wznów zamówienia'}
           </Button>
         </div>
 
-        {isPaused && (
-          <div className="space-y-2">
-            <Label htmlFor="pause-reason">Powód wstrzymania (opcjonalnie)</Label>
-            <Textarea
-              id="pause-reason"
-              placeholder="np. 'Przeciążona kuchnia, zamówienia od 18:00' lub 'Przerwa techniczna'"
-              value={pauseReason}
-              onChange={(e) => setPauseReason(e.target.value)}
-              rows={3}
-            />
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={async () => {
-                const supabase = createClient()
-                await supabase
-                  .from('restaurant_settings')
-                  .update({ pause_reason: pauseReason })
-                  .eq('user_id', userId)
-                toast({
-                  title: 'Zaktualizowano',
-                  description: 'Powód wstrzymania został zapisany',
-                })
-              }}
-            >
-              Zapisz powód
-            </Button>
-          </div>
-        )}
+        <div className="flex gap-2 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-900">
+          <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+          <p>
+            Status restauracji jest również kontrolowany automatycznie przez harmonogram godzin otwarcia poniżej.
+          </p>
+        </div>
       </CardContent>
     </Card>
   )

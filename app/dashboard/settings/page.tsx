@@ -26,8 +26,7 @@ export default async function SettingsPage() {
       
       <OrderPauseManager 
         userId={user.id} 
-        initialPaused={settings?.pause_orders || false}
-        initialReason={settings?.pause_reason}
+        initialOpen={settings?.is_open ?? true}
       />
       
       <SettingsForm settings={settings} userId={user.id} />

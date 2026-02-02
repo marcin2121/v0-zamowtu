@@ -225,15 +225,15 @@ export function CheckoutForm({
     try {
       const supabase = createClient()
       
-      // Check if orders are paused
+      // Check if restaurant is open
       const { data: settings } = await supabase
         .from('restaurant_settings')
-        .select('pause_orders, pause_reason')
+        .select('is_open')
         .eq('user_id', restaurantId)
         .single()
       
-      if (settings?.pause_orders) {
-        setError(`Zamówienia są tymczasowo wstrzymane. ${settings.pause_reason || ''}`)
+      if (!settings?.is_open) {
+        setError('Restauracja jest obecnie zamknięta i nie przyjmuje zamówień.')
         setLoading(false)
         return
       }
