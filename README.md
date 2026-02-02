@@ -35,7 +35,7 @@ To enable the new advanced features (order notifications, scheduled orders calen
 
 ### Option 2: Using Supabase CLI
 
-```bash
+\`\`\`bash
 # Install Supabase CLI if you haven't already
 npm install -g supabase
 
@@ -47,7 +47,7 @@ supabase link --project-ref your-project-ref
 
 # Run the migration
 supabase db push
-```
+\`\`\`
 
 ### New Features After Migration
 

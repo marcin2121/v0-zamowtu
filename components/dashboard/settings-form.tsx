@@ -40,11 +40,11 @@ const defaultSchedule: WeekSchedule = {
 }
 
 const dayNames: Record<keyof WeekSchedule, string> = {
-  monday: 'Poniedzialek',
+  monday: 'Poniedziałek',
   tuesday: 'Wtorek',
-  wednesday: 'Sroda',
+  wednesday: 'Środa',
   thursday: 'Czwartek',
-  friday: 'Piatek',
+  friday: 'Piątek',
   saturday: 'Sobota',
   sunday: 'Niedziela',
 }
@@ -109,7 +109,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
       const slugValue = formData.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '')
       
       if (slugValue && slugValue.length < 3) {
-        setSlugError('Adres URL musi miec co najmniej 3 znaki')
+        setSlugError('Adres URL musi mieć co najmniej 3 znaki')
         setLoading(false)
         return
       }
@@ -124,7 +124,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
           .single()
         
         if (existingSlug) {
-          setSlugError('Ten adres URL jest juz zajety')
+          setSlugError('Ten adres URL jest już zajęty')
           setLoading(false)
           return
         }
@@ -166,23 +166,8 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
     }
   }
 
-  const toggleOpen = async () => {
-    const newValue = !formData.is_open
-    setFormData({ ...formData, is_open: newValue })
-    
-    if (settings) {
-      const supabase = createClient()
-      await supabase
-        .from('restaurant_settings')
-        .update({ is_open: newValue, updated_at: new Date().toISOString() })
-        .eq('id', settings.id)
-      router.refresh()
-    }
-  }
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-
 
       {/* Public URL */}
       <Card>
@@ -192,7 +177,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
             Adres Twojej strony
           </CardTitle>
           <CardDescription>
-            Unikalny adres URL pod ktorym klienci znajda Twoje menu
+            Unikalny adres URL pod którym klienci znajdą Twoje menu
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -219,7 +204,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
               <p className="text-sm text-destructive">{slugError}</p>
             )}
             <p className="text-xs text-muted-foreground">
-              Uzyj tylko malych liter, cyfr i myslnikow. Np. pizzeria-roma, sushi-master
+              Użyj tylko małych liter, cyfr i myślników. Np. pizzeria-roma, sushi-master
             </p>
           </div>
           
@@ -268,7 +253,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
             Informacje podstawowe
           </CardTitle>
           <CardDescription>
-            Dane Twojej restauracji widoczne dla klientow
+            Dane Twojej restauracji widoczne dla klientów
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -289,7 +274,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
               id="address"
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-              placeholder="ul. Przykladowa 1, 00-001 Warszawa"
+              placeholder="ul. Przykładowa 1, 00-001 Warszawa"
             />
           </div>
 
@@ -306,97 +291,76 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
         </CardContent>
       </Card>
 
-      {/* Restaurant Status & Opening Hours */}
+      {/* Opening Hours */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Store className="w-5 h-5" />
-            Status restauracji i harmonogram
+            <Calendar className="w-5 h-5" />
+            Godziny otwarcia restauracji
           </CardTitle>
           <CardDescription>
-            Kontroluj czy restauracja przyjmuje zamówienia i ustaw godziny otwarcia
+            Te godziny będą wyświetlane klientom na stronie menu
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-6">
-          {/* Quick Status Toggle */}
-          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-            <div>
-              <p className="font-medium text-foreground">
-                Restauracja jest {formData.is_open ? 'otwarta' : 'zamknięta'}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {formData.is_open
-                  ? 'Klienci mogą składać zamówienia'
-                  : 'Zamówienia są tymczasowo wstrzymane'}
-              </p>
-            </div>
-            <Switch
-              checked={formData.is_open}
-              onCheckedChange={toggleOpen}
-            />
-          </div>
-
+        <CardContent className="space-y-4">
           {/* Weekly Schedule */}
-          <div className="space-y-2">
-            <Label className="text-base font-semibold">Harmonogram tygodniowy</Label>
-            <div className="space-y-3">
-              {(Object.keys(dayNames) as (keyof WeekSchedule)[]).map((day) => (
-                <div
-                  key={day}
-                  className={`flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg border ${
-                    schedule[day].isOpen ? 'bg-card' : 'bg-muted/50'
-                  }`}
-                >
-                  <div className="flex items-center gap-3 min-w-[140px]">
-                    <Switch
-                      checked={schedule[day].isOpen}
-                      onCheckedChange={(checked) => updateDaySchedule(day, 'isOpen', checked)}
-                    />
-                    <span className={`font-medium ${!schedule[day].isOpen ? 'text-muted-foreground' : 'text-foreground'}`}>
-                      {dayNames[day]}
-                    </span>
-                  </div>
-                  
-                  {schedule[day].isOpen ? (
-                    <div className="flex items-center gap-2 flex-1">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-4 h-4 text-muted-foreground" />
-                        <Input
-                          type="time"
-                          value={schedule[day].openTime}
-                          onChange={(e) => updateDaySchedule(day, 'openTime', e.target.value)}
-                          className="w-[120px]"
-                        />
-                      </div>
-                      <span className="text-muted-foreground">-</span>
+          <div className="space-y-3">
+            {(Object.keys(dayNames) as (keyof WeekSchedule)[]).map((day) => (
+              <div
+                key={day}
+                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg border ${
+                  schedule[day].isOpen ? 'bg-card' : 'bg-muted/50'
+                }`}
+              >
+                <div className="flex items-center gap-3 min-w-[140px]">
+                  <Switch
+                    checked={schedule[day].isOpen}
+                    onCheckedChange={(checked) => updateDaySchedule(day, 'isOpen', checked)}
+                  />
+                  <span className={`font-medium ${!schedule[day].isOpen ? 'text-muted-foreground' : 'text-foreground'}`}>
+                    {dayNames[day]}
+                  </span>
+                </div>
+                
+                {schedule[day].isOpen ? (
+                  <div className="flex items-center gap-2 flex-1">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-muted-foreground" />
                       <Input
                         type="time"
-                        value={schedule[day].closeTime}
-                        onChange={(e) => updateDaySchedule(day, 'closeTime', e.target.value)}
+                        value={schedule[day].openTime}
+                        onChange={(e) => updateDaySchedule(day, 'openTime', e.target.value)}
                         className="w-[120px]"
                       />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => copyToAllDays(day)}
-                        className="ml-2 text-xs hidden sm:inline-flex"
-                      >
-                        Kopiuj do wszystkich
-                      </Button>
                     </div>
-                  ) : (
-                    <span className="text-sm text-muted-foreground italic">Zamkniete</span>
-                  )}
-                </div>
-              ))}
-            </div>
-            
-            <div className="pt-2 border-t">
-              <p className="text-xs text-muted-foreground">
-                Godziny otwarcia sa wyswietlane klientom na stronie menu. Zamowienia moga byc skladane tylko w godzinach otwarcia (chyba ze sa zaplanowane na pozniej).
-              </p>
-            </div>
+                    <span className="text-muted-foreground">-</span>
+                    <Input
+                      type="time"
+                      value={schedule[day].closeTime}
+                      onChange={(e) => updateDaySchedule(day, 'closeTime', e.target.value)}
+                      className="w-[120px]"
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => copyToAllDays(day)}
+                      className="ml-2 text-xs hidden sm:inline-flex"
+                    >
+                      Kopiuj do wszystkich
+                    </Button>
+                  </div>
+                ) : (
+                  <span className="text-sm text-muted-foreground italic">Zamknięte</span>
+                )}
+              </div>
+            ))}
+          </div>
+          
+          <div className="pt-2 border-t">
+            <p className="text-xs text-muted-foreground">
+              Godziny otwarcia są wyświetlane klientom na stronie menu. Zamówienia mogą być składane tylko w godzinach otwarcia (chyba że są zaplanowane na później).
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -409,13 +373,13 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
             Ustawienia dostawy
           </CardTitle>
           <CardDescription>
-            Skonfiguruj warunki dostawy i platnosci
+            Skonfiguruj warunki dostawy i płatności
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="grid gap-4 sm:grid-cols-3">
             <div className="space-y-2">
-              <Label htmlFor="min_order_value">Minimalna wartosc zamowienia (zl)</Label>
+              <Label htmlFor="min_order_value">Minimalna wartość zamówienia (zł)</Label>
               <Input
                 id="min_order_value"
                 type="number"
@@ -425,12 +389,12 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
                 onChange={(e) => setFormData({ ...formData, min_order_value: e.target.value })}
               />
               <p className="text-xs text-muted-foreground">
-                Klient nie moze zlozyc zamowienia ponizej tej kwoty
+                Klient nie może złożyć zamówienia poniżej tej kwoty
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="max_delivery_distance_km">Maksymalny zasieg dostawy (km)</Label>
+              <Label htmlFor="max_delivery_distance_km">Maksymalny zasięg dostawy (km)</Label>
               <Input
                 id="max_delivery_distance_km"
                 type="number"
@@ -440,12 +404,12 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
                 onChange={(e) => setFormData({ ...formData, max_delivery_distance_km: e.target.value })}
               />
               <p className="text-xs text-muted-foreground">
-                Informacja wyswietlana klientom
+                Informacja wyświetlana klientom
               </p>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="delivery_fee">Koszt dostawy (zl)</Label>
+              <Label htmlFor="delivery_fee">Koszt dostawy (zł)</Label>
               <Input
                 id="delivery_fee"
                 type="number"
@@ -455,7 +419,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
                 onChange={(e) => setFormData({ ...formData, delivery_fee: e.target.value })}
               />
               <p className="text-xs text-muted-foreground">
-                Doliczany do kazdego zamowienia z dostawa
+                Doliczany do każdego zamówienia z dostawą
               </p>
             </div>
           </div>
@@ -479,7 +443,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
         </Button>
         {success && (
           <p className="text-sm text-accent font-medium">
-            Ustawienia zostaly zapisane!
+            Ustawienia zostały zapisane!
           </p>
         )}
       </div>
