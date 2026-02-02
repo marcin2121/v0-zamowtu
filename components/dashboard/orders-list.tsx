@@ -123,20 +123,48 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
   }, [userId])
 
   const updateOrderStatus = async (orderId: string, status: string, estimatedDeliveryAt?: string) => {
-    const supabase = createClient()
-    const updateData: Record<string, unknown> = { 
-      status, 
-      updated_at: new Date().toISOString() 
+    try {
+      const supabase = createClient()
+      const updateData: Record<string, unknown> = { 
+        status, 
+        updated_at: new Date().toISOString() 
+      }
+      
+      if (status === 'accepted') {
+        updateData.accepted_at = new Date().toISOString()
+      }
+      
+      if (estimatedDeliveryAt) {
+        updateData.estimated_delivery_at = estimatedDeliveryAt
+      }
+      
+      const { error } = await supabase
+        .from('orders')
+        .update(updateData)
+        .eq('id', orderId)
+      
+      if (error) {
+        console.error('[v0] Error updating order status:', error)
+        toast({
+          title: 'Błąd',
+          description: 'Nie udało się zaktualizować statusu zamówienia',
+          variant: 'destructive',
+        })
+        return
+      }
+      
+      toast({
+        title: 'Sukces',
+        description: 'Status zamówienia został zaktualizowany',
+      })
+    } catch (error) {
+      console.error('[v0] Exception updating order status:', error)
+      toast({
+        title: 'Błąd',
+        description: 'Nie udało się zaktualizować statusu zamówienia',
+        variant: 'destructive',
+      })
     }
-    
-    if (estimatedDeliveryAt) {
-      updateData.estimated_delivery_at = estimatedDeliveryAt
-    }
-    
-    await supabase
-      .from('orders')
-      .update(updateData)
-      .eq('id', orderId)
   }
 
   const handleAcceptOrder = (order: Order) => {
