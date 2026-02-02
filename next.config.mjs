@@ -9,10 +9,10 @@ const nextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        // Dynamiczne restauracje - mapuj /slug na /r/slug
-        // Ale unikaj ścieżek systemowych
         {
-          source: '/:slug((?!api|auth|dashboard|demo|_next|static|public|\\.)[a-zA-Z0-9-]+)',
+          // Dodaj polskie znaki (ą,ę,ć...) jeśli slugi mogą je mieć
+          // Dodaj underscore _ jeśli używasz (np. moja_restauracja)
+          source: '/:slug((?!api|auth|dashboard|demo|login|admin|help|_next|static|public|favicon\\.ico|\\.)[a-zA-Z0-9ąćęłńóśźżĄĆĘŁŃÓŚŹŻ_-]+)',
           destination: '/r/:slug',
         },
       ],
