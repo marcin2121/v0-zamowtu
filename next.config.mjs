@@ -7,12 +7,16 @@ const nextConfig = {
     unoptimized: true,
   },
   async rewrites() {
-    return [
-      {
-        source: '/:slug',
-        destination: '/r/:slug',
-      },
-    ]
+    return {
+      beforeFiles: [
+        // Dynamiczne restauracje - mapuj /slug na /r/slug
+        // Ale unikaj ścieżek systemowych
+        {
+          source: '/:slug((?!api|auth|dashboard|demo|_next|static|public|\\.)[a-zA-Z0-9-]+)',
+          destination: '/r/:slug',
+        },
+      ],
+    }
   },
 }
 
