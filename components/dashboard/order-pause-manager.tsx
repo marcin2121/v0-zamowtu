@@ -28,18 +28,28 @@ export function OrderPauseManager({ userId, initialPaused, initialReason }: Orde
     
     const newPausedState = !isPaused
     
-    const { error } = await supabase
+    console.log('[v0] Attempting to update pause_orders:', {
+      userId,
+      newPausedState,
+      pauseReason: newPausedState ? pauseReason : null
+    })
+    
+    const { data, error } = await supabase
       .from('restaurant_settings')
       .update({
         pause_orders: newPausedState,
         pause_reason: newPausedState ? pauseReason : null,
       })
       .eq('user_id', userId)
+      .select()
+
+    console.log('[v0] Update response:', { data, error })
 
     if (error) {
+      console.error('[v0] Database error:', error)
       toast({
         title: 'Błąd',
-        description: 'Nie udało się zaktualizować statusu zamówień',
+        description: `Nie udało się zaktualizować: ${error.message}`,
         variant: 'destructive',
       })
     } else {
