@@ -12,7 +12,12 @@ import {
   MessageSquare,
   CreditCard,
   Timer,
+  Bell,
+  BellOff,
+  AlertTriangle,
 } from 'lucide-react'
+import { notificationSound } from '@/lib/notification-sound'
+import { useToast } from '@/hooks/use-toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -63,6 +68,9 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
   const [acceptDialogOpen, setAcceptDialogOpen] = useState(false)
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const [estimatedMinutes, setEstimatedMinutes] = useState('30')
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true)
+  const [lastOrderCount, setLastOrderCount] = useState(initialOrders.length)
+  const { toast } = useToast()
 
   useEffect(() => {
     const supabase = createClient()
@@ -85,7 +93,19 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
               .eq('order_id', payload.new.id)
             
             const newOrder = { ...payload.new, items: items || [] } as Order
-            setOrders((prev) => [newOrder, ...prev])
+            setOrders((prev) => {
+              // Play notification sound for new order
+              if (notificationsEnabled) {
+                notificationSound.playNewOrderSound()
+                toast({
+                  title: '🔔 Nowe zamówienie!',
+                  description: `Zamówienie od ${newOrder.customer_name}`,
+                  duration: 5000,
+                })
+              }
+              return [newOrder, ...prev]
+            })
+            setLastOrderCount((prev) => prev + 1)
           } else if (payload.eventType === 'UPDATE') {
             setOrders((prev) =>
               prev.map((o) => (o.id === payload.new.id ? { ...o, ...payload.new } : o))
@@ -144,6 +164,35 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
       .eq('id', orderId)
   }
 
+  const toggleNotifications = () => {
+    const newState = !notificationsEnabled
+    setNotificationsEnabled(newState)
+    notificationSound.setEnabled(newState)
+    toast({
+      title: newState ? 'Powiadomienia włączone' : 'Powiadomienia wyłączone',
+      description: newState ? 'Usłyszysz dźwięk przy nowym zamówieniu' : 'Powiadomienia dźwiękowe wyłączone',
+    })
+  }
+
+  const getWaitingTime = (createdAt: string) => {
+    const now = new Date().getTime()
+    const orderTime = new Date(createdAt).getTime()
+    const diffMinutes = Math.floor((now - orderTime) / 60000)
+    
+    if (diffMinutes < 5) return null
+    
+    let colorClass = 'text-amber-600'
+    if (diffMinutes > 15) colorClass = 'text-orange-600'
+    if (diffMinutes > 30) colorClass = 'text-red-600'
+    
+    return (
+      <div className={`flex items-center gap-1 ${colorClass} font-semibold text-sm`}>
+        <AlertTriangle className="w-4 h-4" />
+        <span>Czeka {diffMinutes} min</span>
+      </div>
+    )
+  }
+
   const filteredOrders = orders.filter((order) => {
     if (filter === 'all') return order.status !== 'delivered' && order.status !== 'cancelled'
     return order.status === filter
@@ -167,23 +216,37 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <p className="text-sm text-muted-foreground">
-          {filteredOrders.length} zamówień
-        </p>
-        <Select value={filter} onValueChange={setFilter}>
-          <SelectTrigger className="w-48">
-            <SelectValue placeholder="Filtruj status" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Aktywne</SelectItem>
-            <SelectItem value="pending">Oczekujące</SelectItem>
-            <SelectItem value="accepted">Zaakceptowane</SelectItem>
-            <SelectItem value="preparing">W przygotowaniu</SelectItem>
-            <SelectItem value="ready">Gotowe</SelectItem>
-            <SelectItem value="delivered">Dostarczone</SelectItem>
-          </SelectContent>
-        </Select>
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-semibold">Aktywne zamówienia</h3>
+          <p className="text-sm text-muted-foreground">
+            {filteredOrders.length} zamówień do realizacji
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button
+            variant={notificationsEnabled ? 'default' : 'outline'}
+            size="sm"
+            onClick={toggleNotifications}
+            className="gap-2"
+          >
+            {notificationsEnabled ? <Bell className="w-4 h-4" /> : <BellOff className="w-4 h-4" />}
+            {notificationsEnabled ? 'ON' : 'OFF'}
+          </Button>
+          <Select value={filter} onValueChange={setFilter}>
+            <SelectTrigger className="w-48">
+              <SelectValue placeholder="Filtruj status" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Aktywne</SelectItem>
+              <SelectItem value="pending">Oczekujące</SelectItem>
+              <SelectItem value="accepted">Zaakceptowane</SelectItem>
+              <SelectItem value="preparing">W przygotowaniu</SelectItem>
+              <SelectItem value="ready">Gotowe</SelectItem>
+              <SelectItem value="delivered">Dostarczone</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <div className="grid gap-4">
@@ -191,12 +254,13 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
           <Card key={order.id}>
             <CardContent className="p-4">
               <div className="flex items-start justify-between mb-4">
-                <div>
-                  <div className="flex items-center gap-2 mb-1">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className="font-semibold">{order.customer_name}</span>
                     <Badge className={statusLabels[order.status]?.color || 'bg-gray-500'}>
                       {statusLabels[order.status]?.label || order.status}
                     </Badge>
+                    {order.status === 'pending' && getWaitingTime(order.created_at)}
                     {order.is_paid && (
                       <Badge variant="outline" className="text-green-600 border-green-600">
                         <CreditCard className="w-3 h-3 mr-1" />

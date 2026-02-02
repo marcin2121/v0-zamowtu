@@ -21,6 +21,7 @@ import {
   Star,
   CreditCard,
   Palette,
+  Calendar,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -45,6 +46,7 @@ interface DashboardNavProps {
 
 const navItems = [
   { href: '/dashboard', label: 'Zamówienia', icon: ShoppingBag, feature: 'menu' },
+  { href: '/dashboard/scheduled', label: 'Zaplanowane', icon: Calendar, feature: 'menu' },
   { href: '/dashboard/menu', label: 'Menu', icon: UtensilsCrossed, feature: 'menu' },
   { href: '/dashboard/customize', label: 'Personalizacja', icon: Palette, feature: 'professional' },
   { href: '/dashboard/discounts', label: 'Kody rabatowe', icon: Tag, feature: 'discount_codes' },

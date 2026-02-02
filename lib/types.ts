@@ -21,6 +21,10 @@ export interface RestaurantSettings {
   show_reviews: boolean
   description: string | null
   custom_welcome_text: string | null
+  // Advanced features
+  orders_paused: boolean
+  pause_reason: string | null
+  notification_hours_before: number
   created_at: string
   updated_at: string
 }
@@ -62,6 +66,8 @@ export interface Order {
   status: 'pending' | 'accepted' | 'preparing' | 'ready' | 'delivered' | 'cancelled'
   scheduled_for: string | null
   estimated_delivery_at: string | null
+  accepted_at: string | null
+  notified_at: string | null
   subtotal: number
   delivery_fee: number
   discount_code: string | null
@@ -148,6 +154,26 @@ export interface Review {
   comment: string | null
   is_public: boolean
   restaurant_response: string | null
+  created_at: string
+}
+
+export interface BlockedDate {
+  id: string
+  user_id: string
+  date: string
+  reason: string | null
+  created_at: string
+}
+
+export interface MenuSuggestion {
+  id: string
+  user_id: string
+  suggestion_type: 'remove' | 'promote' | 'optimize_price'
+  menu_item_id: string | null
+  title: string
+  description: string
+  priority: number
+  is_dismissed: boolean
   created_at: string
 }
 
