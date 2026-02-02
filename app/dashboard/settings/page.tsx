@@ -31,8 +31,6 @@ export default async function SettingsPage() {
         initialReason={settings?.pause_reason}
       />
       
-      <MenuSuggestions userId={user.id} />
-      
       <SettingsForm settings={settings} userId={user.id} />
     </div>
   )

@@ -22,6 +22,7 @@ import {
   CreditCard,
   Palette,
   Calendar,
+  Lightbulb,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -48,6 +49,7 @@ const navItems = [
   { href: '/dashboard', label: 'Zamówienia', icon: ShoppingBag, feature: 'menu' },
   { href: '/dashboard/scheduled', label: 'Zaplanowane', icon: Calendar, feature: 'menu' },
   { href: '/dashboard/menu', label: 'Menu', icon: UtensilsCrossed, feature: 'menu' },
+  { href: '/dashboard/suggestions', label: 'Sugestie', icon: Lightbulb, feature: 'statistics' },
   { href: '/dashboard/customize', label: 'Personalizacja', icon: Palette, feature: 'professional' },
   { href: '/dashboard/discounts', label: 'Kody rabatowe', icon: Tag, feature: 'discount_codes' },
   { href: '/dashboard/loyalty', label: 'Lojalność', icon: Crown, feature: 'loyalty_program' },
