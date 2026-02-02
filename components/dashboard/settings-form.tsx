@@ -1,7 +1,6 @@
 'use client'
 
 import React from "react"
-
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2, Save, Store, Clock, Truck, Calendar, Link as LinkIcon, Copy, ExternalLink } from 'lucide-react'
@@ -12,6 +11,7 @@ import { Switch } from '@/components/ui/switch'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { createClient } from '@/lib/supabase/client'
 import type { RestaurantSettings } from '@/lib/types'
+import { baseUrl } from '@/lib/config' // Import baseUrl from config
 
 interface DaySchedule {
   isOpen: boolean
@@ -54,9 +54,7 @@ interface SettingsFormProps {
   userId: string
 }
 
-export function SettingsForm({ settings, userId }: SettingsFormProps) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
+const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
   const [success, setSuccess] = useState(false)
   const [formData, setFormData] = useState({
     restaurant_name: settings?.restaurant_name || '',
@@ -70,6 +68,8 @@ export function SettingsForm({ settings, userId }: SettingsFormProps) {
   })
   const [slugError, setSlugError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [loading, setLoading] = useState(false) // Moved useState to top level
+  const router = useRouter() // Moved useRouter to top level
   
   const [schedule, setSchedule] = useState<WeekSchedule>(() => {
     if (settings?.opening_hours && typeof settings.opening_hours === 'object') {
@@ -230,7 +230,7 @@ export function SettingsForm({ settings, userId }: SettingsFormProps) {
             <div className="flex gap-2">
               <div className="flex-1 flex">
                 <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-input bg-muted text-muted-foreground text-sm">
-                  {typeof window !== 'undefined' ? window.location.origin : 'https://twojadomena.pl'}/r/
+                  {baseUrl}/
                 </span>
                 <Input
                   id="slug"
@@ -257,14 +257,14 @@ export function SettingsForm({ settings, userId }: SettingsFormProps) {
               <p className="text-sm text-muted-foreground mb-2">Twój link do menu:</p>
               <div className="flex items-center gap-2">
                 <code className="flex-1 text-sm bg-background px-2 py-1 rounded border text-foreground">
-                  {typeof window !== 'undefined' ? window.location.origin : 'https://twojadomena.pl'}/r/{formData.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-')}
+                  {baseUrl}/{formData.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-')}
                 </code>
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    const url = `${window.location.origin}/r/${formData.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-')}`
+                    const url = `${baseUrl}/${formData.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-')}`
                     navigator.clipboard.writeText(url)
                     setCopied(true)
                     setTimeout(() => setCopied(false), 2000)
@@ -277,7 +277,7 @@ export function SettingsForm({ settings, userId }: SettingsFormProps) {
                   variant="outline"
                   size="sm"
                   onClick={() => {
-                    const url = `${window.location.origin}/r/${formData.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-')}`
+                    const url = `${baseUrl}/${formData.slug.toLowerCase().replace(/[^a-z0-9-]/g, '-')}`
                     window.open(url, '_blank')
                   }}
                 >
@@ -493,3 +493,7 @@ export function SettingsForm({ settings, userId }: SettingsFormProps) {
     </form>
   )
 }
+
+export { SettingsForm }
+
+export default SettingsForm
