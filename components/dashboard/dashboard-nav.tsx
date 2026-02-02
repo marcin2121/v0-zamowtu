@@ -34,6 +34,7 @@ import {
 import { createClient } from '@/lib/supabase/client'
 import { canAccessFeature } from '@/lib/subscription-features'
 import { ThemeSwitcher } from '@/components/theme-switcher'
+import { baseUrl } from '@/lib/config'
 import type { User } from '@supabase/supabase-js'
 import type { RestaurantSettings } from '@/lib/types'
 
@@ -62,7 +63,7 @@ export function DashboardNav({ user, settings }: DashboardNavProps) {
   const [copied, setCopied] = useState(false)
 
   const menuLink = settings?.slug 
-    ? (typeof window !== 'undefined' ? `${window.location.origin}/r/${settings.slug}` : `/r/${settings.slug}`)
+    ? `${baseUrl}/${settings.slug}`
     : null
 
   const copyLink = async () => {
