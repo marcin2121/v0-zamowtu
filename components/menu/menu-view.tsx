@@ -66,10 +66,10 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
             <UtensilsCrossed className="w-10 h-10 text-primary" />
           </div>
           <h1 className="text-2xl font-bold text-foreground mb-3">
-            FoodOrder
+            ZamówTu
           </h1>
           <p className="text-muted-foreground mb-6">
-            System zamowien online dla restauracji. Aby zobaczyc menu, potrzebujesz linku od restauracji.
+            System zamówień online dla restauracji. Aby zobaczyć menu, potrzebujesz linku od restauracji.
           </p>
           <div className="p-4 bg-muted rounded-lg">
             <p className="text-sm text-muted-foreground">
