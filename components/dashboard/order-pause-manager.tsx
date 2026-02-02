@@ -78,12 +78,14 @@ export function OrderPauseManager({ userId, initialPaused, initialReason }: Orde
                 : 'Klienci mogą składać zamówienia normalnie'}
             </p>
           </div>
-          <Switch
-            id="pause-toggle"
-            checked={isPaused}
-            onCheckedChange={togglePause}
+          <Button
+            variant={isPaused ? 'destructive' : 'default'}
+            onClick={togglePause}
             disabled={loading}
-          />
+            className="gap-2"
+          >
+            {loading ? 'Ładowanie...' : isPaused ? 'Wznów zamówienia' : 'Wstrzymaj zamówienia'}
+          </Button>
         </div>
 
         {isPaused && (
