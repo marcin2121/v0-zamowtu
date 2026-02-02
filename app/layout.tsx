@@ -10,7 +10,7 @@ const geist = Geist({ subsets: ["latin"], variable: '--font-sans' })
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: '--font-mono' })
 
 export const metadata: Metadata = {
-  title: 'FoodOrder - System Zamówień dla Restauracji',
+  title: 'ZamówTu - System Zamówień dla Restauracji',
   description: 'Nowoczesny system zamówień online dla restauracji. Zarządzaj menu, zamówieniami i dostawami.',
   generator: 'v0.app',
   icons: {
