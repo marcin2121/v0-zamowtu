@@ -204,7 +204,7 @@ export default function LandingPage() {
               Zwiększ z nami swoją sprzedaż
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6 text-balance">
-              System zamówień online który pomaga Ci zarabiać
+              System zamówień online który pomaga Ci zdobywać klientów
             </h1>
             <p className="text-xl text-muted-foreground mb-8 text-balance leading-relaxed">
               Od 99 zł/mies. otrzymujesz płatności online, menu, zamówienia i harmonogram. Za 199 zł/mies. dodajemy kody rabatowe, program lojalności i zaawansowane statystyki.
