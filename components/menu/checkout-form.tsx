@@ -225,6 +225,35 @@ export function CheckoutForm({
     try {
       const supabase = createClient()
       
+      // Check if restaurant is open
+      const { data: settings } = await supabase
+        .from('restaurant_settings')
+        .select('is_open')
+        .eq('user_id', restaurantId)
+        .single()
+      
+      if (!settings?.is_open) {
+        setError('Restauracja jest obecnie zamknięta i nie przyjmuje zamówień.')
+        setLoading(false)
+        return
+      }
+      
+      // Check if scheduled date is blocked
+      if (isScheduled && formData.scheduledDate) {
+        const { data: blockedDate } = await supabase
+          .from('blocked_dates')
+          .select('*')
+          .eq('user_id', restaurantId)
+          .eq('date', formData.scheduledDate)
+          .single()
+        
+        if (blockedDate) {
+          setError(`Wybrana data jest niedostępna. ${blockedDate.reason || ''}`)
+          setLoading(false)
+          return
+        }
+      }
+      
       let scheduledFor = null
       if (isScheduled && formData.scheduledDate && formData.scheduledTime) {
         scheduledFor = new Date(`${formData.scheduledDate}T${formData.scheduledTime}`).toISOString()

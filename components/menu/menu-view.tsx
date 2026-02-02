@@ -165,8 +165,10 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                   borderColor: customStyles.primaryColor,
                   color: customStyles.textColor,
                   backgroundColor: 'transparent',
+                  opacity: !settings.is_open ? 0.5 : 1,
                 }}
                 onClick={() => setCartOpen(true)}
+                disabled={!settings.is_open}
               >
                 <ShoppingCart className="w-4 h-4" />
                 {itemCount > 0 && (
@@ -210,6 +212,28 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                 <span className="text-sm opacity-60">({reviews.length} opinii)</span>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* Restaurant Closed Warning */}
+      {!settings.is_open && (
+        <div 
+          className="border-b"
+          style={{ 
+            backgroundColor: '#fef3c7',
+            borderColor: '#f59e0b',
+            color: '#92400e'
+          }}
+        >
+          <div className="max-w-4xl mx-auto px-4 py-3">
+            <div className="flex items-center gap-2">
+              <Clock className="w-5 h-5" />
+              <div>
+                <p className="font-semibold">Restauracja jest obecnie zamknięta</p>
+                <p className="text-sm">Obecnie nie przyjmujemy zamówień</p>
+              </div>
+            </div>
           </div>
         </div>
       )}

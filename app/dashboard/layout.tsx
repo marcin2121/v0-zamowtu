@@ -2,6 +2,7 @@ import type React from 'react'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { DashboardNav } from '@/components/dashboard/dashboard-nav'
+import { AutoStatusManager } from '@/components/dashboard/auto-status-manager'
 import type { RestaurantSettings } from '@/lib/types'
 import type { User } from '@supabase/supabase-js'
 
@@ -44,6 +45,10 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen bg-background dark:bg-slate-950">
       <DashboardNav user={user} settings={settings} />
+      <AutoStatusManager 
+        userId={user.id} 
+        openingHours={settings?.opening_hours || {}} 
+      />
       <main className="lg:pl-64">
         <div className="p-4 lg:p-8">
           {children}

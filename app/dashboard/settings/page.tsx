@@ -1,5 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { SettingsForm } from '@/components/dashboard/settings-form'
+import { OrderPauseManager } from '@/components/dashboard/order-pause-manager'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -17,11 +18,17 @@ export default async function SettingsPage() {
   const settings = settingsArray?.[0] || null
 
   return (
-    <div>
-      <div className="mb-6">
+    <div className="space-y-6">
+      <div>
         <h1 className="text-2xl font-bold text-foreground">Ustawienia</h1>
-        <p className="text-muted-foreground">Skonfiguruj swoja restauracje</p>
+        <p className="text-muted-foreground">Skonfiguruj swoją restaurację</p>
       </div>
+      
+      <OrderPauseManager 
+        userId={user.id} 
+        initialOpen={settings?.is_open ?? true}
+      />
+      
       <SettingsForm settings={settings} userId={user.id} />
     </div>
   )
