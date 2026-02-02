@@ -22,7 +22,7 @@ export interface RestaurantSettings {
   description: string | null
   custom_welcome_text: string | null
   // Advanced features
-  orders_paused: boolean
+  pause_orders: boolean
   pause_reason: string | null
   notification_hours_before: number
   created_at: string

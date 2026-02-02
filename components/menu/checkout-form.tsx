@@ -228,11 +228,11 @@ export function CheckoutForm({
       // Check if orders are paused
       const { data: settings } = await supabase
         .from('restaurant_settings')
-        .select('orders_paused, pause_reason')
+        .select('pause_orders, pause_reason')
         .eq('user_id', restaurantId)
         .single()
       
-      if (settings?.orders_paused) {
+      if (settings?.pause_orders) {
         setError(`Zamówienia są tymczasowo wstrzymane. ${settings.pause_reason || ''}`)
         setLoading(false)
         return

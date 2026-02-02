@@ -31,7 +31,7 @@ export function OrderPauseManager({ userId, initialPaused, initialReason }: Orde
     const { error } = await supabase
       .from('restaurant_settings')
       .update({
-        orders_paused: newPausedState,
+        pause_orders: newPausedState,
         pause_reason: newPausedState ? pauseReason : null,
       })
       .eq('user_id', userId)

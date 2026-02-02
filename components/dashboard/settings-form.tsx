@@ -182,36 +182,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
-      {/* Restaurant Status */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Store className="w-5 h-5" />
-            Status restauracji
-          </CardTitle>
-          <CardDescription>
-            Kontroluj czy restauracja przyjmuje zamowienia
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
-            <div>
-              <p className="font-medium text-foreground">
-                Restauracja jest {formData.is_open ? 'otwarta' : 'zamknieta'}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {formData.is_open
-                  ? 'Klienci moga skladac zamowienia'
-                  : 'Zamowienia sa tymczasowo wstrzymane'}
-              </p>
-            </div>
-            <Switch
-              checked={formData.is_open}
-              onCheckedChange={toggleOpen}
-            />
-          </div>
-        </CardContent>
-      </Card>
+
 
       {/* Public URL */}
       <Card>
@@ -335,75 +306,97 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
         </CardContent>
       </Card>
 
-      {/* Opening Hours Schedule */}
+      {/* Restaurant Status & Opening Hours */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Calendar className="w-5 h-5" />
-            Harmonogram otwarcia
+            <Store className="w-5 h-5" />
+            Status restauracji i harmonogram
           </CardTitle>
           <CardDescription>
-            Ustaw godziny otwarcia dla kazdego dnia tygodnia
+            Kontroluj czy restauracja przyjmuje zamówienia i ustaw godziny otwarcia
           </CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-3">
-            {(Object.keys(dayNames) as (keyof WeekSchedule)[]).map((day) => (
-              <div
-                key={day}
-                className={`flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg border ${
-                  schedule[day].isOpen ? 'bg-card' : 'bg-muted/50'
-                }`}
-              >
-                <div className="flex items-center gap-3 min-w-[140px]">
-                  <Switch
-                    checked={schedule[day].isOpen}
-                    onCheckedChange={(checked) => updateDaySchedule(day, 'isOpen', checked)}
-                  />
-                  <span className={`font-medium ${!schedule[day].isOpen ? 'text-muted-foreground' : 'text-foreground'}`}>
-                    {dayNames[day]}
-                  </span>
-                </div>
-                
-                {schedule[day].isOpen ? (
-                  <div className="flex items-center gap-2 flex-1">
-                    <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4 text-muted-foreground" />
+        <CardContent className="space-y-6">
+          {/* Quick Status Toggle */}
+          <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+            <div>
+              <p className="font-medium text-foreground">
+                Restauracja jest {formData.is_open ? 'otwarta' : 'zamknięta'}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {formData.is_open
+                  ? 'Klienci mogą składać zamówienia'
+                  : 'Zamówienia są tymczasowo wstrzymane'}
+              </p>
+            </div>
+            <Switch
+              checked={formData.is_open}
+              onCheckedChange={toggleOpen}
+            />
+          </div>
+
+          {/* Weekly Schedule */}
+          <div className="space-y-2">
+            <Label className="text-base font-semibold">Harmonogram tygodniowy</Label>
+            <div className="space-y-3">
+              {(Object.keys(dayNames) as (keyof WeekSchedule)[]).map((day) => (
+                <div
+                  key={day}
+                  className={`flex flex-col sm:flex-row sm:items-center gap-3 p-3 rounded-lg border ${
+                    schedule[day].isOpen ? 'bg-card' : 'bg-muted/50'
+                  }`}
+                >
+                  <div className="flex items-center gap-3 min-w-[140px]">
+                    <Switch
+                      checked={schedule[day].isOpen}
+                      onCheckedChange={(checked) => updateDaySchedule(day, 'isOpen', checked)}
+                    />
+                    <span className={`font-medium ${!schedule[day].isOpen ? 'text-muted-foreground' : 'text-foreground'}`}>
+                      {dayNames[day]}
+                    </span>
+                  </div>
+                  
+                  {schedule[day].isOpen ? (
+                    <div className="flex items-center gap-2 flex-1">
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-muted-foreground" />
+                        <Input
+                          type="time"
+                          value={schedule[day].openTime}
+                          onChange={(e) => updateDaySchedule(day, 'openTime', e.target.value)}
+                          className="w-[120px]"
+                        />
+                      </div>
+                      <span className="text-muted-foreground">-</span>
                       <Input
                         type="time"
-                        value={schedule[day].openTime}
-                        onChange={(e) => updateDaySchedule(day, 'openTime', e.target.value)}
+                        value={schedule[day].closeTime}
+                        onChange={(e) => updateDaySchedule(day, 'closeTime', e.target.value)}
                         className="w-[120px]"
                       />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => copyToAllDays(day)}
+                        className="ml-2 text-xs hidden sm:inline-flex"
+                      >
+                        Kopiuj do wszystkich
+                      </Button>
                     </div>
-                    <span className="text-muted-foreground">-</span>
-                    <Input
-                      type="time"
-                      value={schedule[day].closeTime}
-                      onChange={(e) => updateDaySchedule(day, 'closeTime', e.target.value)}
-                      className="w-[120px]"
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => copyToAllDays(day)}
-                      className="ml-2 text-xs hidden sm:inline-flex"
-                    >
-                      Kopiuj do wszystkich
-                    </Button>
-                  </div>
-                ) : (
-                  <span className="text-sm text-muted-foreground italic">Zamkniete</span>
-                )}
-              </div>
-            ))}
-          </div>
-          
-          <div className="pt-2 border-t">
-            <p className="text-xs text-muted-foreground">
-              Godziny otwarcia sa wyswietlane klientom na stronie menu. Zamowienia moga byc skladane tylko w godzinach otwarcia (chyba ze sa zaplanowane na pozniej).
-            </p>
+                  ) : (
+                    <span className="text-sm text-muted-foreground italic">Zamkniete</span>
+                  )}
+                </div>
+              ))}
+            </div>
+            
+            <div className="pt-2 border-t">
+              <p className="text-xs text-muted-foreground">
+                Godziny otwarcia sa wyswietlane klientom na stronie menu. Zamowienia moga byc skladane tylko w godzinach otwarcia (chyba ze sa zaplanowane na pozniej).
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>

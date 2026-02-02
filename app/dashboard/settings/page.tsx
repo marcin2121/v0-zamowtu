@@ -1,7 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { SettingsForm } from '@/components/dashboard/settings-form'
 import { OrderPauseManager } from '@/components/dashboard/order-pause-manager'
-import { MenuSuggestions } from '@/components/dashboard/menu-suggestions'
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -27,7 +26,7 @@ export default async function SettingsPage() {
       
       <OrderPauseManager 
         userId={user.id} 
-        initialPaused={settings?.orders_paused || false}
+        initialPaused={settings?.pause_orders || false}
         initialReason={settings?.pause_reason}
       />
       

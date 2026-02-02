@@ -165,10 +165,10 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                   borderColor: customStyles.primaryColor,
                   color: customStyles.textColor,
                   backgroundColor: 'transparent',
-                  opacity: settings.orders_paused ? 0.5 : 1,
+                  opacity: settings.pause_orders ? 0.5 : 1,
                 }}
                 onClick={() => setCartOpen(true)}
-                disabled={settings.orders_paused}
+                disabled={settings.pause_orders}
               >
                 <ShoppingCart className="w-4 h-4" />
                 {itemCount > 0 && (
@@ -217,7 +217,7 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
       )}
 
       {/* Orders Paused Warning */}
-      {settings.orders_paused && (
+      {settings.pause_orders && (
         <div 
           className="border-b"
           style={{ 
