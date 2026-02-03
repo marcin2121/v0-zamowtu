@@ -371,7 +371,7 @@ export default function LandingPage() {
       {/* CTA Section */}
       <section className="py-20">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center bg-primary rounded-2xl p-12">
+          <div className="max-w-3xl mx-auto text-center p-12 rounded-4xl border-none border-0 border-background shadow-xl bg-sidebar-primary">
             <h2 className="text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
               Gotowy na wzrost?
             </h2>

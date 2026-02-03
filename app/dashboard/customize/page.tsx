@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Loader2, Save, Eye, Palette, Type, ImageIcon, MessageSquare } from 'lucide-react'
+import { Loader2, Save, Eye, Type, ImageIcon, MessageSquare } from 'lucide-react'
 import type { RestaurantSettings, MenuItem, MenuCategory } from '@/lib/types'
 
 const FONT_OPTIONS = [
@@ -35,9 +35,9 @@ export default function CustomizePage() {
   const [formData, setFormData] = useState({
     logo_url: '',
     banner_url: '',
-    primary_color: '#ea580c',
-    secondary_color: '#1c1917',
-    accent_color: '#16a34a',
+    primary_color: '#151b21',
+    secondary_color: '#f5f5f5',
+    accent_color: '#151b21',
     font_family: 'default',
     show_reviews: true,
     description: '',
@@ -80,9 +80,9 @@ export default function CustomizePage() {
       setFormData({
         logo_url: settingsData.logo_url || '',
         banner_url: settingsData.banner_url || '',
-        primary_color: settingsData.primary_color || '#ea580c',
-        secondary_color: settingsData.secondary_color || '#1c1917',
-        accent_color: settingsData.accent_color || '#16a34a',
+        primary_color: settingsData.primary_color || '#151b21',
+        secondary_color: settingsData.secondary_color || '#f5f5f5',
+        accent_color: settingsData.accent_color || '#151b21',
         font_family: settingsData.font_family || 'default',
         show_reviews: settingsData.show_reviews ?? true,
         description: settingsData.description || '',
@@ -123,9 +123,9 @@ export default function CustomizePage() {
       .update({
         logo_url: formData.logo_url || null,
         banner_url: formData.banner_url || null,
-        primary_color: formData.primary_color,
-        secondary_color: formData.secondary_color,
-        accent_color: formData.accent_color,
+        primary_color: '#151b21',
+        secondary_color: '#f5f5f5',
+        accent_color: '#151b21',
         font_family: formData.font_family,
         show_reviews: formData.show_reviews,
         description: formData.description || null,
@@ -179,14 +179,10 @@ export default function CustomizePage() {
           {/* Settings Panel */}
           <div className="space-y-6">
             <Tabs defaultValue="branding" className="w-full">
-              <TabsList className="grid w-full grid-cols-4">
+              <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="branding">
                   <ImageIcon className="w-4 h-4 mr-1" />
                   Grafika
-                </TabsTrigger>
-                <TabsTrigger value="colors">
-                  <Palette className="w-4 h-4 mr-1" />
-                  Kolory
                 </TabsTrigger>
                 <TabsTrigger value="typography">
                   <Type className="w-4 h-4 mr-1" />
@@ -224,71 +220,6 @@ export default function CustomizePage() {
                         placeholder="https://example.com/banner.jpg"
                       />
                       <p className="text-xs text-muted-foreground">Zalecany rozmiar: 1200x400px</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="colors" className="mt-4 space-y-4">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Schemat kolorów</CardTitle>
-                    <CardDescription>Dostosuj kolory do brandingu restauracji</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="primary">Kolor główny (przyciski, akcenty)</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id="primary"
-                          type="color"
-                          value={formData.primary_color}
-                          onChange={(e) => setFormData({ ...formData, primary_color: e.target.value })}
-                          className="w-16 h-10 p-1 cursor-pointer"
-                        />
-                        <Input
-                          value={formData.primary_color}
-                          onChange={(e) => setFormData({ ...formData, primary_color: e.target.value })}
-                          placeholder="#ea580c"
-                          className="flex-1"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="secondary">Kolor tła</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id="secondary"
-                          type="color"
-                          value={formData.secondary_color}
-                          onChange={(e) => setFormData({ ...formData, secondary_color: e.target.value })}
-                          className="w-16 h-10 p-1 cursor-pointer"
-                        />
-                        <Input
-                          value={formData.secondary_color}
-                          onChange={(e) => setFormData({ ...formData, secondary_color: e.target.value })}
-                          placeholder="#1c1917"
-                          className="flex-1"
-                        />
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="accent">Kolor akcentowy (powodzenie, ceny)</Label>
-                      <div className="flex gap-2">
-                        <Input
-                          id="accent"
-                          type="color"
-                          value={formData.accent_color}
-                          onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })}
-                          className="w-16 h-10 p-1 cursor-pointer"
-                        />
-                        <Input
-                          value={formData.accent_color}
-                          onChange={(e) => setFormData({ ...formData, accent_color: e.target.value })}
-                          placeholder="#16a34a"
-                          className="flex-1"
-                        />
-                      </div>
                     </div>
                   </CardContent>
                 </Card>
