@@ -3,7 +3,7 @@
 import React from "react"
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Loader2, Save, Store, Clock, Truck, Calendar, Link as LinkIcon, Copy, ExternalLink } from 'lucide-react'
+import { Loader2, Save, Store, Clock, Truck, Calendar, Link as LinkIcon, Copy, ExternalLink, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -167,7 +167,7 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-5xl">
 
       {/* Public URL */}
       <Card>
@@ -428,11 +428,16 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ settings, userId }) => {
 
       {/* Save Button */}
       <div className="flex items-center gap-4">
-        <Button type="submit" disabled={loading}>
+        <Button type="submit" variant="cta" disabled={loading}>
           {loading ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
               Zapisywanie...
+            </>
+          ) : success ? (
+            <>
+              <Check className="w-4 h-4 mr-2" />
+              Zapisano!
             </>
           ) : (
             <>

@@ -276,11 +276,16 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                     'sunday': 'Niedz'
                   }[day] || day
                   
+                  // Check if day is open - handle both formats
+                  const isOpenDay = hours.isOpen !== false
+                  const openTime = hours.open || hours.openTime
+                  const closeTime = hours.close || hours.closeTime
+                  
                   return (
                     <div key={day} className="text-xs flex justify-between">
                       <span className="font-medium">{dayLabel}:</span>
                       <span>
-                        {hours.open && hours.close ? `${hours.open} - ${hours.close}` : 'Zamknięte'}
+                        {isOpenDay && openTime && closeTime ? `${openTime} - ${closeTime}` : 'Zamknięte'}
                       </span>
                     </div>
                   )

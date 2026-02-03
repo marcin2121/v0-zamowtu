@@ -20,15 +20,19 @@ export function AutoStatusManager({ userId, openingHours }: AutoStatusManagerPro
       
       // Determine if restaurant should be open based on schedule
       let shouldBeOpen = false
-      if (todayHours && todayHours.open && todayHours.close) {
-        const openTime = todayHours.open
-        const closeTime = todayHours.close
+      if (todayHours && typeof todayHours === 'object') {
+        // Check if restaurant is set to open for today
+        const isOpenToday = (todayHours as any).isOpen !== false
+        const openTime = todayHours.open || (todayHours as any).openTime
+        const closeTime = todayHours.close || (todayHours as any).closeTime
         
-        // Handle overnight hours (e.g., 22:00 - 02:00)
-        if (closeTime < openTime) {
-          shouldBeOpen = currentTime >= openTime || currentTime < closeTime
-        } else {
-          shouldBeOpen = currentTime >= openTime && currentTime < closeTime
+        if (isOpenToday && openTime && closeTime) {
+          // Handle overnight hours (e.g., 22:00 - 02:00)
+          if (closeTime < openTime) {
+            shouldBeOpen = currentTime >= openTime || currentTime < closeTime
+          } else {
+            shouldBeOpen = currentTime >= openTime && currentTime < closeTime
+          }
         }
       }
       
