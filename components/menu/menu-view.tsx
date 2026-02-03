@@ -132,14 +132,6 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
 
             {/* Actions */}
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowInfo(!showInfo)}
-                className="hidden sm:flex"
-              >
-                <Info className="w-4 h-4" />
-              </Button>
               <ThemeSwitcher />
               <Button
                 variant="cta"
@@ -161,77 +153,126 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
         </div>
       </div>
 
-      {/* Restaurant Info Panel - Collapsible */}
-      {showInfo && (
-        <div className="bg-muted/30 border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Left Column */}
-              <div className="space-y-4">
-                {settings.description && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-foreground mb-2">O restauracji</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{settings.description}</p>
-                  </div>
-                )}
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">Min. zamówienie</p>
-                    <p className="text-sm font-semibold text-foreground">{settings.min_order_value.toFixed(2)} zł</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">Dostawa</p>
-                    <p className="text-sm font-semibold text-foreground">{settings.delivery_fee.toFixed(2)} zł</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-1">Dystans</p>
-                    <p className="text-sm font-semibold text-foreground">do {settings.max_delivery_distance_km} km</p>
-                  </div>
-                  {settings.phone && (
-                    <div>
-                      <p className="text-xs text-muted-foreground mb-1">Telefon</p>
-                      <p className="text-sm font-semibold text-foreground">{settings.phone}</p>
-                    </div>
-                  )}
-                </div>
-                {settings.address && (
-                  <div className="flex items-start gap-2 text-sm text-muted-foreground">
-                    <MapPin className="w-4 h-4 mt-0.5 shrink-0" />
-                    <span>{settings.address}</span>
-                  </div>
-                )}
-              </div>
+      {/* Essential Info Bar - Always Visible */}
+      <div className="bg-muted/30 border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div>
+              <p className="text-[10px] text-muted-foreground mb-0.5">Min. zamówienie</p>
+              <p className="text-sm font-bold text-foreground">{settings.min_order_value.toFixed(2)} zł</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-muted-foreground mb-0.5">Dostawa</p>
+              <p className="text-sm font-bold text-foreground">{settings.delivery_fee.toFixed(2)} zł</p>
+            </div>
+            <div>
+              <button
+                onClick={() => setShowInfo(!showInfo)}
+                className="w-full hover:bg-muted/50 rounded-lg transition-colors"
+              >
+                <p className="text-[10px] text-muted-foreground mb-0.5 flex items-center justify-center gap-1">
+                  {(() => {
+                    const now = new Date()
+                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+                    const today = dayNames[now.getDay()]
+                    const todayHours = settings.opening_hours?.[today]
+                    return todayHours ? 'Dziś' : 'Godziny'
+                  })()}
+                  <ChevronDown className={`w-3 h-3 transition-transform ${showInfo ? 'rotate-180' : ''}`} />
+                </p>
+                <p className="text-sm font-bold text-foreground">
+                  {(() => {
+                    const now = new Date()
+                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+                    const today = dayNames[now.getDay()]
+                    const todayHours = settings.opening_hours?.[today]
+                    if (todayHours) {
+                      const isOpenDay = todayHours.isOpen !== false
+                      const openTime = todayHours.open || todayHours.openTime
+                      const closeTime = todayHours.close || todayHours.closeTime
+                      if (isOpenDay && openTime && closeTime) {
+                        return `${openTime}-${closeTime}`
+                      }
+                    }
+                    return 'Zamknięte'
+                  })()}
+                </p>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-              {/* Right Column - Opening Hours */}
+      {/* Expandable Full Info Panel */}
+      {showInfo && (
+        <div className="bg-muted/20 border-b border-border">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="space-y-4">
+              {/* Full Week Opening Hours */}
               <div>
-                <h3 className="text-sm font-semibold text-foreground mb-3">Godziny otwarcia</h3>
-                <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Godziny otwarcia w tym tygodniu</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2">
                   {settings.opening_hours && Object.entries(settings.opening_hours).map(([day, hours]: [string, any]) => {
                     const dayLabel = {
-                      'monday': 'Poniedziałek',
-                      'tuesday': 'Wtorek',
-                      'wednesday': 'Środa',
-                      'thursday': 'Czwartek',
-                      'friday': 'Piątek',
-                      'saturday': 'Sobota',
-                      'sunday': 'Niedziela'
+                      'monday': 'Pon',
+                      'tuesday': 'Wt',
+                      'wednesday': 'Śr',
+                      'thursday': 'Czw',
+                      'friday': 'Pt',
+                      'saturday': 'Sob',
+                      'sunday': 'Niedz'
                     }[day] || day
 
                     const isOpenDay = hours.isOpen !== false
                     const openTime = hours.open || hours.openTime
                     const closeTime = hours.close || hours.closeTime
                     
+                    // Check if today
+                    const now = new Date()
+                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+                    const today = dayNames[now.getDay()]
+                    const isToday = day === today
+                    
                     return (
-                      <div key={day} className="flex justify-between text-sm">
-                        <span className="text-muted-foreground">{dayLabel}</span>
-                        <span className="font-medium text-foreground">
-                          {isOpenDay && openTime && closeTime ? `${openTime} - ${closeTime}` : 'Zamknięte'}
-                        </span>
+                      <div 
+                        key={day} 
+                        className={`p-2 rounded-lg text-center ${isToday ? 'bg-accent/10 ring-1 ring-accent' : 'bg-card'}`}
+                      >
+                        <p className={`text-xs font-semibold mb-1 ${isToday ? 'text-accent' : 'text-foreground'}`}>{dayLabel}</p>
+                        <p className="text-[10px] text-muted-foreground">
+                          {isOpenDay && openTime && closeTime ? `${openTime}-${closeTime}` : 'Zamknięte'}
+                        </p>
                       </div>
                     )
                   })}
                 </div>
               </div>
+
+              {/* Additional Info */}
+              {(settings.description || settings.address || settings.phone) && (
+                <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-border">
+                  {settings.description && (
+                    <div>
+                      <h4 className="text-xs font-semibold text-muted-foreground mb-1 uppercase tracking-wide">O restauracji</h4>
+                      <p className="text-sm text-foreground leading-relaxed">{settings.description}</p>
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    {settings.address && (
+                      <div className="flex items-start gap-2 text-sm">
+                        <MapPin className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+                        <span className="text-foreground">{settings.address}</span>
+                      </div>
+                    )}
+                    {settings.phone && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                        <span className="text-foreground">{settings.phone}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
