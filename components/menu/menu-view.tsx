@@ -177,34 +177,34 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardContent className="p-3 sm:p-4 text-center">
-              <Truck className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
+              <Truck className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: '#151b21' }} />
               <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Dostawa</p>
-              <p className="text-sm sm:text-base font-bold" style={{ color: customStyles.primaryColor }}>
+              <p className="text-sm sm:text-base font-semibold" style={{ color: '#151b21' }}>
                 {settings.delivery_fee.toFixed(2)} zł
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-3 sm:p-4 text-center">
-              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
+              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: '#151b21' }} />
               <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Min. zamówienie</p>
-              <p className="text-sm sm:text-base font-bold" style={{ color: customStyles.primaryColor }}>
+              <p className="text-sm sm:text-base font-semibold" style={{ color: '#151b21' }}>
                 {settings.min_order_value.toFixed(2)} zł
               </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-3 sm:p-4 text-center">
-              <Clock className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
+              <Clock className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: '#151b21' }} />
               <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Czas dostawy</p>
-              <p className="text-sm sm:text-base font-bold" style={{ color: customStyles.primaryColor }}>30-45 min</p>
+              <p className="text-sm sm:text-base font-semibold" style={{ color: '#151b21' }}>30-45 min</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-3 sm:p-4 text-center">
-              <Store className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
+              <Store className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: '#151b21' }} />
               <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Odbiór</p>
-              <p className="text-sm sm:text-base font-bold" style={{ color: customStyles.primaryColor }}>15-20 min</p>
+              <p className="text-sm sm:text-base font-semibold" style={{ color: '#151b21' }}>15-20 min</p>
             </CardContent>
           </Card>
         </div>

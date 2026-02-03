@@ -40,12 +40,9 @@ export function MenuItemCard({ item, restaurantId, primaryColor = '#DC2626', acc
 
   return (
     <div 
-      className="group bg-card rounded-xl border-2 overflow-hidden hover:shadow-lg transition-all duration-200"
-      style={{
-        borderColor: quantity > 0 ? primaryColor : 'hsl(var(--border))',
-      }}
+      className="group bg-card rounded-xl border overflow-hidden hover:shadow-lg transition-all duration-200"
     >
-      <div className="flex items-stretch gap-0">
+      <div className="flex items-stretch">
         {/* Image - Left Side */}
         {item.image_url && (
           <div className="relative w-24 sm:w-32 bg-muted shrink-0">
@@ -64,7 +61,7 @@ export function MenuItemCard({ item, restaurantId, primaryColor = '#DC2626', acc
         <div className="flex-1 p-4 min-w-0">
           <div className="space-y-2">
             {/* Title */}
-            <h3 className="font-bold text-base sm:text-lg text-foreground leading-tight">
+            <h3 className="font-semibold text-base sm:text-lg leading-tight" style={{ color: '#151b21' }}>
               {item.name}
             </h3>
 
@@ -77,10 +74,10 @@ export function MenuItemCard({ item, restaurantId, primaryColor = '#DC2626', acc
 
             {/* Allergens */}
             {item.allergens && item.allergens.length > 0 && (
-              <div className="flex items-start gap-1.5 p-1.5 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
-                <AlertTriangle className="w-3 h-3 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5" />
-                <p className="text-[10px] text-yellow-700 dark:text-yellow-300 leading-tight">
-                  {item.allergens.join(', ')}
+              <div className="flex items-start gap-1.5 p-2 rounded-md bg-muted/50 dark:bg-muted/30 border border-border/50">
+                <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" style={{ color: '#151b21' }} />
+                <p className="text-[11px] leading-tight" style={{ color: '#151b21' }}>
+                  Alergeny: {item.allergens.join(', ')}
                 </p>
               </div>
             )}
