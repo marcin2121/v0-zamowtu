@@ -135,17 +135,17 @@ export default function SignUpPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedPlan('starter')}
-                  className={`p-4 rounded-lg border-2 transition-all text-left ${
+                  className={`p-4 rounded-xl border-2 transition-all text-left ${
                     selectedPlan === 'starter'
-                      ? 'border-primary bg-primary/5'
-                      : 'border-input hover:border-primary/50'
+                      ? 'border-accent bg-accent/5 shadow-sm'
+                      : 'border-border hover:border-accent/30'
                   }`}
                 >
                   <div className="font-semibold text-foreground">Starter</div>
-                  <div className="text-2xl font-bold text-primary my-2">99 zł</div>
+                  <div className="text-2xl font-bold text-accent my-2">99 zł</div>
                   <div className="text-xs text-muted-foreground">/miesiąc</div>
                   {selectedPlan === 'starter' && (
-                    <Check className="w-4 h-4 text-primary mt-2" />
+                    <Check className="w-4 h-4 text-accent mt-2" />
                   )}
                 </button>
 
@@ -153,14 +153,14 @@ export default function SignUpPage() {
                 <button
                   type="button"
                   onClick={() => setSelectedPlan('professional')}
-                  className={`p-4 rounded-lg border-2 transition-all text-left relative ${
+                  className={`p-4 rounded-xl border-2 transition-all text-left relative ${
                     selectedPlan === 'professional'
-                      ? 'border-accent bg-accent/5'
-                      : 'border-input hover:border-accent/50'
+                      ? 'border-accent bg-accent/5 shadow-sm'
+                      : 'border-border hover:border-accent/30'
                   }`}
                 >
                   <div className="absolute top-2 right-2">
-                    <Badge className="bg-accent text-accent-foreground text-xs">
+                    <Badge className="bg-(--cta) text-(--cta-foreground) text-[10px] px-2 py-0.5 font-semibold">
                       Polecane
                     </Badge>
                   </div>
@@ -175,14 +175,14 @@ export default function SignUpPage() {
             </div>
 
             {/* Plan Features */}
-            <div className="bg-muted/50 p-3 rounded-lg text-xs">
+            <div className="bg-muted/50 p-3 rounded-xl text-xs">
               {selectedPlan === 'starter' ? (
                 <div className="space-y-2">
                   <div className="font-semibold text-foreground mb-2">Plan Starter zawiera:</div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" /><span>Menu i zamówienia</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" /><span>Zarządzanie dostawami</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" /><span>Płatności online</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-primary flex-shrink-0 mt-0.5" /><span>Harmonogram otwarcia</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Menu i zamówienia</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Zarządzanie dostawami</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Płatności online</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Harmonogram otwarcia</span></div>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -236,7 +236,7 @@ export default function SignUpPage() {
               <p className="text-sm text-destructive text-center">{error}</p>
             )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" variant="cta" className="w-full" disabled={loading}>
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
