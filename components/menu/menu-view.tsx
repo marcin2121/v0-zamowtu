@@ -1,9 +1,20 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { UtensilsCrossed, Clock, MapPin, Phone, ShoppingCart, Star, ChevronDown, Info } from 'lucide-react'
+import { 
+  UtensilsCrossed, 
+  Clock, 
+  MapPin, 
+  Phone, 
+  ShoppingCart, 
+  Star, 
+  Truck,
+  Store,
+  ChevronDown
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Card, CardContent } from '@/components/ui/card'
 import { MenuItemCard } from './menu-item-card'
 import { CartDrawer } from './cart-drawer'
 import { ThemeSwitcher } from '@/components/theme-switcher'
@@ -89,136 +100,156 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
     : menuItems
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top Bar */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo & Name */}
-            <div className="flex items-center gap-3">
-              {settings.logo_url ? (
-                <img 
-                  src={settings.logo_url || "/placeholder.svg"} 
-                  alt={settings.restaurant_name}
-                  className="w-10 h-10 rounded-full object-cover ring-2 ring-accent/20"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
-                  <UtensilsCrossed className="w-5 h-5 text-accent" />
-                </div>
+    <div className="min-h-screen bg-background" style={{ fontFamily: customStyles.fontFamily }}>
+      {/* Header with Restaurant Info */}
+      <header className="bg-card border-b">
+        <div className="max-w-4xl mx-auto px-4 py-6 sm:py-8">
+          <div className="flex items-start gap-4 sm:gap-6 mb-4">
+            {settings.logo_url ? (
+              <img 
+                src={settings.logo_url || "/placeholder.svg"} 
+                alt={settings.restaurant_name}
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl object-cover ring-2 ring-primary/20 flex-shrink-0"
+              />
+            ) : (
+              <div 
+                className="w-16 h-16 sm:w-20 sm:h-20 rounded-xl flex items-center justify-center flex-shrink-0"
+                style={{ backgroundColor: `${customStyles.primaryColor}20` }}
+              >
+                <span className="text-2xl sm:text-3xl font-bold" style={{ color: customStyles.primaryColor }}>
+                  {settings.restaurant_name.charAt(0)}
+                </span>
+              </div>
+            )}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start justify-between gap-2 mb-2">
+                <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
+                  {settings.restaurant_name}
+                </h1>
+                <ThemeSwitcher />
+              </div>
+              {settings.custom_welcome_text && (
+                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                  {settings.custom_welcome_text}
+                </p>
               )}
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-foreground">{settings.restaurant_name}</h1>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                  {settings.show_reviews && averageRating > 0 && (
-                    <div className="flex items-center gap-1">
-                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                      <span className="font-medium">{averageRating.toFixed(1)}</span>
-                    </div>
-                  )}
-                  <Badge 
-                    variant={settings.accepting_orders !== false ? 'default' : 'secondary'}
-                    className="text-[10px] h-5"
-                    style={{
-                      backgroundColor: settings.accepting_orders !== false ? customStyles.accentColor : undefined,
-                      color: settings.accepting_orders !== false ? '#ffffff' : undefined,
-                    }}
-                  >
-                    {settings.accepting_orders !== false ? 'Otwarte' : 'Zamknięte'}
-                  </Badge>
-                </div>
+              <div className="flex flex-wrap items-center gap-3 text-xs sm:text-sm text-muted-foreground">
+                {settings.show_reviews && averageRating > 0 && (
+                  <span className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <span className="font-semibold">{averageRating.toFixed(1)}</span>
+                    <span className="hidden sm:inline">({reviews.length} opinii)</span>
+                  </span>
+                )}
+                <Badge 
+                  variant={settings.accepting_orders !== false ? 'default' : 'secondary'}
+                  className="text-[10px] h-5"
+                  style={{
+                    backgroundColor: settings.accepting_orders !== false ? customStyles.accentColor : undefined,
+                    color: settings.accepting_orders !== false ? '#ffffff' : undefined,
+                  }}
+                >
+                  {settings.accepting_orders !== false ? 'Otwarte' : 'Zamknięte'}
+                </Badge>
               </div>
             </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              <ThemeSwitcher />
-              <Button
-                variant="cta"
-                size="sm"
-                className="relative gap-2"
-                onClick={() => setCartOpen(true)}
-                disabled={settings.accepting_orders === false || itemCount === 0}
-              >
-                <ShoppingCart className="w-4 h-4" />
-                <span className="hidden sm:inline">Koszyk</span>
-                {itemCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 w-5 h-5 p-0 flex items-center justify-center text-[10px] bg-accent text-white border-2 border-background">
-                    {itemCount}
-                  </Badge>
-                )}
-              </Button>
-            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Essential Info Bar - Always Visible */}
-      <div className="bg-muted/30 border-b border-border">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-          <div className="grid grid-cols-3 gap-4 text-center">
-            <div>
-              <p className="text-[10px] text-muted-foreground mb-0.5">Min. zamówienie</p>
-              <p className="text-sm font-bold text-foreground">{settings.min_order_value.toFixed(2)} zł</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-muted-foreground mb-0.5">Dostawa</p>
-              <p className="text-sm font-bold text-foreground">{settings.delivery_fee.toFixed(2)} zł</p>
-            </div>
-            <div>
-              <button
-                onClick={() => setShowInfo(!showInfo)}
-                className="w-full hover:bg-muted/50 rounded-lg transition-colors"
-              >
-                <p className="text-[10px] text-muted-foreground mb-0.5 flex items-center justify-center gap-1">
-                  {(() => {
-                    const now = new Date()
-                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-                    const today = dayNames[now.getDay()]
-                    const todayHours = settings.opening_hours?.[today]
-                    return todayHours ? 'Dziś' : 'Godziny'
-                  })()}
-                  <ChevronDown className={`w-3 h-3 transition-transform ${showInfo ? 'rotate-180' : ''}`} />
-                </p>
-                <p className="text-sm font-bold text-foreground">
-                  {(() => {
-                    const now = new Date()
-                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-                    const today = dayNames[now.getDay()]
-                    const todayHours = settings.opening_hours?.[today]
-                    if (todayHours) {
-                      const isOpenDay = todayHours.isOpen !== false
-                      const openTime = todayHours.open || todayHours.openTime
-                      const closeTime = todayHours.close || todayHours.closeTime
-                      if (isOpenDay && openTime && closeTime) {
-                        return `${openTime}-${closeTime}`
-                      }
-                    }
-                    return 'Zamknięte'
-                  })()}
-                </p>
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Expandable Full Info Panel */}
-      {showInfo && (
-        <div className="bg-muted/20 border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="space-y-4">
-              {/* Full Week Opening Hours */}
+      {/* Restaurant Closed Alert */}
+      {settings.accepting_orders === false && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800">
+          <div className="max-w-4xl mx-auto px-4 py-3">
+            <div className="flex items-center gap-3">
+              <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-500 shrink-0" />
               <div>
-                <h3 className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Godziny otwarcia w tym tygodniu</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2">
-                  {settings.opening_hours && (() => {
-                    // Get today's index
+                <p className="text-sm font-semibold text-yellow-900 dark:text-yellow-100">Restauracja jest obecnie zamknięta</p>
+                <p className="text-xs text-yellow-700 dark:text-yellow-300">Obecnie nie przyjmujemy zamówień. Sprawdź godziny otwarcia poniżej.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-4xl mx-auto px-4">
+        {/* Info Cards Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 py-4 sm:py-6">
+          <Card>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Truck className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Dostawa</p>
+              <p className="text-sm sm:text-base font-bold" style={{ color: customStyles.primaryColor }}>
+                {settings.delivery_fee.toFixed(2)} zł
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Min. zamówienie</p>
+              <p className="text-sm sm:text-base font-bold" style={{ color: customStyles.primaryColor }}>
+                {settings.min_order_value.toFixed(2)} zł
+              </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Clock className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Czas dostawy</p>
+              <p className="text-sm sm:text-base font-bold" style={{ color: customStyles.primaryColor }}>30-45 min</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-3 sm:p-4 text-center">
+              <Store className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
+              <p className="text-[10px] sm:text-xs text-muted-foreground mb-1">Odbiór</p>
+              <p className="text-sm sm:text-base font-bold" style={{ color: customStyles.primaryColor }}>15-20 min</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Opening Hours Collapsible */}
+        <Card className="mb-4 sm:mb-6">
+          <CardContent className="p-0">
+            <button
+              onClick={() => setShowInfo(!showInfo)}
+              className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors rounded-lg"
+            >
+              <div className="flex items-center gap-3">
+                <Clock className="w-5 h-5 text-muted-foreground" />
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-foreground">Godziny otwarcia</p>
+                  <p className="text-xs text-muted-foreground">
+                    {(() => {
+                      const now = new Date()
+                      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+                      const today = dayNames[now.getDay()]
+                      const todayHours = settings.opening_hours?.[today]
+                      if (todayHours) {
+                        const isOpenDay = todayHours.isOpen !== false
+                        const openTime = todayHours.open || todayHours.openTime
+                        const closeTime = todayHours.close || todayHours.closeTime
+                        if (isOpenDay && openTime && closeTime) {
+                          return `Dziś: ${openTime} - ${closeTime}`
+                        }
+                      }
+                      return 'Dziś: Zamknięte'
+                    })()}
+                  </p>
+                </div>
+              </div>
+              <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${showInfo ? 'rotate-180' : ''}`} />
+            </button>
+            
+            {showInfo && settings.opening_hours && (
+              <div className="px-4 pb-4 border-t border-border">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2 pt-4">
+                  {(() => {
                     const now = new Date()
                     const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
                     const todayIndex = now.getDay()
                     
-                    // Create ordered array: 3 days back, today, 3 days forward
                     const orderedDays = []
                     for (let i = -3; i <= 3; i++) {
                       const dayIndex = (todayIndex + i + 7) % 7
@@ -248,9 +279,18 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                       return (
                         <div 
                           key={day} 
-                          className={`p-2 rounded-lg text-center ${isToday ? 'bg-accent/10 ring-1 ring-accent' : 'bg-card'}`}
+                          className={`p-2 rounded-lg text-center ${isToday ? 'ring-2' : 'bg-muted/50'}`}
+                          style={isToday ? { 
+                            backgroundColor: `${customStyles.accentColor}15`,
+                            borderColor: customStyles.accentColor 
+                          } : {}}
                         >
-                          <p className={`text-xs font-semibold mb-1 ${isToday ? 'text-accent' : 'text-foreground'}`}>{dayLabel}</p>
+                          <p 
+                            className="text-xs font-semibold mb-1"
+                            style={isToday ? { color: customStyles.accentColor } : {}}
+                          >
+                            {dayLabel}
+                          </p>
                           <p className="text-[10px] text-muted-foreground">
                             {isOpenDay && openTime && closeTime ? `${openTime}-${closeTime}` : 'Zamknięte'}
                           </p>
@@ -259,166 +299,175 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                     })
                   })()}
                 </div>
-              </div>
 
-              {/* Additional Info */}
-              {(settings.description || settings.address || settings.phone) && (
-                <div className="grid sm:grid-cols-2 gap-4 pt-2 border-t border-border">
-                  {settings.description && (
-                    <div>
-                      <h4 className="text-xs font-semibold text-muted-foreground mb-1 uppercase tracking-wide">O restauracji</h4>
-                      <p className="text-sm text-foreground leading-relaxed">{settings.description}</p>
-                    </div>
-                  )}
-                  <div className="space-y-2">
-                    {settings.address && (
-                      <div className="flex items-start gap-2 text-sm">
-                        <MapPin className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
-                        <span className="text-foreground">{settings.address}</span>
+                {/* Additional Info */}
+                {(settings.description || settings.address || settings.phone) && (
+                  <div className="mt-4 pt-4 border-t border-border space-y-3">
+                    {settings.description && (
+                      <div>
+                        <h4 className="text-xs font-semibold text-muted-foreground mb-1 uppercase tracking-wide">O restauracji</h4>
+                        <p className="text-sm text-foreground">{settings.description}</p>
                       </div>
                     )}
-                    {settings.phone && (
-                      <div className="flex items-center gap-2 text-sm">
-                        <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
-                        <span className="text-foreground">{settings.phone}</span>
+                    {(settings.address || settings.phone) && (
+                      <div className="space-y-2">
+                        {settings.address && (
+                          <div className="flex items-start gap-2 text-sm">
+                            <MapPin className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
+                            <span className="text-foreground">{settings.address}</span>
+                          </div>
+                        )}
+                        {settings.phone && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                            <span className="text-foreground">{settings.phone}</span>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Restaurant Closed Alert - Only show if accepting_orders is false */}
-      {settings.accepting_orders === false && (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-y border-yellow-200 dark:border-yellow-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-yellow-100 dark:bg-yellow-800/30 flex items-center justify-center shrink-0">
-                <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-500" />
+                )}
               </div>
-              <div>
-                <p className="font-semibold text-yellow-900 dark:text-yellow-100">Restauracja jest obecnie zamknięta</p>
-                <p className="text-sm text-yellow-700 dark:text-yellow-300">Obecnie nie przyjmujemy zamówień. Sprawdź godziny otwarcia.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+            )}
+          </CardContent>
+        </Card>
 
-      {/* Categories Navigation */}
-      {categories.length > 0 && (
-        <div className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex gap-2 py-4 overflow-x-auto scrollbar-hide">
+        {/* Categories */}
+        {categories.length > 0 && (
+          <div className="flex gap-2 overflow-x-auto pb-4 mb-4 sm:mb-6 scrollbar-hide">
+            <Button
+              variant={activeCategory === null ? 'cta' : 'outline'}
+              size="sm"
+              onClick={() => setActiveCategory(null)}
+              className="shrink-0 rounded-full"
+              style={activeCategory === null ? {
+                backgroundColor: customStyles.primaryColor,
+                color: customStyles.textColor
+              } : {}}
+            >
+              Wszystkie
+            </Button>
+            {categories.map((category) => (
               <Button
+                key={category.id}
+                variant={activeCategory === category.id ? 'cta' : 'outline'}
                 size="sm"
-                variant={activeCategory === null ? 'cta' : 'outline'}
-                onClick={() => setActiveCategory(null)}
+                onClick={() => setActiveCategory(category.id)}
                 className="shrink-0 rounded-full"
+                style={activeCategory === category.id ? {
+                  backgroundColor: customStyles.primaryColor,
+                  color: customStyles.textColor
+                } : {}}
               >
-                Wszystkie
+                {category.name}
               </Button>
-              {categories.map((category) => (
-                <Button
-                  key={category.id}
-                  size="sm"
-                  variant={activeCategory === category.id ? 'cta' : 'outline'}
-                  onClick={() => setActiveCategory(category.id)}
-                  className="shrink-0 rounded-full"
-                >
-                  {category.name}
-                </Button>
-              ))}
-            </div>
+            ))}
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Menu Items Grid */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Menu Items */}
         {filteredItems.length === 0 ? (
-          <div className="text-center py-20">
-            <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <UtensilsCrossed className="w-10 h-10 text-muted-foreground" />
+          <div className="text-center py-16 sm:py-20">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+              <UtensilsCrossed className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
             </div>
-            <p className="text-lg font-medium text-foreground mb-2">Brak produktów</p>
+            <p className="text-base sm:text-lg font-medium text-foreground mb-2">Brak produktów</p>
             <p className="text-sm text-muted-foreground">
               {activeCategory ? 'Nie znaleziono produktów w tej kategorii.' : 'Menu jest obecnie puste.'}
             </p>
           </div>
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredItems.map((item) => (
-              <MenuItemCard
-                key={item.id}
-                item={item}
-                restaurantId={restaurantId}
-                customStyles={customStyles}
-              />
-            ))}
-          </div>
-        )}
-      </main>
+          <div className="space-y-6 sm:space-y-8 pb-24 sm:pb-32">
+            {categories.map((category) => {
+              const categoryItems = filteredItems.filter((item) => item.category_id === category.id)
+              if (categoryItems.length === 0) return null
 
-      {/* Reviews Section */}
-      {settings.show_reviews && reviews.length > 0 && (
-        <section className="border-t border-border bg-muted/20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="flex items-center justify-between mb-8">
-              <div>
-                <h2 className="text-2xl font-bold text-foreground mb-2">Opinie klientów</h2>
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <Star
-                        key={star}
-                        className={`w-5 h-5 ${star <= Math.round(averageRating) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
+              return (
+                <div key={category.id} id={`category-${category.id}`}>
+                  <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: customStyles.secondaryColor }}>
+                    {category.name}
+                  </h2>
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {categoryItems.map((item) => (
+                      <MenuItemCard
+                        key={item.id}
+                        item={item}
+                        restaurantId={restaurantId}
+                        primaryColor={customStyles.primaryColor}
+                        accentColor={customStyles.accentColor}
                       />
                     ))}
                   </div>
-                  <span className="text-lg font-semibold text-foreground">{averageRating.toFixed(1)}</span>
-                  <span className="text-sm text-muted-foreground">({reviews.length} opinii)</span>
                 </div>
-              </div>
-            </div>
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {reviews.slice(0, 6).map((review) => (
-                <div 
-                  key={review.id}
-                  className="p-6 rounded-2xl bg-card border border-border hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex items-center gap-2 mb-3">
-                    <div className="flex">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star
-                          key={star}
-                          className={`w-4 h-4 ${star <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300 dark:text-gray-600'}`}
-                        />
-                      ))}
+              )
+            })}
+          </div>
+        )}
+
+        {/* Reviews Section */}
+        {settings.show_reviews && reviews.length > 0 && (
+          <div className="pb-24 sm:pb-32">
+            <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: customStyles.secondaryColor }}>
+              Opinie klientów
+            </h2>
+            <div className="space-y-3">
+              {reviews.slice(0, 5).map((review) => (
+                <Card key={review.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start justify-between gap-3 mb-2">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-semibold text-sm truncate">{review.customer_name}</p>
+                        <div className="flex items-center gap-1 mt-1">
+                          {[1,2,3,4,5].map((s) => (
+                            <Star 
+                              key={s} 
+                              className={`w-3 h-3 ${s <= review.rating ? 'fill-yellow-400 text-yellow-400' : 'text-muted'}`} 
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <span className="text-xs text-muted-foreground shrink-0">
+                        {new Date(review.created_at).toLocaleDateString('pl-PL')}
+                      </span>
                     </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-3">
-                    {review.comment || 'Świetne jedzenie!'}
-                  </p>
-                  <p className="text-xs font-medium text-foreground">{review.customer_name}</p>
-                </div>
+                    {review.comment && (
+                      <p className="text-sm text-muted-foreground">{review.comment}</p>
+                    )}
+                  </CardContent>
+                </Card>
               ))}
             </div>
           </div>
-        </section>
+        )}
+      </div>
+
+      {/* Floating Cart Button */}
+      {itemCount > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40">
+          <Button 
+            size="lg" 
+            onClick={() => setCartOpen(true)}
+            className="shadow-2xl px-6 sm:px-8"
+            style={{
+              backgroundColor: customStyles.primaryColor,
+              color: customStyles.textColor
+            }}
+          >
+            <ShoppingCart className="w-5 h-5 mr-2" />
+            <span className="font-semibold">
+              Koszyk ({itemCount})
+            </span>
+          </Button>
+        </div>
       )}
 
       {/* Cart Drawer */}
-      <CartDrawer
-        open={cartOpen}
-        onClose={() => setCartOpen(false)}
-        settings={settings}
+      <CartDrawer 
+        open={cartOpen} 
+        onClose={() => setCartOpen(false)} 
         restaurantId={restaurantId}
-        restaurantSlug={settings.slug}
-        customStyles={customStyles}
+        settings={settings}
+        menuItems={menuItems}
       />
     </div>
   )
