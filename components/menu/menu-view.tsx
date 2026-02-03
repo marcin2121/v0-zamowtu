@@ -274,8 +274,8 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                           key={day} 
                           className="p-3 rounded-xl text-center border-2"
                           style={isToday ? { 
-                            backgroundColor: `${customStyles.primaryColor}10`,
-                            borderColor: customStyles.primaryColor
+                            backgroundColor: '#151b21' + '10',
+                            borderColor: '#151b21'
                           } : {
                             backgroundColor: 'hsl(var(--card))',
                             borderColor: 'hsl(var(--border))'
@@ -283,13 +283,13 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                         >
                           <p 
                             className="text-xs font-bold mb-1"
-                            style={{ color: isToday ? customStyles.primaryColor : 'hsl(var(--foreground))' }}
+                            style={{ color: isToday ? '#151b21' : 'hsl(var(--foreground))' }}
                           >
                             {dayLabel}
                           </p>
                           <p 
                             className="text-xs font-medium"
-                            style={{ color: isToday ? customStyles.primaryColor : 'hsl(var(--foreground))' }}
+                            style={{ color: isToday ? '#151b21' : 'hsl(var(--foreground))' }}
                           >
                             {isOpenDay && openTime && closeTime ? `${openTime}-${closeTime}` : 'Zamknięte'}
                           </p>
