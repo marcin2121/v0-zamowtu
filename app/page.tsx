@@ -294,11 +294,11 @@ export default function LandingPage() {
             {pricingPlans.map((plan) => (
               <Card 
                 key={plan.name} 
-                className={`relative flex flex-col ${plan.highlight ? 'border-primary shadow-lg md:scale-105' : 'border-border'}`}
+                className={`relative flex flex-col ${plan.highlight ? 'border-accent/30 bg-accent/[0.02] shadow-[0_8px_24px_rgba(37,99,235,0.12)] md:scale-105' : ''}`}
               >
                 {plan.highlight && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className="bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-full">
+                    <span className="bg-accent text-accent-foreground text-xs font-semibold px-3 py-1 rounded-full shadow-sm">
                       Najpopularniejszy
                     </span>
                   </div>
