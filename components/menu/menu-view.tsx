@@ -16,7 +16,6 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { CartDrawer } from './cart-drawer'
-import { ThemeSwitcher } from '@/components/theme-switcher'
 import { useCartStore } from '@/lib/cart-store'
 import type { MenuItem, MenuCategory, RestaurantSettings, Review } from '@/lib/types'
 
@@ -125,7 +124,6 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                 <h1 className="text-xl sm:text-2xl font-bold text-foreground truncate">
                   {settings.restaurant_name}
                 </h1>
-                <ThemeSwitcher />
               </div>
               {settings.custom_welcome_text && (
                 <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
