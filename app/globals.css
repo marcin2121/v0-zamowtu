@@ -28,31 +28,31 @@
   --muted: oklch(0.97 0.002 250);
   --muted-foreground: oklch(0.55 0.01 250);
   
-  /* Accent - Blue #2563EB for interactive elements */
-  --accent: oklch(0.526 0.155 264.052);
+  /* Accent - Red #DC2626 for interactive elements and CTAs */
+  --accent: oklch(0.548 0.227 27.325);
   --accent-foreground: oklch(0.99 0 0);
   
-  /* CTA Orange - #F59E0B for primary actions */
-  --cta: oklch(0.744 0.150 55.934);
-  --cta-foreground: oklch(0.15 0.01 250);
+  /* CTA - Red #DC2626 for primary actions */
+  --cta: oklch(0.548 0.227 27.325);
+  --cta-foreground: oklch(0.99 0 0);
   
   /* Confirm Green - #10B981 for success/confirm */
   --confirm: oklch(0.627 0.172 165.385);
   --confirm-foreground: oklch(0.99 0 0);
   
-  /* Destructive - red for warnings */
-  --destructive: oklch(0.55 0.22 25);
+  /* Destructive - darker red for warnings */
+  --destructive: oklch(0.50 0.24 25);
   --destructive-foreground: oklch(0.99 0 0);
   
   /* Borders - very subtle, almost invisible */
   --border: oklch(0.95 0.002 250);
   --input: oklch(0.96 0.002 250);
-  --ring: oklch(0.526 0.155 264.052);
+  --ring: oklch(0.548 0.227 27.325);
   
   /* Charts */
-  --chart-1: oklch(0.526 0.155 264.052);
-  --chart-2: oklch(0.744 0.150 55.934);
-  --chart-3: oklch(0.627 0.172 165.385);
+  --chart-1: oklch(0.548 0.227 27.325);
+  --chart-2: oklch(0.627 0.172 165.385);
+  --chart-3: oklch(0.65 0.03 250);
   --chart-4: oklch(0.65 0.03 250);
   --chart-5: oklch(0.45 0.02 250);
   
@@ -90,29 +90,29 @@
   --muted: oklch(0.18 0.008 250);
   --muted-foreground: oklch(0.65 0.01 250);
   
-  /* Accent - Brighter blue for dark mode */
-  --accent: oklch(0.626 0.185 264.052);
+  /* Accent - Brighter red for dark mode */
+  --accent: oklch(0.648 0.247 27.325);
   --accent-foreground: oklch(0.12 0.005 250);
   
-  /* CTA - Same orange, adjusted foreground */
-  --cta: oklch(0.744 0.150 55.934);
+  /* CTA - Brighter red for dark mode */
+  --cta: oklch(0.648 0.247 27.325);
   --cta-foreground: oklch(0.12 0.005 250);
   
   /* Confirm - Same green, adjusted foreground */
   --confirm: oklch(0.627 0.172 165.385);
   --confirm-foreground: oklch(0.12 0.005 250);
   
-  --destructive: oklch(0.60 0.22 25);
+  --destructive: oklch(0.60 0.24 25);
   --destructive-foreground: oklch(0.95 0.003 250);
   
   /* Subtle borders */
   --border: oklch(0.22 0.012 250);
   --input: oklch(0.20 0.01 250);
-  --ring: oklch(0.626 0.185 264.052);
+  --ring: oklch(0.648 0.247 27.325);
   
-  --chart-1: oklch(0.626 0.185 264.052);
-  --chart-2: oklch(0.744 0.150 55.934);
-  --chart-3: oklch(0.627 0.172 165.385);
+  --chart-1: oklch(0.648 0.247 27.325);
+  --chart-2: oklch(0.627 0.172 165.385);
+  --chart-3: oklch(0.65 0.03 250);
   --chart-4: oklch(0.65 0.03 250);
   --chart-5: oklch(0.50 0.02 250);
   
