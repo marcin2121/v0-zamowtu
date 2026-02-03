@@ -130,9 +130,7 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
         updated_at: new Date().toISOString() 
       }
       
-      if (status === 'accepted') {
-        updateData.accepted_at = new Date().toISOString()
-      }
+      // Note: accepted_at column doesn't exist in schema, using updated_at instead
       
       if (estimatedDeliveryAt) {
         updateData.estimated_delivery_at = estimatedDeliveryAt
@@ -253,7 +251,7 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
         </div>
         <div className="flex items-center gap-2">
           <Button
-            variant={notificationsEnabled ? 'default' : 'outline'}
+            variant={notificationsEnabled ? 'confirm' : 'destructive'}
             size="sm"
             onClick={toggleNotifications}
             className="gap-2"
@@ -355,7 +353,7 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
               <div className="flex gap-2">
                 {order.status === 'pending' && (
                   <>
-                    <Button size="sm" className="flex-1" onClick={() => handleAcceptOrder(order)}>
+                    <Button size="sm" variant="cta" className="flex-1" onClick={() => handleAcceptOrder(order)}>
                       <Check className="w-4 h-4 mr-1" />
                       Przyjmij
                     </Button>
@@ -366,19 +364,19 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
                   </>
                 )}
                 {order.status === 'accepted' && (
-                  <Button size="sm" className="flex-1" onClick={() => updateOrderStatus(order.id, 'preparing')}>
+                  <Button size="sm" variant="cta" className="flex-1" onClick={() => updateOrderStatus(order.id, 'preparing')}>
                     <ChefHat className="w-4 h-4 mr-1" />
                     Rozpocznij przygotowanie
                   </Button>
                 )}
                 {order.status === 'preparing' && (
-                  <Button size="sm" className="flex-1" onClick={() => updateOrderStatus(order.id, 'ready')}>
+                  <Button size="sm" variant="cta" className="flex-1" onClick={() => updateOrderStatus(order.id, 'ready')}>
                     <ChefHat className="w-4 h-4 mr-1" />
                     Oznacz jako gotowe
                   </Button>
                 )}
                 {order.status === 'ready' && (
-                  <Button size="sm" className="flex-1" onClick={() => updateOrderStatus(order.id, 'delivered')}>
+                  <Button size="sm" variant="confirm" className="flex-1" onClick={() => updateOrderStatus(order.id, 'delivered')}>
                     <Truck className="w-4 h-4 mr-1" />
                     Wydaj zamówienie
                   </Button>
