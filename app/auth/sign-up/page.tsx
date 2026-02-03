@@ -145,7 +145,7 @@ export default function SignUpPage() {
                   <div className="text-2xl font-bold text-accent my-2">99 zł</div>
                   <div className="text-xs text-muted-foreground">/miesiąc</div>
                   {selectedPlan === 'starter' && (
-                    <Check className="w-4 h-4 text-accent mt-2" />
+                    <Check className="w-4 h-4 text-(--confirm) mt-2" />
                   )}
                 </button>
 
@@ -168,7 +168,7 @@ export default function SignUpPage() {
                   <div className="text-2xl font-bold text-accent my-2">199 zł</div>
                   <div className="text-xs text-muted-foreground">/miesiąc</div>
                   {selectedPlan === 'professional' && (
-                    <Check className="w-4 h-4 text-accent mt-2" />
+                    <Check className="w-4 h-4 text-(--confirm) mt-2" />
                   )}
                 </button>
               </div>
@@ -179,18 +179,18 @@ export default function SignUpPage() {
               {selectedPlan === 'starter' ? (
                 <div className="space-y-2">
                   <div className="font-semibold text-foreground mb-2">Plan Starter zawiera:</div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Menu i zamówienia</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Zarządzanie dostawami</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Płatności online</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Harmonogram otwarcia</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-(--confirm) flex-shrink-0 mt-0.5" /><span>Menu i zamówienia</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-(--confirm) flex-shrink-0 mt-0.5" /><span>Zarządzanie dostawami</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-(--confirm) flex-shrink-0 mt-0.5" /><span>Płatności online</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-(--confirm) flex-shrink-0 mt-0.5" /><span>Harmonogram otwarcia</span></div>
                 </div>
               ) : (
                 <div className="space-y-2">
                   <div className="font-semibold text-foreground mb-2">Plan Professional zawiera wszystko z Starter +:</div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Kody rabatowe</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Program lojalnościowy</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Opinie i oceny</span></div>
-                  <div className="flex gap-2"><Check className="w-3 h-3 text-accent flex-shrink-0 mt-0.5" /><span>Zaawansowane statystyki</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-(--confirm) flex-shrink-0 mt-0.5" /><span>Kody rabatowe</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-(--confirm) flex-shrink-0 mt-0.5" /><span>Program lojalnościowy</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-(--confirm) flex-shrink-0 mt-0.5" /><span>Opinie i oceny</span></div>
+                  <div className="flex gap-2"><Check className="w-3 h-3 text-(--confirm) flex-shrink-0 mt-0.5" /><span>Zaawansowane statystyki</span></div>
                 </div>
               )}
             </div>

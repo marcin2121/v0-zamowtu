@@ -466,9 +466,9 @@ export function CheckoutForm({
         </div>
         
         {discountApplied ? (
-          <div className="flex items-center justify-between p-2 bg-accent/10 border border-accent rounded-lg">
+          <div className="flex items-center justify-between p-2 bg-(--confirm)/10 border border-(--confirm) rounded-lg">
             <div className="flex items-center gap-2">
-              <Check className="w-4 h-4 text-accent" />
+              <Check className="w-4 h-4 text-(--confirm)" />
               <span className="font-medium">{discountApplied.code}</span>
               <Badge variant="secondary">
                 -{discountApplied.type === 'percentage' ? `${discountApplied.value}%` : `${discountApplied.value} zł`}
