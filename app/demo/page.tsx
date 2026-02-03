@@ -1,61 +1,19 @@
-'use client'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { ShoppingBag, Clock, ChefHat, CheckCircle, TrendingUp } from 'lucide-react'
+import type { Order } from '@/lib/types'
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { 
-  UtensilsCrossed, 
-  ShoppingBag,
-  Tag,
-  Crown,
-  BarChart3,
-  Star,
-  Palette,
-  Settings,
-  History,
-  CreditCard,
-  ArrowLeft,
-  Sparkles,
-  Clock,
-  Check,
-  X,
-  Phone,
-  MapPin,
-  Truck,
-  ChefHat,
-  Lock,
-  TrendingUp,
-  Users,
-  ShoppingCart,
-  ExternalLink
-} from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
-
-// Demo nav items
-const navItems = [
-  { id: 'orders', label: 'Zamówienia', icon: ShoppingBag, pro: false },
-  { id: 'menu', label: 'Menu', icon: UtensilsCrossed, pro: false },
-  { id: 'customize', label: 'Personalizacja', icon: Palette, pro: true },
-  { id: 'discounts', label: 'Kody rabatowe', icon: Tag, pro: true },
-  { id: 'loyalty', label: 'Lojalność', icon: Crown, pro: true },
-  { id: 'reviews', label: 'Opinie', icon: Star, pro: true },
-  { id: 'history', label: 'Historia', icon: History, pro: false },
-  { id: 'stats', label: 'Statystyki', icon: BarChart3, pro: true },
-  { id: 'settings', label: 'Ustawienia', icon: Settings, pro: false },
-]
-
-// Demo orders
-const demoOrders = [
+// Demo orders with items
+const demoOrders: Order[] = [
   { 
     id: '1', 
+    restaurant_user_id: 'demo-restaurant',
     customer_name: 'Jan Kowalski', 
     customer_phone: '123 456 789',
     customer_address: 'ul. Warszawska 15/3, 00-001 Warszawa',
     status: 'pending', 
     total: 89.00,
     delivery_type: 'delivery',
-    created_at: '12:45',
+    created_at: new Date(Date.now() - 15 * 60000).toISOString(),
     items: [
       { name: 'Pizza Margherita', quantity: 2, price: 32.00 },
       { name: 'Cola 0.5L', quantity: 2, price: 8.00 },
@@ -64,13 +22,14 @@ const demoOrders = [
   },
   { 
     id: '2', 
+    restaurant_user_id: 'demo-restaurant',
     customer_name: 'Anna Nowak', 
     customer_phone: '987 654 321',
     customer_address: null,
-    status: 'preparing', 
+    status: 'accepted', 
     total: 76.00,
     delivery_type: 'pickup',
-    created_at: '12:30',
+    created_at: new Date(Date.now() - 30 * 60000).toISOString(),
     items: [
       { name: 'Pizza Pepperoni', quantity: 1, price: 38.00 },
       { name: 'Spaghetti Carbonara', quantity: 1, price: 34.00 },
@@ -79,224 +38,201 @@ const demoOrders = [
   },
   { 
     id: '3', 
+    restaurant_user_id: 'demo-restaurant',
     customer_name: 'Piotr Wiśniewski', 
     customer_phone: '555 123 456',
     customer_address: 'ul. Krakowska 42, 00-025 Warszawa',
-    status: 'ready', 
+    status: 'preparing', 
     total: 122.00,
     delivery_type: 'delivery',
-    created_at: '12:15',
+    created_at: new Date(Date.now() - 45 * 60000).toISOString(),
     items: [
       { name: 'Pizza Quattro Formaggi', quantity: 2, price: 42.00 },
       { name: 'Sałatka Cesarska', quantity: 1, price: 32.00 },
       { name: 'Tiramisu', quantity: 1, price: 17.00 }
     ]
+  },
+  {
+    id: '4',
+    restaurant_user_id: 'demo-restaurant',
+    customer_name: 'Maria Lewandowska',
+    customer_phone: '666 777 888',
+    customer_address: 'ul. Nowy Świat 10, 00-001 Warszawa',
+    status: 'ready',
+    total: 95.00,
+    delivery_type: 'delivery',
+    created_at: new Date(Date.now() - 60 * 60000).toISOString(),
+    items: [
+      { name: 'Pizza Diablo', quantity: 1, price: 39.00 },
+      { name: 'Garlic Bread', quantity: 1, price: 12.00 },
+      { name: 'Coca Cola 2L', quantity: 1, price: 12.00 },
+      { name: 'Tiramisu', quantity: 1, price: 32.00 }
+    ]
   }
 ]
 
-// Demo menu items
-const demoMenuItems = [
-  { id: '1', name: 'Pizza Margherita', price: 32.00, category: 'Pizza', available: true },
-  { id: '2', name: 'Pizza Pepperoni', price: 38.00, category: 'Pizza', available: true },
-  { id: '3', name: 'Pizza Quattro Formaggi', price: 42.00, category: 'Pizza', available: true },
-  { id: '4', name: 'Spaghetti Carbonara', price: 34.00, category: 'Makarony', available: true },
-  { id: '5', name: 'Penne Arrabiata', price: 28.00, category: 'Makarony', available: false },
-  { id: '6', name: 'Sałatka Cesarska', price: 32.00, category: 'Sałatki', available: true },
-]
+export default async function DemoPage() {
+  // Get today's stats
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  
+  const todayOrders = demoOrders.filter(order => {
+    const orderDate = new Date(order.created_at)
+    orderDate.setHours(0, 0, 0, 0)
+    return orderDate.getTime() === today.getTime()
+  })
 
-// Demo discount codes
-const demoDiscounts = [
-  { code: 'NOWYKLIENT', type: 'percentage', value: 15, uses: 23, limit: 100, active: true },
-  { code: 'PIZZA10', type: 'fixed', value: 10, uses: 45, limit: 50, active: true },
-  { code: 'WEEKEND20', type: 'percentage', value: 20, uses: 12, limit: null, active: false },
-]
+  const todayStats = {
+    total: todayOrders.length,
+    revenue: todayOrders.reduce((sum, o) => sum + (o.total || 0), 0),
+    delivered: todayOrders.filter(o => o.status === 'ready').length,
+  }
 
-// Demo loyalty levels
-const demoLoyalty = [
-  { name: 'Brązowy', min_spent: 0, discount: 0, customers: 156 },
-  { name: 'Srebrny', min_spent: 200, discount: 5, customers: 42 },
-  { name: 'Złoty', min_spent: 500, discount: 10, customers: 18 },
-  { name: 'Platynowy', min_spent: 1000, discount: 15, customers: 7 },
-]
+  // Count by status
+  const statusCounts = {
+    pending: demoOrders.filter(o => o.status === 'pending').length,
+    preparing: demoOrders.filter(o => o.status === 'accepted' || o.status === 'preparing').length,
+    ready: demoOrders.filter(o => o.status === 'ready').length,
+  }
 
-// Demo reviews
-const demoReviews = [
-  { id: '1', customer: 'Anna K.', rating: 5, comment: 'Najlepsza pizza w mieście! Szybka dostawa.', date: '2 dni temu', reply: null },
-  { id: '2', customer: 'Marek W.', rating: 4, comment: 'Bardzo dobra carbonara.', date: '5 dni temu', reply: 'Dziękujemy za opinię!' },
-  { id: '3', customer: 'Kasia M.', rating: 5, comment: 'Świeże składniki, polecam!', date: '1 tydzień temu', reply: null },
-]
-
-// Demo stats
-const demoStats = {
-  revenue: 12450,
-  orders: 156,
-  avgOrder: 79.81,
-  returningCustomers: 42,
-  topProducts: [
-    { name: 'Pizza Margherita', orders: 45, revenue: 1440 },
-    { name: 'Pizza Pepperoni', orders: 38, revenue: 1444 },
-    { name: 'Spaghetti Carbonara', orders: 29, revenue: 986 },
-  ]
-}
-
-const statusLabels: Record<string, { label: string; color: string }> = {
-  pending: { label: 'Nowe', color: 'bg-yellow-500' },
-  accepted: { label: 'Przyjęte', color: 'bg-blue-500' },
-  preparing: { label: 'W przygotowaniu', color: 'bg-purple-500' },
-  ready: { label: 'Gotowe', color: 'bg-green-500' },
-}
-
-export default function DemoPage() {
-  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'professional'>('professional')
-  const [activeSection, setActiveSection] = useState('orders')
-
-  const isPro = selectedPlan === 'professional'
-
-  const renderContent = () => {
-    // Check if section requires Pro
-    const navItem = navItems.find(item => item.id === activeSection)
-    if (navItem?.pro && !isPro) {
-      return (
-        <div className="flex flex-col items-center justify-center h-96 text-center">
-          <Lock className="w-16 h-16 text-muted-foreground mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Funkcja Professional</h2>
-          <p className="text-muted-foreground mb-6 max-w-md">
-            {navItem.label} to funkcja dostępna tylko w planie Professional. 
-            Przełącz na plan Professional aby zobaczyć tę sekcję.
-          </p>
-          <Button onClick={() => setSelectedPlan('professional')}>
-            Przełącz na Professional
-          </Button>
+  return (
+    <div className="flex gap-6">
+      {/* Main Content */}
+      <div className="flex-1 min-w-0">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-foreground">Aktywne zamówienia</h1>
+          <p className="text-muted-foreground">Zarządzaj bieżącymi zamówieniami klientów</p>
         </div>
-      )
-    }
+        
+        <div className="grid gap-4">
+          {demoOrders.map((order) => (
+            <Card key={order.id}>
+              <CardContent className="p-4">
+                <div className="flex items-start justify-between mb-4">
+                  <div>
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-semibold">{order.customer_name}</span>
+                      <span className={`px-2 py-1 rounded text-xs font-medium text-white ${
+                        order.status === 'pending' ? 'bg-yellow-500' :
+                        order.status === 'accepted' ? 'bg-blue-500' :
+                        order.status === 'preparing' ? 'bg-purple-500' :
+                        order.status === 'ready' ? 'bg-green-500' :
+                        'bg-gray-500'
+                      }`}>
+                        {order.status === 'pending' ? 'Nowe' :
+                         order.status === 'accepted' ? 'Przyjęte' :
+                         order.status === 'preparing' ? 'W przygotowaniu' :
+                         order.status === 'ready' ? 'Gotowe' :
+                         order.status}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                      <span className="flex items-center gap-1">
+                        📞 {order.customer_phone}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="w-3 h-3" />
+                        {new Date(order.created_at).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        {order.delivery_type === 'delivery' ? '🚚' : '🏪'} {order.delivery_type === 'delivery' ? 'Dostawa' : 'Odbiór'}
+                      </span>
+                    </div>
+                    {order.customer_address && (
+                      <p className="text-sm text-muted-foreground mt-1">
+                        📍 {order.customer_address}
+                      </p>
+                    )}
+                  </div>
+                  <span className="text-xl font-bold text-primary">{order.total.toFixed(2)} zł</span>
+                </div>
+                <div className="bg-muted rounded-lg p-3">
+                  {(order.items || []).map((item, i) => (
+                    <div key={i} className="flex justify-between text-sm py-1">
+                      <span>{item.quantity}x {item.name}</span>
+                      <span>{(item.quantity * item.price).toFixed(2)} zł</span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
 
-    switch (activeSection) {
-      case 'orders':
-        return (
-          <div>
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold">Aktywne zamówienia</h1>
-              <p className="text-muted-foreground">Zarządzaj bieżącymi zamówieniami klientów</p>
-            </div>
-            <div className="grid gap-4">
-              {demoOrders.map((order) => (
-                <Card key={order.id}>
-                  <CardContent className="p-4">
-                    <div className="flex items-start justify-between mb-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="font-semibold">{order.customer_name}</span>
-                          <Badge className={statusLabels[order.status].color}>
-                            {statusLabels[order.status].label}
-                          </Badge>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <Phone className="w-3 h-3" />
-                            {order.customer_phone}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" />
-                            {order.created_at}
-                          </span>
-                          <span className="flex items-center gap-1">
-                            {order.delivery_type === 'delivery' ? <Truck className="w-3 h-3" /> : <MapPin className="w-3 h-3" />}
-                            {order.delivery_type === 'delivery' ? 'Dostawa' : 'Odbiór'}
-                          </span>
-                        </div>
-                        {order.customer_address && (
-                          <p className="text-sm text-muted-foreground mt-1">
-                            <MapPin className="w-3 h-3 inline mr-1" />
-                            {order.customer_address}
-                          </p>
-                        )}
-                      </div>
-                      <span className="text-xl font-bold text-primary">{order.total.toFixed(2)} zł</span>
-                    </div>
-                    <div className="bg-muted rounded-lg p-3 mb-4">
-                      {order.items.map((item, i) => (
-                        <div key={i} className="flex justify-between text-sm py-1">
-                          <span>{item.quantity}x {item.name}</span>
-                          <span>{(item.quantity * item.price).toFixed(2)} zł</span>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex gap-2">
-                      {order.status === 'pending' && (
-                        <>
-                          <Button size="sm" className="flex-1">
-                            <Check className="w-4 h-4 mr-1" />
-                            Przyjmij
-                          </Button>
-                          <Button size="sm" variant="outline" className="bg-transparent">
-                            <X className="w-4 h-4 mr-1" />
-                            Odrzuć
-                          </Button>
-                        </>
-                      )}
-                      {order.status === 'preparing' && (
-                        <Button size="sm" className="flex-1">
-                          <ChefHat className="w-4 h-4 mr-1" />
-                          Oznacz jako gotowe
-                        </Button>
-                      )}
-                      {order.status === 'ready' && (
-                        <Button size="sm" className="flex-1">
-                          <Truck className="w-4 h-4 mr-1" />
-                          Wydaj zamówienie
-                        </Button>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )
-
-      case 'menu':
-        return (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h1 className="text-2xl font-bold">Menu</h1>
-                <p className="text-muted-foreground">Zarządzaj produktami w menu</p>
+      {/* Sidebar */}
+      <div className="hidden xl:block w-80 shrink-0">
+        <div className="sticky top-8 space-y-4">
+          {/* Today's Stats */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Dzisiaj</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center">
+                    <ShoppingBag className="w-4 h-4 text-primary" />
+                  </div>
+                  <span className="text-sm text-muted-foreground">Zamówienia</span>
+                </div>
+                <span className="text-lg font-bold">{todayStats.total}</span>
               </div>
-              <Button>+ Dodaj produkt</Button>
-            </div>
-            <div className="grid gap-3">
-              {demoMenuItems.map((item) => (
-                <Card key={item.id}>
-                  <CardContent className="p-4 flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold">{item.name}</span>
-                        <Badge variant="outline">{item.category}</Badge>
-                        {!item.available && <Badge variant="secondary">Niedostępny</Badge>}
-                      </div>
-                      <span className="text-primary font-bold">{item.price.toFixed(2)} zł</span>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button size="sm" variant="outline" className="bg-transparent">Edytuj</Button>
-                      <Button size="sm" variant="outline" className="bg-transparent">
-                        {item.available ? 'Wyłącz' : 'Włącz'}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center">
+                    <TrendingUp className="w-4 h-4 text-green-500" />
+                  </div>
+                  <span className="text-sm text-muted-foreground">Przychód</span>
+                </div>
+                <span className="text-lg font-bold">{todayStats.revenue.toFixed(2)} zł</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                    <CheckCircle className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <span className="text-sm text-muted-foreground">Zrealizowane</span>
+                </div>
+                <span className="text-lg font-bold">{todayStats.delivered}</span>
+              </div>
+            </CardContent>
+          </Card>
 
-      case 'discounts':
-        return (
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h1 className="text-2xl font-bold">Kody rabatowe</h1>
-                <p className="text-muted-foreground">Twórz i zarządzaj promocjami</p>
+          {/* Status Summary */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Status zamówień</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-yellow-500/10 dark:bg-yellow-950/20">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-yellow-600 dark:text-yellow-500" />
+                  <span className="text-sm">Oczekujące</span>
+                </div>
+                <span className="font-semibold text-yellow-600 dark:text-yellow-500">{statusCounts.pending}</span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded-lg bg-purple-500/10 dark:bg-purple-950/20">
+                <div className="flex items-center gap-2">
+                  <ChefHat className="w-4 h-4 text-purple-600 dark:text-purple-500" />
+                  <span className="text-sm">W przygotowaniu</span>
+                </div>
+                <span className="font-semibold text-purple-600 dark:text-purple-500">{statusCounts.preparing}</span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded-lg bg-green-500/10 dark:bg-green-950/20">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="w-4 h-4 text-green-600 dark:text-green-500" />
+                  <span className="text-sm">Gotowe do wydania</span>
+                </div>
+                <span className="font-semibold text-green-600 dark:text-green-500">{statusCounts.ready}</span>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  )
+}
               </div>
               <Button>+ Nowy kod</Button>
             </div>
