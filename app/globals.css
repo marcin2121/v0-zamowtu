@@ -1,64 +1,64 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
 
-@custom-variant dark (&:where(.dark, .dark *));
+@custom-variant dark (&:is(.dark *));
 
 :root {
   /* 2026 Ultra-Modern Design System - Soft, Minimal, Clean */
   --background: oklch(0.995 0 0); /* Pure white background */
   --foreground: oklch(0.20 0.01 250); /* Soft dark text */
-  
+
   /* Cards with subtle backgrounds - no borders */
   --card: oklch(0.99 0 0);
   --card-foreground: oklch(0.20 0.01 250);
-  
+
   /* Popovers */
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.20 0.01 250);
-  
+
   /* Primary - soft dark for text/buttons */
   --primary: oklch(0.22 0.015 250);
   --primary-foreground: oklch(0.99 0 0);
-  
+
   /* Secondary - ultra light backgrounds */
   --secondary: oklch(0.975 0.003 250);
   --secondary-foreground: oklch(0.25 0.015 250);
-  
+
   /* Muted - barely visible backgrounds */
   --muted: oklch(0.97 0.002 250);
   --muted-foreground: oklch(0.55 0.01 250);
-  
+
   /* Accent - Red #DC2626 for interactive elements and CTAs */
   --accent: oklch(0.548 0.227 27.325);
   --accent-foreground: oklch(0.99 0 0);
-  
+
   /* CTA - Red #DC2626 for primary actions */
   --cta: oklch(0.548 0.227 27.325);
   --cta-foreground: oklch(0.99 0 0);
-  
+
   /* Confirm Green - #10B981 for success/confirm */
   --confirm: oklch(0.627 0.172 165.385);
   --confirm-foreground: oklch(0.99 0 0);
-  
+
   /* Destructive - darker red for warnings */
   --destructive: oklch(0.50 0.24 25);
   --destructive-foreground: oklch(0.99 0 0);
-  
+
   /* Borders - very subtle, almost invisible */
   --border: oklch(0.95 0.002 250);
   --input: oklch(0.96 0.002 250);
   --ring: oklch(0.548 0.227 27.325);
-  
+
   /* Charts */
   --chart-1: oklch(0.548 0.227 27.325);
   --chart-2: oklch(0.627 0.172 165.385);
   --chart-3: oklch(0.65 0.03 250);
   --chart-4: oklch(0.65 0.03 250);
   --chart-5: oklch(0.45 0.02 250);
-  
+
   /* Generous radius for modern feel */
   --radius: 1.25rem;
-  
+
   /* Sidebar */
   --sidebar: oklch(0.995 0 0);
   --sidebar-foreground: oklch(0.22 0.015 250);
@@ -74,48 +74,48 @@
   /* Dark mode - deep, rich backgrounds */
   --background: oklch(0.12 0.005 250);
   --foreground: oklch(0.95 0.003 250);
-  
+
   --card: oklch(0.15 0.007 250);
   --card-foreground: oklch(0.95 0.003 250);
-  
+
   --popover: oklch(0.14 0.006 250);
   --popover-foreground: oklch(0.95 0.003 250);
-  
+
   --primary: oklch(0.93 0.004 250);
   --primary-foreground: oklch(0.15 0.007 250);
-  
+
   --secondary: oklch(0.20 0.01 250);
   --secondary-foreground: oklch(0.92 0.004 250);
-  
+
   --muted: oklch(0.18 0.008 250);
   --muted-foreground: oklch(0.65 0.01 250);
-  
+
   /* Accent - Brighter red for dark mode */
   --accent: oklch(0.648 0.247 27.325);
   --accent-foreground: oklch(0.12 0.005 250);
-  
+
   /* CTA - Brighter red for dark mode */
   --cta: oklch(0.648 0.247 27.325);
   --cta-foreground: oklch(0.12 0.005 250);
-  
+
   /* Confirm - Same green, adjusted foreground */
   --confirm: oklch(0.627 0.172 165.385);
   --confirm-foreground: oklch(0.12 0.005 250);
-  
+
   --destructive: oklch(0.60 0.24 25);
   --destructive-foreground: oklch(0.95 0.003 250);
-  
+
   /* Subtle borders */
   --border: oklch(0.22 0.012 250);
   --input: oklch(0.20 0.01 250);
   --ring: oklch(0.648 0.247 27.325);
-  
+
   --chart-1: oklch(0.648 0.247 27.325);
   --chart-2: oklch(0.627 0.172 165.385);
   --chart-3: oklch(0.65 0.03 250);
   --chart-4: oklch(0.65 0.03 250);
   --chart-5: oklch(0.50 0.02 250);
-  
+
   --sidebar: oklch(0.12 0.005 250);
   --sidebar-foreground: oklch(0.93 0.004 250);
   --sidebar-primary: oklch(0.93 0.004 250);
@@ -197,3 +197,29 @@
     @apply bg-muted-foreground/30;
   }
 }
+
+/* Simple fade animations for animate-in/out */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.animate-in {
+  animation-duration: 150ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: both;
+}
+
+.animate-out {
+  animation-duration: 150ms;
+  animation-timing-function: ease-in;
+  animation-fill-mode: both;
+}
+
+.fade-in-0 { animation-name: fade-in; }
+.fade-out-0 { animation-name: fade-out; }
