@@ -49,92 +49,115 @@ export function MenuItemCard({ item, restaurantId, customStyles }: MenuItemCardP
     }
   }
 
-  const primaryColor = customStyles?.primaryColor || '#ea580c'
-  const accentColor = customStyles?.accentColor || '#16a34a'
-  const textColor = customStyles?.textColor || '#1c1917'
-
-  const hasDescription = item.description?.trim().length ?? 0 > 0
-  const hasAllergens = (item.allergens?.length ?? 0) > 0
+  const primaryColor = customStyles?.primaryColor || '#DC2626'
+  const accentColor = customStyles?.accentColor || '#10B981'
 
   return (
     <div 
-      className="group rounded-xl border p-3 hover:shadow-lg transition-all duration-200"
+      className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
       style={{
-        backgroundColor: `${primaryColor}06`,
-        borderColor: quantity > 0 ? primaryColor : `${primaryColor}15`,
-        boxShadow: quantity > 0 ? `0 0 0 2px ${primaryColor}30` : 'none',
+        boxShadow: quantity > 0 ? `0 0 0 2px ${primaryColor}40` : undefined,
       }}
     >
-      <div className="flex gap-3 items-center">
+      {/* Image */}
+      <div className="relative aspect-[4/3] bg-muted overflow-hidden">
         {item.image_url ? (
-          <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0 bg-black/5 relative">
-            <Image
-              src={item.image_url || "/placeholder.svg"}
-              alt={item.name}
-              fill
-              sizes="64px"
-              className="object-cover group-hover:scale-105 transition-transform duration-200"
-              quality={75}
-            />
-          </div>
+          <Image
+            src={item.image_url || "/placeholder.svg"}
+            alt={item.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover group-hover:scale-110 transition-transform duration-300"
+            quality={85}
+          />
         ) : (
-          <div 
-            className="w-16 h-16 rounded-lg shrink-0 flex items-center justify-center"
-            style={{ backgroundColor: `${primaryColor}10` }}
-          >
-            <span className="text-2xl opacity-40">🍽</span>
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-muted to-muted/50">
+            <span className="text-6xl opacity-20">🍽</span>
           </div>
         )}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="font-semibold leading-tight" style={{ color: textColor }}>{item.name}</h3>
+        
+        {/* Overlay badge when in cart */}
+        {quantity > 0 && (
+          <div className="absolute top-3 right-3 bg-background/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-lg">
+            <span className="text-sm font-bold" style={{ color: primaryColor }}>
+              W koszyku: {quantity}
+            </span>
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className="p-5 space-y-3">
+        {/* Title & Price */}
+        <div className="space-y-1">
+          <h3 className="font-bold text-lg text-foreground leading-tight line-clamp-1">
+            {item.name}
+          </h3>
+          <div className="flex items-center justify-between">
             <span 
-              className="font-bold shrink-0"
+              className="text-2xl font-bold"
               style={{ color: accentColor }}
             >
               {item.price.toFixed(2)} zł
             </span>
           </div>
-          {hasDescription && (
-            <p className="text-sm mt-0.5 line-clamp-1" style={{ color: `${textColor}99` }}>
-              {item.description}
-            </p>
-          )}
-          {hasAllergens && (
-            <p className="text-xs mt-1 flex items-center gap-1" style={{ color: `${textColor}70` }}>
-              <AlertTriangle className="w-3 h-3" />
-              {item.allergens?.join(', ')}
-            </p>
-          )}
         </div>
-        <div className="shrink-0">
+
+        {/* Description */}
+        {item.description && (
+          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 min-h-[2.5rem]">
+            {item.description}
+          </p>
+        )}
+
+        {/* Allergens */}
+        {item.allergens && item.allergens.length > 0 && (
+          <div className="flex items-start gap-2 p-2 rounded-lg bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800">
+            <AlertTriangle className="w-4 h-4 text-yellow-600 dark:text-yellow-500 shrink-0 mt-0.5" />
+            <p className="text-xs text-yellow-700 dark:text-yellow-300">
+              {item.allergens.join(', ')}
+            </p>
+          </div>
+        )}
+
+        {/* Add to Cart Button */}
+        <div className="pt-2">
           {quantity === 0 ? (
             <button
               onClick={handleAdd}
-              className="w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-105"
+              className="w-full h-12 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-sm hover:shadow-md"
               style={{
                 backgroundColor: justAdded ? accentColor : primaryColor,
-                color: '#ffffff',
               }}
               aria-label={`Dodaj ${item.name} do koszyka`}
             >
-              {justAdded ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+              {justAdded ? (
+                <>
+                  <Check className="w-5 h-5" />
+                  Dodano!
+                </>
+              ) : (
+                <>
+                  <Plus className="w-5 h-5" />
+                  Dodaj do koszyka
+                </>
+              )}
             </button>
           ) : (
             <div 
-              className="flex items-center gap-0.5 rounded-full p-0.5"
+              className="flex items-center justify-between h-12 rounded-xl p-1.5"
               style={{ backgroundColor: `${primaryColor}15` }}
             >
               <button
                 onClick={handleDecrease}
-                className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:opacity-80"
-                style={{ backgroundColor: primaryColor, color: '#ffffff' }}
+                className="w-10 h-9 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
+                style={{ backgroundColor: primaryColor }}
                 aria-label="Zmniejsz ilość"
               >
-                <Minus className="w-3.5 h-3.5" />
+                <Minus className="w-5 h-5" />
               </button>
               <span 
-                className="w-7 text-center font-bold text-sm"
+                className="flex-1 text-center font-bold text-lg"
                 style={{ color: primaryColor }}
                 role="status"
                 aria-label={`Ilość: ${quantity}`}
@@ -143,11 +166,11 @@ export function MenuItemCard({ item, restaurantId, customStyles }: MenuItemCardP
               </span>
               <button
                 onClick={handleIncrease}
-                className="w-7 h-7 rounded-full flex items-center justify-center transition-colors hover:opacity-80"
-                style={{ backgroundColor: primaryColor, color: '#ffffff' }}
+                className="w-10 h-9 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
+                style={{ backgroundColor: primaryColor }}
                 aria-label="Zwiększ ilość"
               >
-                <Plus className="w-3.5 h-3.5" />
+                <Plus className="w-5 h-5" />
               </button>
             </div>
           )}
