@@ -279,56 +279,61 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                       return (
                         <div 
                           key={day} 
-                          className={`p-2 rounded-lg text-center ${isToday ? 'ring-2' : 'bg-muted/50'}`}
+                          className="p-3 rounded-xl text-center border-2"
                           style={isToday ? { 
-                            backgroundColor: `${customStyles.accentColor}15`,
-                            borderColor: customStyles.accentColor 
-                          } : {}}
+                            backgroundColor: `${customStyles.primaryColor}10`,
+                            borderColor: customStyles.primaryColor
+                          } : {
+                            backgroundColor: 'hsl(var(--card))',
+                            borderColor: 'hsl(var(--border))'
+                          }}
                         >
                           <p 
-                            className="text-xs font-semibold mb-1"
-                            style={isToday ? { color: customStyles.accentColor } : {}}
+                            className="text-xs font-bold mb-1"
+                            style={{ color: isToday ? customStyles.primaryColor : 'hsl(var(--foreground))' }}
                           >
                             {dayLabel}
                           </p>
-                          <p className="text-[10px] text-muted-foreground">
+                          <p 
+                            className="text-xs font-medium"
+                            style={{ color: isToday ? customStyles.primaryColor : 'hsl(var(--foreground))' }}
+                          >
                             {isOpenDay && openTime && closeTime ? `${openTime}-${closeTime}` : 'Zamknięte'}
                           </p>
                         </div>
                       )
                     })
                   })()}
-                </div>
-
-                {/* Additional Info */}
-                {(settings.description || settings.address || settings.phone) && (
-                  <div className="mt-4 pt-4 border-t border-border space-y-3">
-                    {settings.description && (
-                      <div>
-                        <h4 className="text-xs font-semibold text-muted-foreground mb-1 uppercase tracking-wide">O restauracji</h4>
-                        <p className="text-sm text-foreground">{settings.description}</p>
-                      </div>
-                    )}
-                    {(settings.address || settings.phone) && (
-                      <div className="space-y-2">
-                        {settings.address && (
-                          <div className="flex items-start gap-2 text-sm">
-                            <MapPin className="w-4 h-4 text-muted-foreground shrink-0 mt-0.5" />
-                            <span className="text-foreground">{settings.address}</span>
-                          </div>
-                        )}
-                        {settings.phone && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
-                            <span className="text-foreground">{settings.phone}</span>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
-            )}
+
+              {/* Additional Info */}
+              {(settings.description || settings.address || settings.phone) && (
+                <div className="pt-3 border-t border-border space-y-3">
+                  {settings.description && (
+                    <div>
+                      <h4 className="text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: customStyles.primaryColor }}>O restauracji</h4>
+                      <p className="text-sm text-foreground leading-relaxed">{settings.description}</p>
+                    </div>
+                  )}
+                  {(settings.address || settings.phone) && (
+                    <div className="space-y-2">
+                      {settings.address && (
+                        <div className="flex items-start gap-2 text-sm">
+                          <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: customStyles.primaryColor }} />
+                          <span className="text-foreground font-medium">{settings.address}</span>
+                        </div>
+                      )}
+                      {settings.phone && (
+                        <div className="flex items-center gap-2 text-sm">
+                          <Phone className="w-4 h-4 shrink-0" style={{ color: customStyles.primaryColor }} />
+                          <span className="text-foreground font-medium">{settings.phone}</span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -387,7 +392,7 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                   <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: customStyles.secondaryColor }}>
                     {category.name}
                   </h2>
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid gap-3">
                     {categoryItems.map((item) => (
                       <MenuItemCard
                         key={item.id}
