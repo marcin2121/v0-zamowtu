@@ -117,14 +117,14 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                     </div>
                   )}
                   <Badge 
-                    variant={settings.is_open ? 'default' : 'secondary'}
+                    variant={settings.accepting_orders !== false ? 'default' : 'secondary'}
                     className="text-[10px] h-5"
                     style={{
-                      backgroundColor: settings.is_open ? customStyles.accentColor : undefined,
-                      color: settings.is_open ? '#ffffff' : undefined,
+                      backgroundColor: settings.accepting_orders !== false ? customStyles.accentColor : undefined,
+                      color: settings.accepting_orders !== false ? '#ffffff' : undefined,
                     }}
                   >
-                    {settings.is_open ? 'Otwarte' : 'Zamknięte'}
+                    {settings.accepting_orders !== false ? 'Otwarte' : 'Zamknięte'}
                   </Badge>
                 </div>
               </div>
@@ -146,7 +146,7 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                 size="sm"
                 className="relative gap-2"
                 onClick={() => setCartOpen(true)}
-                disabled={!settings.is_open || itemCount === 0}
+                disabled={settings.accepting_orders === false || itemCount === 0}
               >
                 <ShoppingCart className="w-4 h-4" />
                 <span className="hidden sm:inline">Koszyk</span>
@@ -237,8 +237,8 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
         </div>
       )}
 
-      {/* Restaurant Closed Alert */}
-      {!settings.is_open && (
+      {/* Restaurant Closed Alert - Only show if accepting_orders is false */}
+      {settings.accepting_orders === false && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border-y border-yellow-200 dark:border-yellow-800">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center gap-3">

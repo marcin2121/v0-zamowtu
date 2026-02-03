@@ -119,62 +119,65 @@ export function MenuItemCard({ item, restaurantId, customStyles }: MenuItemCardP
             </p>
           </div>
         )}
+        
+        {/* Spacer for sticky button */}
+        <div className="h-14" />
+      </div>
 
-        {/* Add to Cart Button */}
-        <div className="pt-2">
-          {quantity === 0 ? (
-            <button
-              onClick={handleAdd}
-              className="w-full h-12 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-sm hover:shadow-md"
-              style={{
-                backgroundColor: justAdded ? accentColor : primaryColor,
-              }}
-              aria-label={`Dodaj ${item.name} do koszyka`}
-            >
-              {justAdded ? (
-                <>
-                  <Check className="w-5 h-5" />
-                  Dodano!
-                </>
-              ) : (
-                <>
-                  <Plus className="w-5 h-5" />
-                  Dodaj do koszyka
-                </>
-              )}
-            </button>
-          ) : (
-            <div 
-              className="flex items-center justify-between h-12 rounded-xl p-1.5"
-              style={{ backgroundColor: `${primaryColor}15` }}
-            >
-              <button
-                onClick={handleDecrease}
-                className="w-10 h-9 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
-                style={{ backgroundColor: primaryColor }}
-                aria-label="Zmniejsz ilość"
-              >
-                <Minus className="w-5 h-5" />
-              </button>
-              <span 
-                className="flex-1 text-center font-bold text-lg"
-                style={{ color: primaryColor }}
-                role="status"
-                aria-label={`Ilość: ${quantity}`}
-              >
-                {quantity}
-              </span>
-              <button
-                onClick={handleIncrease}
-                className="w-10 h-9 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
-                style={{ backgroundColor: primaryColor }}
-                aria-label="Zwiększ ilość"
-              >
+      {/* Sticky Add to Cart Button */}
+      <div className="sticky bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-background via-background to-transparent border-t border-border/50">
+        {quantity === 0 ? (
+          <button
+            onClick={handleAdd}
+            className="w-full h-12 rounded-xl font-semibold text-white flex items-center justify-center gap-2 transition-all duration-200 hover:scale-[1.02] active:scale-95 shadow-lg hover:shadow-xl"
+            style={{
+              backgroundColor: justAdded ? accentColor : primaryColor,
+            }}
+            aria-label={`Dodaj ${item.name} do koszyka`}
+          >
+            {justAdded ? (
+              <>
+                <Check className="w-5 h-5" />
+                Dodano!
+              </>
+            ) : (
+              <>
                 <Plus className="w-5 h-5" />
-              </button>
-            </div>
-          )}
-        </div>
+                Dodaj do koszyka
+              </>
+            )}
+          </button>
+        ) : (
+          <div 
+            className="flex items-center justify-between h-12 rounded-xl p-1.5 shadow-lg"
+            style={{ backgroundColor: `${primaryColor}15` }}
+          >
+            <button
+              onClick={handleDecrease}
+              className="w-10 h-9 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
+              style={{ backgroundColor: primaryColor }}
+              aria-label="Zmniejsz ilość"
+            >
+              <Minus className="w-5 h-5" />
+            </button>
+            <span 
+              className="flex-1 text-center font-bold text-lg"
+              style={{ color: primaryColor }}
+              role="status"
+              aria-label={`Ilość: ${quantity}`}
+            >
+              {quantity}
+            </span>
+            <button
+              onClick={handleIncrease}
+              className="w-10 h-9 rounded-lg flex items-center justify-center text-white transition-all hover:scale-105 active:scale-95"
+              style={{ backgroundColor: primaryColor }}
+              aria-label="Zwiększ ilość"
+            >
+              <Plus className="w-5 h-5" />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
