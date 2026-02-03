@@ -212,8 +212,20 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
               <div>
                 <h3 className="text-xs font-semibold text-muted-foreground mb-3 uppercase tracking-wide">Godziny otwarcia w tym tygodniu</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2">
-                  {settings.opening_hours && Object.entries(settings.opening_hours).map(([day, hours]: [string, any]) => {
-                    const dayLabel = {
+                  {settings.opening_hours && (() => {
+                    // Get today's index
+                    const now = new Date()
+                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+                    const todayIndex = now.getDay()
+                    
+                    // Create ordered array: 3 days back, today, 3 days forward
+                    const orderedDays = []
+                    for (let i = -3; i <= 3; i++) {
+                      const dayIndex = (todayIndex + i + 7) % 7
+                      orderedDays.push(dayNames[dayIndex])
+                    }
+                    
+                    const dayLabels = {
                       'monday': 'Pon',
                       'tuesday': 'Wt',
                       'wednesday': 'Śr',
@@ -221,30 +233,31 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                       'friday': 'Pt',
                       'saturday': 'Sob',
                       'sunday': 'Niedz'
-                    }[day] || day
-
-                    const isOpenDay = hours.isOpen !== false
-                    const openTime = hours.open || hours.openTime
-                    const closeTime = hours.close || hours.closeTime
+                    }
                     
-                    // Check if today
-                    const now = new Date()
-                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-                    const today = dayNames[now.getDay()]
-                    const isToday = day === today
-                    
-                    return (
-                      <div 
-                        key={day} 
-                        className={`p-2 rounded-lg text-center ${isToday ? 'bg-accent/10 ring-1 ring-accent' : 'bg-card'}`}
-                      >
-                        <p className={`text-xs font-semibold mb-1 ${isToday ? 'text-accent' : 'text-foreground'}`}>{dayLabel}</p>
-                        <p className="text-[10px] text-muted-foreground">
-                          {isOpenDay && openTime && closeTime ? `${openTime}-${closeTime}` : 'Zamknięte'}
-                        </p>
-                      </div>
-                    )
-                  })}
+                    return orderedDays.map((day) => {
+                      const hours = settings.opening_hours[day]
+                      if (!hours) return null
+                      
+                      const dayLabel = dayLabels[day as keyof typeof dayLabels] || day
+                      const isOpenDay = hours.isOpen !== false
+                      const openTime = hours.open || hours.openTime
+                      const closeTime = hours.close || hours.closeTime
+                      const isToday = day === dayNames[todayIndex]
+                      
+                      return (
+                        <div 
+                          key={day} 
+                          className={`p-2 rounded-lg text-center ${isToday ? 'bg-accent/10 ring-1 ring-accent' : 'bg-card'}`}
+                        >
+                          <p className={`text-xs font-semibold mb-1 ${isToday ? 'text-accent' : 'text-foreground'}`}>{dayLabel}</p>
+                          <p className="text-[10px] text-muted-foreground">
+                            {isOpenDay && openTime && closeTime ? `${openTime}-${closeTime}` : 'Zamknięte'}
+                          </p>
+                        </div>
+                      )
+                    })
+                  })()}
                 </div>
               </div>
 
