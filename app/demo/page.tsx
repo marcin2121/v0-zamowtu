@@ -26,16 +26,23 @@ import {
   TrendingUp,
   Users,
   ShoppingCart,
-  ExternalLink
+  ExternalLink,
+  Bell,
+  Pause,
+  Play,
+  Calendar,
+  Lightbulb,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 
-// Demo nav items
+// Demo nav items - musi odpowiadać dashboard
 const navItems = [
   { id: 'orders', label: 'Zamówienia', icon: ShoppingBag, pro: false },
+  { id: 'scheduled', label: 'Zaplanowane', icon: Calendar, pro: false },
   { id: 'menu', label: 'Menu', icon: UtensilsCrossed, pro: false },
+  { id: 'suggestions', label: 'Sugestie', icon: Lightbulb, pro: true },
   { id: 'customize', label: 'Personalizacja', icon: Palette, pro: true },
   { id: 'discounts', label: 'Kody rabatowe', icon: Tag, pro: true },
   { id: 'loyalty', label: 'Lojalność', icon: Crown, pro: true },
@@ -43,6 +50,7 @@ const navItems = [
   { id: 'history', label: 'Historia', icon: History, pro: false },
   { id: 'stats', label: 'Statystyki', icon: BarChart3, pro: true },
   { id: 'settings', label: 'Ustawienia', icon: Settings, pro: false },
+  { id: 'billing', label: 'Rozliczenia', icon: CreditCard, pro: false },
 ]
 
 // Demo orders
@@ -94,14 +102,20 @@ const demoOrders = [
   }
 ]
 
+// Demo scheduled orders
+const demoScheduledOrders = [
+  { id: '101', customer_name: 'Michał Lewandowski', date: 'Jutro 18:00', status: 'scheduled', total: 156.00 },
+  { id: '102', customer_name: 'Katarzyna Zielińska', date: '15.02 19:30', status: 'scheduled', total: 98.50 },
+]
+
 // Demo menu items
 const demoMenuItems = [
-  { id: '1', name: 'Pizza Margherita', price: 32.00, category: 'Pizza', available: true },
-  { id: '2', name: 'Pizza Pepperoni', price: 38.00, category: 'Pizza', available: true },
-  { id: '3', name: 'Pizza Quattro Formaggi', price: 42.00, category: 'Pizza', available: true },
-  { id: '4', name: 'Spaghetti Carbonara', price: 34.00, category: 'Makarony', available: true },
-  { id: '5', name: 'Penne Arrabiata', price: 28.00, category: 'Makarony', available: false },
-  { id: '6', name: 'Sałatka Cesarska', price: 32.00, category: 'Sałatki', available: true },
+  { id: '1', name: 'Pizza Margherita', price: 32.00, category: 'Pizza', available: true, image: '🍕' },
+  { id: '2', name: 'Pizza Pepperoni', price: 38.00, category: 'Pizza', available: true, image: '🍕' },
+  { id: '3', name: 'Pizza Quattro Formaggi', price: 42.00, category: 'Pizza', available: true, image: '🍕' },
+  { id: '4', name: 'Spaghetti Carbonara', price: 34.00, category: 'Makarony', available: true, image: '🍝' },
+  { id: '5', name: 'Penne Arrabiata', price: 28.00, category: 'Makarony', available: false, image: '🍝' },
+  { id: '6', name: 'Sałatka Cesarska', price: 32.00, category: 'Sałatki', available: true, image: '🥗' },
 ]
 
 // Demo discount codes
@@ -139,6 +153,13 @@ const demoStats = {
   ]
 }
 
+// Demo today stats
+const demoTodayStats = {
+  total: 12,
+  revenue: 956.50,
+  delivered: 8,
+}
+
 const statusLabels: Record<string, { label: string; color: string }> = {
   pending: { label: 'Nowe', color: 'bg-yellow-500' },
   accepted: { label: 'Przyjęte', color: 'bg-blue-500' },
@@ -149,6 +170,7 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 export default function DemoPage() {
   const [selectedPlan, setSelectedPlan] = useState<'starter' | 'professional'>('professional')
   const [activeSection, setActiveSection] = useState('orders')
+  const [isPaused, setIsPaused] = useState(false)
 
   const isPro = selectedPlan === 'professional'
 
@@ -179,6 +201,32 @@ export default function DemoPage() {
               <h1 className="text-2xl font-bold">Aktywne zamówienia</h1>
               <p className="text-muted-foreground">Zarządzaj bieżącymi zamówieniami klientów</p>
             </div>
+            
+            {/* Status Summary */}
+            <div className="grid md:grid-cols-3 gap-4 mb-6">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-yellow-500/10 border border-yellow-200 dark:border-yellow-900">
+                <div className="flex items-center gap-2">
+                  <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-500" />
+                  <span className="font-medium">Oczekujące</span>
+                </div>
+                <span className="text-2xl font-bold text-yellow-600 dark:text-yellow-500">2</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-purple-500/10 border border-purple-200 dark:border-purple-900">
+                <div className="flex items-center gap-2">
+                  <ChefHat className="w-5 h-5 text-purple-600 dark:text-purple-500" />
+                  <span className="font-medium">W przygotowaniu</span>
+                </div>
+                <span className="text-2xl font-bold text-purple-600 dark:text-purple-500">1</span>
+              </div>
+              <div className="flex items-center justify-between p-3 rounded-lg bg-green-500/10 border border-green-200 dark:border-green-900">
+                <div className="flex items-center gap-2">
+                  <Check className="w-5 h-5 text-green-600 dark:text-green-500" />
+                  <span className="font-medium">Gotowe</span>
+                </div>
+                <span className="text-2xl font-bold text-green-600 dark:text-green-500">1</span>
+              </div>
+            </div>
+
             <div className="grid gap-4">
               {demoOrders.map((order) => (
                 <Card key={order.id}>
@@ -212,7 +260,7 @@ export default function DemoPage() {
                           </p>
                         )}
                       </div>
-                      <span className="text-xl font-bold text-primary">{order.total.toFixed(2)} zł</span>
+                      <span className="text-xl font-bold text-accent">{order.total.toFixed(2)} zł</span>
                     </div>
                     <div className="bg-muted rounded-lg p-3 mb-4">
                       {order.items.map((item, i) => (
@@ -225,7 +273,7 @@ export default function DemoPage() {
                     <div className="flex gap-2">
                       {order.status === 'pending' && (
                         <>
-                          <Button size="sm" className="flex-1">
+                          <Button size="sm" variant="cta" className="flex-1">
                             <Check className="w-4 h-4 mr-1" />
                             Przyjmij
                           </Button>
@@ -236,17 +284,46 @@ export default function DemoPage() {
                         </>
                       )}
                       {order.status === 'preparing' && (
-                        <Button size="sm" className="flex-1">
+                        <Button size="sm" variant="cta" className="flex-1">
                           <ChefHat className="w-4 h-4 mr-1" />
                           Oznacz jako gotowe
                         </Button>
                       )}
                       {order.status === 'ready' && (
-                        <Button size="sm" className="flex-1">
+                        <Button size="sm" variant="confirm" className="flex-1">
                           <Truck className="w-4 h-4 mr-1" />
                           Wydaj zamówienie
                         </Button>
                       )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        )
+
+      case 'scheduled':
+        return (
+          <div>
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold">Zaplanowane zamówienia</h1>
+              <p className="text-muted-foreground">Zamówienia na przyszłe godziny</p>
+            </div>
+            <div className="grid gap-4">
+              {demoScheduledOrders.map((order) => (
+                <Card key={order.id}>
+                  <CardContent className="p-4 flex items-center justify-between">
+                    <div>
+                      <p className="font-semibold">{order.customer_name}</p>
+                      <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                        <Calendar className="w-4 h-4" />
+                        {order.date}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xl font-bold text-accent">{order.total.toFixed(2)} zł</p>
+                      <Badge>Zaplanowane</Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -263,19 +340,22 @@ export default function DemoPage() {
                 <h1 className="text-2xl font-bold">Menu</h1>
                 <p className="text-muted-foreground">Zarządzaj produktami w menu</p>
               </div>
-              <Button>+ Dodaj produkt</Button>
+              <Button variant="cta">+ Dodaj produkt</Button>
             </div>
             <div className="grid gap-3">
               {demoMenuItems.map((item) => (
                 <Card key={item.id}>
                   <CardContent className="p-4 flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold">{item.name}</span>
-                        <Badge variant="outline">{item.category}</Badge>
-                        {!item.available && <Badge variant="secondary">Niedostępny</Badge>}
+                    <div className="flex items-center gap-4">
+                      <span className="text-4xl">{item.image}</span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-semibold">{item.name}</span>
+                          <Badge variant="outline">{item.category}</Badge>
+                          {!item.available && <Badge variant="secondary">Niedostępny</Badge>}
+                        </div>
+                        <span className="text-accent font-bold">{item.price.toFixed(2)} zł</span>
                       </div>
-                      <span className="text-primary font-bold">{item.price.toFixed(2)} zł</span>
                     </div>
                     <div className="flex gap-2">
                       <Button size="sm" variant="outline" className="bg-transparent">Edytuj</Button>
@@ -290,6 +370,44 @@ export default function DemoPage() {
           </div>
         )
 
+      case 'suggestions':
+        return (
+          <div>
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold">Sugestie AI</h1>
+              <p className="text-muted-foreground">Rekomendacje do poprawy sprzedaży</p>
+            </div>
+            <div className="grid gap-4">
+              <Card className="border-amber-200 bg-amber-50/50 dark:bg-amber-950/20">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-500 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-semibold">Pizza Margherita ma wspaniale wyniki</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Twoja Pizza Margherita sprzedaje się 3x lepiej niż średnia. Rozważ promocję na Quattro Formaggi aby osiągnąć podobne wyniki.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-950/20">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <Lightbulb className="w-5 h-5 text-blue-600 dark:text-blue-500 mt-0.5 shrink-0" />
+                    <div>
+                      <p className="font-semibold">Zwiększ dostęp o 2 km</p>
+                      <p className="text-sm text-muted-foreground mt-1">
+                        Restauracje podobne do Twojej mogą dostarczać na zasięgu 7km. Zwiększ dostęp aby konkurować.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )
+
       case 'discounts':
         return (
           <div>
@@ -298,7 +416,7 @@ export default function DemoPage() {
                 <h1 className="text-2xl font-bold">Kody rabatowe</h1>
                 <p className="text-muted-foreground">Twórz i zarządzaj promocjami</p>
               </div>
-              <Button>+ Nowy kod</Button>
+              <Button variant="cta">+ Nowy kod</Button>
             </div>
             <div className="grid gap-3">
               {demoDiscounts.map((discount) => (
@@ -306,7 +424,7 @@ export default function DemoPage() {
                   <CardContent className="p-4 flex items-center justify-between">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <code className="font-mono font-bold text-primary">{discount.code}</code>
+                        <code className="font-mono font-bold text-accent">{discount.code}</code>
                         <Badge variant={discount.active ? 'default' : 'secondary'}>
                           {discount.active ? 'Aktywny' : 'Nieaktywny'}
                         </Badge>
@@ -346,7 +464,7 @@ export default function DemoPage() {
                     </div>
                     <div className="text-sm text-muted-foreground space-y-1">
                       <p>Od {level.min_spent} zł wydanych</p>
-                      <p className="text-primary font-semibold">{level.discount}% stałej zniżki</p>
+                      <p className="text-accent font-semibold">{level.discount}% stałej zniżki</p>
                       <p>{level.customers} klientów</p>
                     </div>
                   </CardContent>
@@ -405,28 +523,28 @@ export default function DemoPage() {
             <div className="grid md:grid-cols-4 gap-4 mb-6">
               <Card>
                 <CardContent className="p-4 text-center">
-                  <TrendingUp className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <TrendingUp className="w-8 h-8 mx-auto mb-2 text-accent" />
                   <p className="text-2xl font-bold">{demoStats.revenue.toLocaleString()} zł</p>
                   <p className="text-sm text-muted-foreground">Przychód</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4 text-center">
-                  <ShoppingCart className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <ShoppingCart className="w-8 h-8 mx-auto mb-2 text-accent" />
                   <p className="text-2xl font-bold">{demoStats.orders}</p>
                   <p className="text-sm text-muted-foreground">Zamówienia</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4 text-center">
-                  <ShoppingBag className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <ShoppingBag className="w-8 h-8 mx-auto mb-2 text-accent" />
                   <p className="text-2xl font-bold">{demoStats.avgOrder.toFixed(0)} zł</p>
                   <p className="text-sm text-muted-foreground">Śr. zamówienie</p>
                 </CardContent>
               </Card>
               <Card>
                 <CardContent className="p-4 text-center">
-                  <Users className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <Users className="w-8 h-8 mx-auto mb-2 text-accent" />
                   <p className="text-2xl font-bold">{demoStats.returningCustomers}%</p>
                   <p className="text-sm text-muted-foreground">Powracający</p>
                 </CardContent>
@@ -441,7 +559,7 @@ export default function DemoPage() {
                   {demoStats.topProducts.map((product, i) => (
                     <div key={product.name} className="flex items-center justify-between py-2 border-b last:border-0">
                       <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-full bg-primary/20 text-primary text-sm flex items-center justify-center font-semibold">
+                        <span className="w-6 h-6 rounded-full bg-accent/20 text-accent text-sm flex items-center justify-center font-semibold">
                           {i + 1}
                         </span>
                         <span className="font-medium">{product.name}</span>
@@ -469,35 +587,33 @@ export default function DemoPage() {
               <Card>
                 <CardHeader>
                   <CardTitle>Kolory</CardTitle>
+                  <CardDescription>Dostosuj paletę kolorów</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between">
                     <span>Kolor główny</span>
-                    <div className="w-8 h-8 rounded bg-primary border" />
+                    <div className="w-10 h-10 rounded-lg bg-accent border-2 border-accent/50" />
                   </div>
                   <div className="flex items-center justify-between">
                     <span>Kolor tła</span>
-                    <div className="w-8 h-8 rounded bg-background border" />
+                    <div className="w-10 h-10 rounded-lg bg-background border-2 border-border" />
                   </div>
-                  <div className="flex items-center justify-between">
-                    <span>Kolor akcentu</span>
-                    <div className="w-8 h-8 rounded bg-accent border" />
-                  </div>
+                  <Button variant="outline" className="w-full bg-transparent">Zmień kolory</Button>
                 </CardContent>
               </Card>
               <Card>
                 <CardHeader>
-                  <CardTitle>Treść</CardTitle>
+                  <CardTitle>Zawartość</CardTitle>
+                  <CardDescription>Dodaj opisy i informacje</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <span className="text-sm text-muted-foreground">Opis restauracji</span>
-                    <p className="font-medium">Najlepsza pizza w mieście od 2020</p>
+                    <span className="text-sm text-muted-foreground">Logo restauracji</span>
+                    <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center mt-2">
+                      <UtensilsCrossed className="w-8 h-8 text-muted-foreground" />
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-sm text-muted-foreground">Tekst powitania</span>
-                    <p className="font-medium">Witamy w naszej pizzerii!</p>
-                  </div>
+                  <Button variant="outline" className="w-full bg-transparent">Przesyłaj logo</Button>
                 </CardContent>
               </Card>
             </div>
@@ -512,8 +628,9 @@ export default function DemoPage() {
               <p className="text-muted-foreground">Wszystkie zrealizowane zamówienia</p>
             </div>
             <Card>
-              <CardContent className="p-4 text-center text-muted-foreground py-12">
-                Tutaj pojawi się lista wszystkich zrealizowanych zamówień
+              <CardContent className="p-12 text-center text-muted-foreground">
+                <History className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                <p>Historia wszystkich zamówień będzie wyświetlana tutaj</p>
               </CardContent>
             </Card>
           </div>
@@ -526,7 +643,7 @@ export default function DemoPage() {
               <h1 className="text-2xl font-bold">Ustawienia</h1>
               <p className="text-muted-foreground">Konfiguracja restauracji</p>
             </div>
-            <div className="grid gap-4">
+            <div className="grid gap-4 max-w-2xl">
               <Card>
                 <CardHeader>
                   <CardTitle>Dane restauracji</CardTitle>
@@ -565,6 +682,66 @@ export default function DemoPage() {
                   </div>
                 </CardContent>
               </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Status restauracji</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {isPaused ? (
+                        <>
+                          <Pause className="w-5 h-5 text-red-600 dark:text-red-500" />
+                          <span>Zamknięta na wstrzymanie</span>
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-5 h-5 text-green-600 dark:text-green-500" />
+                          <span>Otwarta - przyjmuje zamówienia</span>
+                        </>
+                      )}
+                    </div>
+                    <Button 
+                      size="sm" 
+                      variant="outline"
+                      onClick={() => setIsPaused(!isPaused)}
+                      className="bg-transparent"
+                    >
+                      {isPaused ? 'Wznów' : 'Wstrzymaj'}
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )
+
+      case 'billing':
+        return (
+          <div>
+            <div className="mb-6">
+              <h1 className="text-2xl font-bold">Rozliczenia</h1>
+              <p className="text-muted-foreground">Zarządzaj subskrypcją</p>
+            </div>
+            <div className="grid gap-4 max-w-2xl">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Aktualny plan</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span>Plan</span>
+                      <Badge variant="default">{isPro ? 'Professional' : 'Starter'}</Badge>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span>Cena miesięczna</span>
+                      <span className="font-bold">{isPro ? '199 zł' : '99 zł'}</span>
+                    </div>
+                    <Button className="w-full">Zmień plan</Button>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </div>
         )
@@ -575,7 +752,7 @@ export default function DemoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background dark:bg-slate-950">
       {/* Demo Header */}
       <div className="sticky top-0 z-50 bg-card border-b">
         <div className="max-w-7xl mx-auto px-4 py-3">
@@ -588,7 +765,7 @@ export default function DemoPage() {
                 </Button>
               </Link>
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary" />
+                <Sparkles className="w-5 h-5 text-accent" />
                 <span className="font-semibold">Wersja demonstracyjna panelu restauracji</span>
               </div>
             </div>
@@ -600,7 +777,7 @@ export default function DemoPage() {
                   onClick={() => setSelectedPlan('starter')}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                     selectedPlan === 'starter' 
-                      ? 'bg-primary text-primary-foreground' 
+                      ? 'bg-accent text-white' 
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -610,7 +787,7 @@ export default function DemoPage() {
                   onClick={() => setSelectedPlan('professional')}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                     selectedPlan === 'professional' 
-                      ? 'bg-primary text-primary-foreground' 
+                      ? 'bg-accent text-white' 
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
@@ -619,7 +796,7 @@ export default function DemoPage() {
               </div>
 
               <Link href="/auth/sign-up">
-                <Button>Załóż konto</Button>
+                <Button variant="cta">Załóż konto</Button>
               </Link>
             </div>
           </div>
@@ -628,11 +805,11 @@ export default function DemoPage() {
 
       <div className="flex">
         {/* Sidebar */}
-        <aside className="w-64 min-h-[calc(100vh-57px)] bg-card border-r hidden lg:block">
+        <aside className="w-64 min-h-[calc(100vh-57px)] bg-card border-r hidden lg:flex flex-col">
           <div className="p-4 border-b">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-                <UtensilsCrossed className="w-5 h-5 text-primary-foreground" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <UtensilsCrossed className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h2 className="font-semibold">Pizzeria Demo</h2>
@@ -641,7 +818,7 @@ export default function DemoPage() {
             </div>
           </div>
 
-          <nav className="p-4 space-y-1">
+          <nav className="p-4 space-y-1 flex-1 overflow-auto">
             {navItems.map((item) => {
               const isActive = activeSection === item.id
               const isLocked = item.pro && !isPro
@@ -650,37 +827,38 @@ export default function DemoPage() {
                 <button
                   key={item.id}
                   onClick={() => setActiveSection(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-left ${
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-left text-sm ${
                     isActive
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'bg-accent text-white'
                       : isLocked
-                        ? 'text-muted-foreground/50 cursor-pointer'
+                        ? 'text-muted-foreground/50 cursor-not-allowed'
                         : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`}
+                  disabled={isLocked}
                 >
-                  <item.icon className="w-5 h-5" />
+                  <item.icon className="w-5 h-5 shrink-0" />
                   <span className="flex-1">{item.label}</span>
                   {isLocked && <Lock className="w-4 h-4" />}
                 </button>
               )
             })}
             
-            <div className="pt-4 border-t mt-4">
+            <div className="pt-4 border-t mt-auto">
               <Link 
                 href="/r/demo" 
                 target="_blank"
-                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-sm"
               >
                 <ExternalLink className="w-5 h-5" />
-                <span className="flex-1">Strona menu klienta</span>
+                <span className="flex-1">Strona klienta</span>
               </Link>
             </div>
           </nav>
 
-          <div className="p-4 border-t mt-auto">
-            <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg">
+          <div className="p-4 border-t">
+            <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg">
               <p className="text-xs text-muted-foreground mb-1">Wybrany plan:</p>
-              <p className="font-semibold">
+              <p className="font-semibold text-sm">
                 {isPro ? 'Professional (199 zł/mies.)' : 'Starter (99 zł/mies.)'}
               </p>
             </div>
@@ -688,8 +866,8 @@ export default function DemoPage() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 p-6 lg:p-8">
-          <div className="max-w-4xl">
+        <main className="flex-1 p-6 lg:p-8 overflow-auto">
+          <div className="max-w-5xl">
             {renderContent()}
           </div>
         </main>
