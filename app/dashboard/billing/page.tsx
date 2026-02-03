@@ -101,7 +101,7 @@ export default async function BillingPage() {
             <ul className="space-y-3">
               {starterFeatures.map((feature, idx) => (
                 <li key={idx} className="flex gap-2 items-start">
-                  <Check className="w-4 h-4 text-primary flex-shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-(--confirm) flex-shrink-0 mt-0.5" />
                   <span className="text-sm text-foreground">{feature}</span>
                 </li>
               ))}
@@ -128,7 +128,7 @@ export default async function BillingPage() {
             <ul className="space-y-3">
               {professionalFeatures.map((feature, idx) => (
                 <li key={idx} className="flex gap-2 items-start">
-                  <Check className="w-4 h-4 text-accent flex-shrink-0 mt-0.5" />
+                  <Check className="w-4 h-4 text-(--confirm) flex-shrink-0 mt-0.5" />
                   <span className="text-sm text-foreground">{feature}</span>
                 </li>
               ))}

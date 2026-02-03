@@ -434,8 +434,8 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
             )}
 
             {reviewSubmitted && (
-              <div className="p-4 bg-accent/10 border border-accent/30 rounded-lg text-center">
-                <CheckCircle2 className="w-8 h-8 text-accent mx-auto mb-2" />
+              <div className="p-4 bg-(--confirm)/10 border border-(--confirm)/30 rounded-lg text-center">
+                <CheckCircle2 className="w-8 h-8 text-(--confirm) mx-auto mb-2" />
                 <p className="font-medium text-foreground">Dziekujemy za opinie!</p>
                 <p className="text-sm text-muted-foreground">
                   Twoja ocena pomoze innym klientom
