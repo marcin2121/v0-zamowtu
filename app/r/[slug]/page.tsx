@@ -81,13 +81,15 @@ export default async function RestaurantPage({ params }: PageProps) {
     : 0
 
   return (
-    <MenuView
-      restaurantId={settings.user_id}
-      settings={settings as RestaurantSettings}
-      categories={(categories || []) as MenuCategory[]}
-      menuItems={(menuItems || []) as MenuItem[]}
-      reviews={reviewsData}
-      averageRating={averageRating}
-    />
+    <div className="light">
+      <MenuView
+        restaurantId={settings.user_id}
+        settings={settings as RestaurantSettings}
+        categories={(categories || []) as MenuCategory[]}
+        menuItems={(menuItems || []) as MenuItem[]}
+        reviews={reviewsData}
+        averageRating={averageRating}
+      />
+    </div>
   )
 }
