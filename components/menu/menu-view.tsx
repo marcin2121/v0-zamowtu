@@ -10,12 +10,11 @@ import {
   Star, 
   Truck,
   Store,
-  ChevronDown
+  Plus
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
-import { MenuItemCard } from './menu-item-card'
 import { CartDrawer } from './cart-drawer'
 import { ThemeSwitcher } from '@/components/theme-switcher'
 import { useCartStore } from '@/lib/cart-store'
@@ -209,42 +208,36 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
           </Card>
         </div>
 
-        {/* Opening Hours Collapsible */}
-        <Card className="mb-4 sm:mb-6">
-          <CardContent className="p-0">
-            <button
-              onClick={() => setShowInfo(!showInfo)}
-              className="w-full p-4 flex items-center justify-between hover:bg-muted/50 transition-colors rounded-lg"
-            >
-              <div className="flex items-center gap-3">
-                <Clock className="w-5 h-5 text-muted-foreground" />
-                <div className="text-left">
-                  <p className="text-sm font-semibold text-foreground">Godziny otwarcia</p>
-                  <p className="text-xs text-muted-foreground">
-                    {(() => {
-                      const now = new Date()
-                      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
-                      const today = dayNames[now.getDay()]
-                      const todayHours = settings.opening_hours?.[today]
-                      if (todayHours) {
-                        const isOpenDay = todayHours.isOpen !== false
-                        const openTime = todayHours.open || todayHours.openTime
-                        const closeTime = todayHours.close || todayHours.closeTime
-                        if (isOpenDay && openTime && closeTime) {
-                          return `Dziś: ${openTime} - ${closeTime}`
-                        }
+        {/* Opening Hours Card */}
+        <Card className="mb-8">
+          <CardContent className="p-4 sm:p-5">
+            <div className="flex items-center gap-3 mb-4">
+              <Clock className="w-5 h-5" style={{ color: '#151b21' }} />
+              <div>
+                <p className="text-sm font-semibold" style={{ color: '#151b21' }}>Godziny otwarcia</p>
+                <p className="text-xs text-muted-foreground">
+                  {(() => {
+                    const now = new Date()
+                    const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+                    const today = dayNames[now.getDay()]
+                    const todayHours = settings.opening_hours?.[today]
+                    if (todayHours) {
+                      const isOpenDay = todayHours.isOpen !== false
+                      const openTime = todayHours.open || todayHours.openTime
+                      const closeTime = todayHours.close || todayHours.closeTime
+                      if (isOpenDay && openTime && closeTime) {
+                        return `Dziś: ${openTime}-${closeTime}`
                       }
-                      return 'Dziś: Zamknięte'
-                    })()}
-                  </p>
-                </div>
+                    }
+                    return 'Dziś: Zamknięte'
+                  })()}
+                </p>
               </div>
-              <ChevronDown className={`w-5 h-5 text-muted-foreground transition-transform ${showInfo ? 'rotate-180' : ''}`} />
-            </button>
-            
-            {showInfo && settings.opening_hours && (
-              <div className="px-4 pb-4 border-t border-border">
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-7 gap-2 pt-4">
+            </div>
+
+            {settings.opening_hours && (
+              <div>
+                <div className="grid grid-cols-3 sm:grid-cols-7 gap-2">
                   {(() => {
                     const now = new Date()
                     const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
@@ -307,28 +300,18 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                 </div>
 
                 {/* Additional Info */}
-                {(settings.description || settings.address || settings.phone) && (
-                  <div className="pt-3 border-t border-border space-y-3">
-                    {settings.description && (
-                      <div>
-                        <h4 className="text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: customStyles.primaryColor }}>O restauracji</h4>
-                        <p className="text-sm text-foreground leading-relaxed">{settings.description}</p>
+                {(settings.address || settings.phone) && (
+                  <div className="pt-4 mt-4 border-t border-border space-y-2">
+                    {settings.address && (
+                      <div className="flex items-start gap-2 text-sm">
+                        <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: '#151b21' }} />
+                        <span className="text-foreground font-medium">{settings.address}</span>
                       </div>
                     )}
-                    {(settings.address || settings.phone) && (
-                      <div className="space-y-2">
-                        {settings.address && (
-                          <div className="flex items-start gap-2 text-sm">
-                            <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: customStyles.primaryColor }} />
-                            <span className="text-foreground font-medium">{settings.address}</span>
-                          </div>
-                        )}
-                        {settings.phone && (
-                          <div className="flex items-center gap-2 text-sm">
-                            <Phone className="w-4 h-4 shrink-0" style={{ color: customStyles.primaryColor }} />
-                            <span className="text-foreground font-medium">{settings.phone}</span>
-                          </div>
-                        )}
+                    {settings.phone && (
+                      <div className="flex items-center gap-2 text-sm">
+                        <Phone className="w-4 h-4 shrink-0" style={{ color: '#151b21' }} />
+                        <span className="text-foreground font-medium">{settings.phone}</span>
                       </div>
                     )}
                   </div>
@@ -340,75 +323,73 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
 
         {/* Categories */}
         {categories.length > 0 && (
-          <div className="flex gap-2 overflow-x-auto pb-4 mb-4 sm:mb-6 scrollbar-hide">
+          <div className="flex gap-2 overflow-x-auto pb-4 mb-6 scrollbar-hide">
+            <Button
+              variant={activeCategory === null ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setActiveCategory(null)}
+              className={activeCategory === null ? '' : 'bg-transparent'}
+            >
+              Wszystkie
+            </Button>
             {categories.map((category) => (
               <Button
                 key={category.id}
-                variant={activeCategory === category.id ? 'cta' : 'outline'}
+                variant={activeCategory === category.id ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setActiveCategory(category.id)}
-                className="shrink-0 rounded-full"
-                style={activeCategory === category.id ? {
-                  backgroundColor: customStyles.primaryColor,
-                  color: customStyles.textColor
-                } : {}}
+                className={activeCategory === category.id ? '' : 'bg-transparent'}
               >
                 {category.name}
               </Button>
             ))}
-            <Button
-              variant={activeCategory === null ? 'cta' : 'outline'}
-              size="sm"
-              onClick={() => setActiveCategory(null)}
-              className="shrink-0 rounded-full"
-              style={activeCategory === null ? {
-                backgroundColor: customStyles.primaryColor,
-                color: customStyles.textColor
-              } : {}}
-            >
-              Wszystkie
-            </Button>
           </div>
         )}
 
         {/* Menu Items */}
-        {filteredItems.length === 0 ? (
-          <div className="text-center py-16 sm:py-20">
-            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
-              <UtensilsCrossed className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
-            </div>
-            <p className="text-base sm:text-lg font-medium text-foreground mb-2">Brak produktów</p>
-            <p className="text-sm text-muted-foreground">
-              {activeCategory ? 'Nie znaleziono produktów w tej kategorii.' : 'Menu jest obecnie puste.'}
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-6 sm:space-y-8 pb-24 sm:pb-32">
-            {categories.map((category) => {
-              const categoryItems = filteredItems.filter((item) => item.category_id === category.id)
-              if (categoryItems.length === 0) return null
+        <div className="grid gap-4 mb-24">
+          {categories.map((category) => {
+            const categoryItems = filteredItems.filter((item) => item.category_id === category.id)
+            if (categoryItems.length === 0) return null
 
-              return (
-                <div key={category.id} id={`category-${category.id}`}>
-                  <h2 className="text-lg sm:text-xl font-bold mb-4" style={{ color: customStyles.secondaryColor }}>
-                    {category.name}
-                  </h2>
-                  <div className="grid gap-3">
-                    {categoryItems.map((item) => (
-                      <MenuItemCard
-                        key={item.id}
-                        item={item}
-                        restaurantId={restaurantId}
-                        primaryColor={customStyles.primaryColor}
-                        accentColor={customStyles.accentColor}
-                      />
-                    ))}
-                  </div>
+            return (
+              <div key={category.id}>
+                <h2 className="text-xl font-bold mb-4">{category.name}</h2>
+                <div className="grid gap-3">
+                  {categoryItems.map((item) => (
+                    <Card key={item.id} className="overflow-hidden">
+                      <CardContent className="p-4">
+                        <div className="flex justify-between items-start gap-4">
+                          <div className="flex-1">
+                            <h3 className="font-semibold">{item.name}</h3>
+                            {item.description && (
+                              <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+                            )}
+                            {item.allergens && item.allergens.length > 0 && (
+                              <p className="text-xs text-muted-foreground mt-1">
+                                Alergeny: {item.allergens.join(', ')}
+                              </p>
+                            )}
+                            <p className="text-primary font-bold mt-2">{item.price.toFixed(2)} zł</p>
+                          </div>
+                          <Button 
+                            size="sm" 
+                            onClick={() => {
+                              const { addItem } = useCartStore.getState()
+                              addItem({ ...item, restaurantId })
+                            }}
+                          >
+                            <Plus className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
-              )
-            })}
-          </div>
-        )}
+              </div>
+            )
+          })}
+        </div>
 
         {/* Reviews Section */}
         {settings.show_reviews && reviews.length > 0 && (
