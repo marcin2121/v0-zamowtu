@@ -172,9 +172,9 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
         </div>
       )}
 
-      <div className="max-w-4xl mx-auto px-4">
+      <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Info Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 py-4 sm:py-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           <Card>
             <CardContent className="p-3 sm:p-4 text-center">
               <Truck className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-2" style={{ color: customStyles.primaryColor }} />
@@ -304,54 +304,43 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                       )
                     })
                   })()}
-              </div>
-
-              {/* Additional Info */}
-              {(settings.description || settings.address || settings.phone) && (
-                <div className="pt-3 border-t border-border space-y-3">
-                  {settings.description && (
-                    <div>
-                      <h4 className="text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: customStyles.primaryColor }}>O restauracji</h4>
-                      <p className="text-sm text-foreground leading-relaxed">{settings.description}</p>
-                    </div>
-                  )}
-                  {(settings.address || settings.phone) && (
-                    <div className="space-y-2">
-                      {settings.address && (
-                        <div className="flex items-start gap-2 text-sm">
-                          <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: customStyles.primaryColor }} />
-                          <span className="text-foreground font-medium">{settings.address}</span>
-                        </div>
-                      )}
-                      {settings.phone && (
-                        <div className="flex items-center gap-2 text-sm">
-                          <Phone className="w-4 h-4 shrink-0" style={{ color: customStyles.primaryColor }} />
-                          <span className="text-foreground font-medium">{settings.phone}</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
                 </div>
-              )}
-            </div>
+
+                {/* Additional Info */}
+                {(settings.description || settings.address || settings.phone) && (
+                  <div className="pt-3 border-t border-border space-y-3">
+                    {settings.description && (
+                      <div>
+                        <h4 className="text-xs font-semibold mb-1 uppercase tracking-wide" style={{ color: customStyles.primaryColor }}>O restauracji</h4>
+                        <p className="text-sm text-foreground leading-relaxed">{settings.description}</p>
+                      </div>
+                    )}
+                    {(settings.address || settings.phone) && (
+                      <div className="space-y-2">
+                        {settings.address && (
+                          <div className="flex items-start gap-2 text-sm">
+                            <MapPin className="w-4 h-4 shrink-0 mt-0.5" style={{ color: customStyles.primaryColor }} />
+                            <span className="text-foreground font-medium">{settings.address}</span>
+                          </div>
+                        )}
+                        {settings.phone && (
+                          <div className="flex items-center gap-2 text-sm">
+                            <Phone className="w-4 h-4 shrink-0" style={{ color: customStyles.primaryColor }} />
+                            <span className="text-foreground font-medium">{settings.phone}</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 
         {/* Categories */}
         {categories.length > 0 && (
           <div className="flex gap-2 overflow-x-auto pb-4 mb-4 sm:mb-6 scrollbar-hide">
-            <Button
-              variant={activeCategory === null ? 'cta' : 'outline'}
-              size="sm"
-              onClick={() => setActiveCategory(null)}
-              className="shrink-0 rounded-full"
-              style={activeCategory === null ? {
-                backgroundColor: customStyles.primaryColor,
-                color: customStyles.textColor
-              } : {}}
-            >
-              Wszystkie
-            </Button>
             {categories.map((category) => (
               <Button
                 key={category.id}
@@ -367,6 +356,18 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
                 {category.name}
               </Button>
             ))}
+            <Button
+              variant={activeCategory === null ? 'cta' : 'outline'}
+              size="sm"
+              onClick={() => setActiveCategory(null)}
+              className="shrink-0 rounded-full"
+              style={activeCategory === null ? {
+                backgroundColor: customStyles.primaryColor,
+                color: customStyles.textColor
+              } : {}}
+            >
+              Wszystkie
+            </Button>
           </div>
         )}
 
