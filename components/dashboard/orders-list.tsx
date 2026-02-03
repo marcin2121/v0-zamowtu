@@ -130,9 +130,7 @@ export function OrdersList({ initialOrders, userId }: OrdersListProps) {
         updated_at: new Date().toISOString() 
       }
       
-      if (status === 'accepted') {
-        updateData.accepted_at = new Date().toISOString()
-      }
+      // Note: accepted_at column doesn't exist in schema, using updated_at instead
       
       if (estimatedDeliveryAt) {
         updateData.estimated_delivery_at = estimatedDeliveryAt
