@@ -189,7 +189,7 @@ export default function LandingPage() {
               <Button variant="ghost" size="sm">Zaloguj się</Button>
             </Link>
             <Link href="/auth/sign-up?plan=starter">
-              <Button size="sm">Załóż konto</Button>
+              <Button size="sm" variant="cta">Załóż konto</Button>
             </Link>
           </div>
         </div>
@@ -211,7 +211,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link href="/auth/sign-up?plan=starter">
-                <Button size="lg" className="w-full sm:w-auto">
+                <Button size="lg" variant="cta" className="w-full sm:w-auto">
                   Zacznij za 99 zł
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -323,7 +323,7 @@ export default function LandingPage() {
                     ))}
                   </ul>
                   <Link href={plan.link} className="w-full">
-                    <Button className="w-full" variant={plan.highlight ? 'default' : 'outline'}>
+                    <Button className="w-full" variant={plan.highlight ? 'cta' : 'outline'}>
                       {plan.cta}
                     </Button>
                   </Link>
@@ -379,7 +379,7 @@ export default function LandingPage() {
               Załóż konto w kilka minut. Plan Starter dostępny za 99 zł/mies.
             </p>
             <Link href="/auth/sign-up?plan=starter">
-              <Button size="lg" variant="secondary">
+              <Button size="lg" variant="cta">
                 Zacznij za 99 zł
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>

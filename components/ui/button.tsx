@@ -10,6 +10,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        cta: 'bg-(--cta-orange) text-(--cta-orange-foreground) hover:bg-(--cta-orange)/90 shadow-sm hover:shadow-md',
+        confirm: 'bg-(--confirm-green) text-(--confirm-green-foreground) hover:bg-(--confirm-green)/90 shadow-sm hover:shadow-md',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
