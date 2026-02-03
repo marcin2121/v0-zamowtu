@@ -54,13 +54,13 @@ export function MenuItemCard({ item, restaurantId, customStyles }: MenuItemCardP
 
   return (
     <div 
-      className="group bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-200"
+      className="group relative bg-card rounded-2xl border border-border overflow-hidden hover:shadow-xl hover:scale-[1.02] transition-all duration-200 flex flex-col"
       style={{
         boxShadow: quantity > 0 ? `0 0 0 2px ${primaryColor}40` : undefined,
       }}
     >
       {/* Image */}
-      <div className="relative aspect-[4/3] bg-muted overflow-hidden">
+      <div className="relative aspect-[4/3] bg-muted overflow-hidden shrink-0">
         {item.image_url ? (
           <Image
             src={item.image_url || "/placeholder.svg"}
@@ -87,7 +87,7 @@ export function MenuItemCard({ item, restaurantId, customStyles }: MenuItemCardP
       </div>
 
       {/* Content */}
-      <div className="p-5 space-y-3">
+      <div className="p-5 pb-20 space-y-3 flex-1">
         {/* Title & Price */}
         <div className="space-y-1">
           <h3 className="font-bold text-lg text-foreground leading-tight line-clamp-1">
@@ -105,7 +105,7 @@ export function MenuItemCard({ item, restaurantId, customStyles }: MenuItemCardP
 
         {/* Description */}
         {item.description && (
-          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2 min-h-[2.5rem]">
+          <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
             {item.description}
           </p>
         )}
@@ -119,13 +119,11 @@ export function MenuItemCard({ item, restaurantId, customStyles }: MenuItemCardP
             </p>
           </div>
         )}
-        
-        {/* Spacer for sticky button */}
-        <div className="h-14" />
       </div>
 
-      {/* Sticky Add to Cart Button */}
-      <div className="sticky bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-background via-background to-transparent border-t border-border/50">
+      {/* Fixed Add to Cart Button at bottom */}
+      <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-background via-background to-transparent pointer-events-none">
+        <div className="pointer-events-auto">
         {quantity === 0 ? (
           <button
             onClick={handleAdd}
@@ -178,6 +176,7 @@ export function MenuItemCard({ item, restaurantId, customStyles }: MenuItemCardP
             </button>
           </div>
         )}
+        </div>
       </div>
     </div>
   )
