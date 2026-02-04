@@ -12,24 +12,20 @@ const geistMono = Geist_Mono({ subsets: ["latin"], variable: '--font-mono' })
 export const metadata: Metadata = {
   title: 'ZamówTu - System Zamówień dla Restauracji',
   description: 'Nowoczesny system zamówień online dla restauracji. Zarządzaj menu, zamówieniami i dostawami.',
-  generator: 'v0.app',
   icons: {
     icon: [
       {
-        url: '/icon-light-32x32.png',
+        url: '/favicon-32x32.png',
         media: '(prefers-color-scheme: light)',
       },
       {
-        url: '/icon-dark-32x32.png',
+        url: '/favicon-32x32.png',
         media: '(prefers-color-scheme: dark)',
       },
-      {
-        url: '/icon.svg',
-        type: 'image/svg+xml',
-      },
     ],
-    apple: '/apple-icon.png',
+    apple: '/favicon-32x32.png',
   },
+    generator: 'v0.app'
 }
 
 export const viewport: Viewport = {
