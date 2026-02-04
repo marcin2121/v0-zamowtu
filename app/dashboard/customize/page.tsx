@@ -70,8 +70,8 @@ export default function CustomizePage() {
         return
       }
 
-      // Check if user has Professional plan
-      if (settingsData.subscription_plan !== 'professional') {
+      // Check if user has Pro plan
+      if (settingsData.subscription_plan !== 'pro') {
         router.push('/dashboard/billing')
         return
       }

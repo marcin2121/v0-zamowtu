@@ -55,7 +55,7 @@ export default async function BillingPage() {
           <div className="flex items-start justify-between">
             <div>
               <h3 className="text-lg font-semibold text-foreground capitalize">
-                {currentPlan === 'starter' ? 'Starter' : 'Professional'}
+                {currentPlan === 'starter' ? 'Starter' : 'Pro'}
               </h3>
               <p className="text-sm text-muted-foreground">
                 {currentPlan === 'starter'
@@ -70,10 +70,10 @@ export default async function BillingPage() {
           </div>
 
           {currentPlan === 'starter' && (
-            <Link href="/dashboard/billing?upgrade=professional">
+            <Link href="/dashboard/billing?upgrade=pro">
               <Button className="w-full">
                 <ArrowUpRight className="w-4 h-4 mr-2" />
-                Upgrade do Professional
+                Upgrade do Pro
               </Button>
             </Link>
           )}
@@ -109,14 +109,14 @@ export default async function BillingPage() {
           </CardContent>
         </Card>
 
-        {/* Professional Plan */}
+        {/* Pro Plan */}
         <Card
-          className={currentPlan === 'professional' ? 'border-accent' : 'border-input'}
+          className={currentPlan === 'pro' ? 'border-accent' : 'border-input'}
         >
           <CardHeader>
             <div className="flex items-center justify-between">
-              <CardTitle>Professional</CardTitle>
-              {currentPlan === 'professional' && (
+              <CardTitle>Pro</CardTitle>
+              {currentPlan === 'pro' && (
                 <Badge className="bg-accent">Aktywny</Badge>
               )}
             </div>

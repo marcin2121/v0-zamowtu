@@ -168,11 +168,11 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 }
 
 export default function DemoPage() {
-  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'professional'>('professional')
+  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro'>('pro')
   const [activeSection, setActiveSection] = useState('orders')
   const [isPaused, setIsPaused] = useState(false)
 
-  const isPro = selectedPlan === 'professional'
+  const isPro = selectedPlan === 'pro'
 
   const renderContent = () => {
     // Check if section requires Pro
@@ -181,13 +181,13 @@ export default function DemoPage() {
       return (
         <div className="flex flex-col items-center justify-center h-96 text-center">
           <Lock className="w-16 h-16 text-muted-foreground mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Funkcja Professional</h2>
+          <h2 className="text-2xl font-bold mb-2">Funkcja Pro</h2>
           <p className="text-muted-foreground mb-6 max-w-md">
-            {navItem.label} to funkcja dostępna tylko w planie Professional. 
-            Przełącz na plan Professional aby zobaczyć tę sekcję.
+            {navItem.label} to funkcja dostępna tylko w planie Pro. 
+            Przełącz na plan Pro aby zobaczyć tę sekcję.
           </p>
-          <Button onClick={() => setSelectedPlan('professional')}>
-            Przełącz na Professional
+          <Button onClick={() => setSelectedPlan('pro')}>
+            Przełącz na Pro
           </Button>
         </div>
       )
@@ -732,7 +732,7 @@ export default function DemoPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
                       <span>Plan</span>
-                      <Badge variant="default">{isPro ? 'Professional' : 'Starter'}</Badge>
+                      <Badge variant="default">{isPro ? 'Pro' : 'Starter'}</Badge>
                     </div>
                     <div className="flex items-center justify-between">
                       <span>Cena miesięczna</span>
@@ -784,14 +784,14 @@ export default function DemoPage() {
                   Starter (99 zł)
                 </button>
                 <button
-                  onClick={() => setSelectedPlan('professional')}
+                  onClick={() => setSelectedPlan('pro')}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    selectedPlan === 'professional' 
+                    selectedPlan === 'pro' 
                       ? 'bg-accent text-white' 
                       : 'text-muted-foreground hover:text-foreground'
                   }`}
                 >
-                  Professional (199 zł)
+                  Pro (199 zł)
                 </button>
               </div>
 
@@ -859,7 +859,7 @@ export default function DemoPage() {
             <div className="p-3 bg-accent/10 border border-accent/20 rounded-lg">
               <p className="text-xs text-muted-foreground mb-1">Wybrany plan:</p>
               <p className="font-semibold text-sm">
-                {isPro ? 'Professional (199 zł/mies.)' : 'Starter (99 zł/mies.)'}
+                {isPro ? 'Pro (199 zł/mies.)' : 'Starter (99 zł/mies.)'}
               </p>
             </div>
           </div>

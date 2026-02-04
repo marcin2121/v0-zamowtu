@@ -10,7 +10,7 @@ export interface RestaurantSettings {
   opening_hours: Record<string, { open: string; close: string }>
   address: string | null
   phone: string | null
-  subscription_plan: 'starter' | 'professional'
+  subscription_plan: 'starter' | 'pro'
   // Menu customization fields
   logo_url: string | null
   banner_url: string | null
@@ -189,8 +189,8 @@ export const PLAN_FEATURES = {
       'Opisy produktów',
     ],
   },
-  professional: {
-    name: 'Professional',
+  pro: {
+    name: 'Pro',
     price: 199,
     features: [
       'Wszystko w Starter +',
