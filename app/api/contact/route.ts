@@ -1,16 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import nodemailer from 'nodemailer'
+import { Resend } from 'resend'
 
-// Konfiguracja mailer'a - używamy zmiennych środowiskowych
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST,
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  },
-})
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,8 +25,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Wysłanie e-maila do support
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    await resend.emails.send({
+      from: 'kontakt@zamowtu.pl',
       to: 'support@rltpolska.pl',
       subject: `ZamówTu - Nowa wiadomość: ${subject}`,
       html: `
@@ -57,9 +48,9 @@ export async function POST(request: NextRequest) {
       replyTo: email,
     })
 
-    // Opcjonalnie: wysłanie potwierdzenia do użytkownika
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    // Wysłanie potwierdzenia do użytkownika
+    await resend.emails.send({
+      from: 'kontakt@zamowtu.pl',
       to: email,
       subject: 'ZamówTu - Potwierdzenie otrzymania wiadomości',
       html: `
