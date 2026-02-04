@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ThemeSwitcher } from '@/components/theme-switcher'
+import { ContactForm } from '@/components/contact-form'
 import { 
   Utensils, 
   ShoppingBag, 
@@ -178,6 +179,9 @@ export default function LandingPage() {
             </a>
             <a href="#opinie" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Opinie
+            </a>
+            <a href="#kontakt" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Kontakt
             </a>
             <Link href="/demo" className="text-sm text-primary font-medium hover:text-primary/80 transition-colors">
               Demo
@@ -364,6 +368,27 @@ export default function LandingPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="kontakt" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Masz pytania?
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Skontaktuj się z nami. Odpowiemy jak najszybciej.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <Card className="w-full max-w-md">
+              <CardContent className="pt-6">
+                <ContactForm />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
