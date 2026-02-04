@@ -27,8 +27,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${settings.restaurant_name} - Menu i zamowienia online`,
-    description: `Zamow online z ${settings.restaurant_name}. ${settings.address || 'Szybka dostawa i odbior osobisty.'}`,
+    title: `${settings.restaurant_name} - Menu i zamówienia online`,
+    description: `Zamów online z ${settings.restaurant_name}. ${settings.address || 'Szybka dostawa lub odbiór osobisty.'}`,
   }
 }
 

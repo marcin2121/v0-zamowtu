@@ -141,7 +141,7 @@ const pricingPlans = [
   {
     name: 'Anna Kowalska',
     restaurant: 'Pizzeria Roma',
-    content: 'Od kiedy korzystamy z ZamówTu, liczba zamówień online wzrosła o 40%. Program lojalności bardzo pomaga klientom powracać.',
+    content: 'Od kiedy korzystamy z ZamówTu, liczba zamówień online wzrosła o 40%. Program lojalności bardzo zachęca klientów do powrotu.',
     rating: 5
   },
   {
@@ -204,7 +204,7 @@ export default function LandingPage() {
               Zwiększ z nami swoją sprzedaż
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6 text-balance">
-              System zamówień online który pomaga Ci zdobywać klientów
+              System zamówień online, który pomaga Ci zdobywać klientów
             </h1>
             <p className="text-xl text-muted-foreground mb-8 text-balance leading-relaxed">
               Od 99 zł/mies. otrzymujesz płatności online, menu, zamówienia i harmonogram. Za 199 zł/mies. dodajemy kody rabatowe, program lojalności i zaawansowane statystyki.
