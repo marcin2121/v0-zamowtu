@@ -416,7 +416,7 @@ export default function RestaurantSupportPage() {
                           {msgCount} wiadomosci
                         </span>
                         <span className="text-xs">
-                          {ticket.created_by === 'admin' ? 'Utworzone przez pomoc' : 'Twoje zgloszenie'}
+                          {ticket.created_by === 'admin' ? 'Utworzone przez pomoc' : 'Twoje zgłoszenie'}
                         </span>
                       </div>
                     </div>
@@ -454,7 +454,7 @@ export default function RestaurantSupportPage() {
               </div>
             </a>
             <a
-              href="tel:+48000000000"
+              href="tel:+48665430469"
               className="flex items-center gap-3 p-4 border rounded-lg hover:bg-muted/50 transition-colors"
             >
               <div className="p-2 bg-green-500/10 rounded-lg">
@@ -462,7 +462,6 @@ export default function RestaurantSupportPage() {
               </div>
               <div>
                 <p className="font-medium text-foreground">Telefon</p>
-                <p className="text-sm text-muted-foreground">Pon-Pt 9:00-17:00</p>
               </div>
             </a>
           </div>
