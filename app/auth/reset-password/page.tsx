@@ -102,13 +102,13 @@ export default function ResetPasswordPage() {
         <CardContent>
           {success ? (
             <div className="space-y-4 text-center">
-              <div className="p-4 bg-accent/10 border border-accent rounded-lg">
-                <p className="text-sm font-medium text-accent-foreground">
-                  ✓ Hasło zostało zmienione!
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm font-medium text-green-800">
+                  Haslo zostalo zmienione!
                 </p>
               </div>
               <p className="text-sm text-muted-foreground">
-                Zostaniesz przekierowany do logowania za chwilę...
+                Zostaniesz przekierowany do logowania za chwile...
               </p>
             </div>
           ) : (
