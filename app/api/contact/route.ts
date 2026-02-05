@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
     // Wysłanie e-maila do support
     const supportEmailResponse = await resend.emails.send({
       from: 'onboarding@resend.dev',
-      to: 'support@rltpolska.pl',
+      to: 'kontakt@zamowtu.pl',
       subject: `ZamówTu - Nowa wiadomość: ${subject}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
