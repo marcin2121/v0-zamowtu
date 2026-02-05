@@ -16,12 +16,12 @@ import { createClient } from '@/lib/supabase/client'
 export default function SignUpPage() {
   const router = useRouter()
   const searchParams = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
-  const initialPlan = (searchParams.get('plan') as 'starter' | 'pro') || 'pro'
+  const initialPlan = (searchParams.get('plan') as 'starter' | 'professional') || 'professional'
   
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
-  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro'>(initialPlan)
+  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'professional'>(initialPlan)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -152,9 +152,9 @@ export default function SignUpPage() {
                 {/* Pro Plan */}
                 <button
                   type="button"
-                  onClick={() => setSelectedPlan('pro')}
+                  onClick={() => setSelectedPlan('professional')}
                   className={`p-4 rounded-xl border-2 transition-all text-left relative ${
-                    selectedPlan === 'pro'
+                    selectedPlan === 'professional'
                       ? 'border-accent bg-accent/5 shadow-sm'
                       : 'border-border hover:border-accent/30'
                   }`}
@@ -167,7 +167,7 @@ export default function SignUpPage() {
                   <div className="font-semibold text-foreground">Pro</div>
                   <div className="text-2xl font-bold text-accent my-2">199 zł</div>
                   <div className="text-xs text-muted-foreground">/miesiąc</div>
-                  {selectedPlan === 'pro' && (
+                  {selectedPlan === 'professional' && (
                     <Check className="w-4 h-4 text-(--confirm) mt-2" />
                   )}
                 </button>

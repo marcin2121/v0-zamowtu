@@ -87,9 +87,9 @@ export default async function RestaurantDetailPage({
   const createdAt = new Date(restaurant.created_at)
   const createdDaysAgo = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
 
-  // Get subscription plan
+  // Get subscription plan (DB values: 'starter' or 'professional')
   const currentPlan = (restaurant.subscription_plan || 'starter').toLowerCase()
-  const isPro = currentPlan === 'pro'
+  const isPro = currentPlan === 'professional'
 
   // Server action to change subscription plan
   async function changeSubscriptionPlan(formData: FormData) {
@@ -276,7 +276,7 @@ export default async function RestaurantDetailPage({
               </ul>
               {!isPro && (
                 <form action={changeSubscriptionPlan}>
-                  <input type="hidden" name="plan" value="pro" />
+                  <input type="hidden" name="plan" value="professional" />
                   <input type="hidden" name="userId" value={params.userId} />
                   <Button type="submit" size="sm" className="w-full bg-amber-500 hover:bg-amber-600 text-white">
                     Aktywuj Pro

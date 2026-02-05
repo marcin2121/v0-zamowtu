@@ -71,7 +71,7 @@ export default async function AdminRestaurantsPage() {
 
   // Calculate stats
   const totalRestaurants = restaurantsWithStats.length
-  const proRestaurants = restaurantsWithStats.filter(r => getSubscriptionPlan(r) === 'pro').length
+  const proRestaurants = restaurantsWithStats.filter(r => getSubscriptionPlan(r) === 'professional').length
   const starterRestaurants = totalRestaurants - proRestaurants
   const openRestaurants = restaurantsWithStats.filter(r => r.is_open).length
   const totalOrders = restaurantsWithStats.reduce((sum, r) => sum + r.order_count, 0)
@@ -216,7 +216,7 @@ export default async function AdminRestaurantsPage() {
             ) : (
               restaurantsWithStats.map((restaurant) => {
                 const plan = getSubscriptionPlan(restaurant)
-                const isPro = plan === 'pro'
+                const isPro = plan === 'professional'
                 
                 return (
                   <div

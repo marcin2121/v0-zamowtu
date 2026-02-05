@@ -148,7 +148,7 @@ export function DashboardNav({ user, settings }: DashboardNavProps) {
         <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg dark:bg-primary/5 dark:border-primary/10">
           <p className="text-xs text-muted-foreground mb-1">Aktualny plan:</p>
           <p className="font-semibold text-foreground mb-2">
-            {settings?.subscription_plan === 'pro' ? 'Pro (199 zł/mies.)' : 'Starter (99 zł/mies.)'}
+            {settings?.subscription_plan === 'professional' ? 'Pro (199 zl/mies.)' : 'Starter (99 zl/mies.)'}
           </p>
           {settings?.subscription_plan === 'starter' && (
             <Button 
