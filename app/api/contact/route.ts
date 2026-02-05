@@ -25,8 +25,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Wysłanie e-maila do support
-    await resend.emails.send({
-      from: 'kontakt@zamowtu.pl',
+    const supportEmailResponse = await resend.emails.send({
+      from: 'onboarding@resend.dev',
       to: 'support@rltpolska.pl',
       subject: `ZamówTu - Nowa wiadomość: ${subject}`,
       html: `
@@ -48,9 +48,17 @@ export async function POST(request: NextRequest) {
       replyTo: email,
     })
 
+    if (supportEmailResponse.error) {
+      console.error('[v0] Błąd wysyłania e-maila do support:', supportEmailResponse.error)
+      return NextResponse.json(
+        { error: 'Nie udało się wysłać wiadomości. Spróbuj ponownie.' },
+        { status: 500 }
+      )
+    }
+
     // Wysłanie potwierdzenia do użytkownika
     await resend.emails.send({
-      from: 'kontakt@zamowtu.pl',
+      from: 'onboarding@resend.dev',
       to: email,
       subject: 'ZamówTu - Potwierdzenie otrzymania wiadomości',
       html: `
