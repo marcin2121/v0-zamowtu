@@ -29,7 +29,7 @@ export default async function RestaurantDetailPage({
   const { data: { user } } = await supabase.auth.getUser()
 
   // Check if user is admin
-  if (!user?.email?.endsWith('@admin.zamowtu.pl')) {
+  if (!user || user?.email !== 'kontakt@zamowtu.pl') {
     redirect('/dashboard')
   }
 
