@@ -257,14 +257,14 @@ export default function RestaurantSupportPage() {
         <div>
           <h1 className="text-2xl font-bold text-foreground">Pomoc techniczna</h1>
           <p className="text-muted-foreground mt-1">
-            Masz problem? Napisz do nas - pomozemy!
+            Masz problem? Napisz do nas - pomożemy!
           </p>
         </div>
         <Dialog open={showNewTicket} onOpenChange={setShowNewTicket}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              Nowe zgloszenie
+              Nowe zgłoszenie
             </Button>
           </DialogTrigger>
           <DialogContent>
