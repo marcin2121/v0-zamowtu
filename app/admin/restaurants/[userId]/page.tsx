@@ -96,19 +96,24 @@ export default async function RestaurantDetailPage({
     'use server'
     
     const newPlan = formData.get('plan') as string
-    const userId = formData.get('userId') as string
+    const actionUserId = formData.get('userId') as string
+    
+    console.log('[v0] changeSubscriptionPlan called:', { newPlan, actionUserId })
     
     const supabase = await createClient()
     
-    await supabase
+    const { data, error } = await supabase
       .from('restaurant_settings')
       .update({ 
         subscription_plan: newPlan,
         updated_at: new Date().toISOString()
       })
-      .eq('user_id', userId)
+      .eq('user_id', actionUserId)
+      .select()
     
-    revalidatePath(`/admin/restaurants/${userId}`)
+    console.log('[v0] Update result:', { data, error })
+    
+    revalidatePath(`/admin/restaurants/${actionUserId}`)
     revalidatePath('/admin/restaurants')
   }
 
