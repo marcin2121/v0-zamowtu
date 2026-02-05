@@ -48,13 +48,21 @@ export function ScheduledOrdersCalendar({ userId }: ScheduledOrdersCalendarProps
       .gte('scheduled_for', new Date().toISOString())
       .order('scheduled_for', { ascending: true })
 
-    // Fetch blocked dates
-    const { data: blockedData } = await supabase
-      .from('blocked_dates')
-      .select('*')
-      .eq('user_id', userId)
-      .gte('date', new Date().toISOString().split('T')[0])
-      .order('date', { ascending: true })
+    // Fetch blocked dates with error handling
+    let blockedData = []
+    try {
+      const { data, error } = await supabase
+        .from('blocked_dates')
+        .select('*')
+        .eq('user_id', userId)
+        .gte('date', new Date().toISOString().split('T')[0])
+        .order('date', { ascending: true })
+
+      if (data) blockedData = data
+      if (error) console.log('[v0] Blocked dates fetch error:', error.message)
+    } catch (err) {
+      console.log('[v0] Error fetching blocked dates:', err)
+    }
 
     if (ordersData) setScheduledOrders(ordersData as Order[])
     if (blockedData) setBlockedDates(blockedData as BlockedDate[])
@@ -65,45 +73,73 @@ export function ScheduledOrdersCalendar({ userId }: ScheduledOrdersCalendarProps
     if (!newBlockedDate) return
 
     const supabase = createClient()
-    const { error } = await supabase
-      .from('blocked_dates')
-      .insert({
-        user_id: userId,
-        date: newBlockedDate,
-        reason: blockReason || null,
-      })
+    
+    try {
+      const { error } = await supabase
+        .from('blocked_dates')
+        .insert({
+          user_id: userId,
+          date: newBlockedDate,
+          reason: blockReason || null,
+        })
 
-    if (error) {
+      if (error) {
+        console.log('[v0] Error inserting blocked date:', error.message)
+        toast({
+          title: 'Błąd',
+          description: 'Tabela blocked_dates nie istnieje. Skontaktuj się z administratorem.',
+          variant: 'destructive',
+        })
+      } else {
+        toast({
+          title: 'Data zablokowana',
+          description: `${newBlockedDate} - klienci nie mogą zaplanować zamówień na ten dzień`,
+        })
+        fetchData()
+        setAddDateDialogOpen(false)
+        setNewBlockedDate('')
+        setBlockReason('')
+      }
+    } catch (err) {
+      console.log('[v0] Error in addBlockedDate:', err)
       toast({
         title: 'Błąd',
         description: 'Nie udało się zablokować daty',
         variant: 'destructive',
       })
-    } else {
-      toast({
-        title: 'Data zablokowana',
-        description: `${newBlockedDate} - klienci nie mogą zaplanować zamówień na ten dzień`,
-      })
-      fetchData()
-      setAddDateDialogOpen(false)
-      setNewBlockedDate('')
-      setBlockReason('')
     }
   }
 
   const removeBlockedDate = async (id: string) => {
     const supabase = createClient()
-    const { error } = await supabase
-      .from('blocked_dates')
-      .delete()
-      .eq('id', id)
+    
+    try {
+      const { error } = await supabase
+        .from('blocked_dates')
+        .delete()
+        .eq('id', id)
 
-    if (!error) {
+      if (error) {
+        console.log('[v0] Error deleting blocked date:', error.message)
+        toast({
+          title: 'Błąd',
+          description: 'Nie udało się odblokować daty',
+          variant: 'destructive',
+        })
+      } else {
+        toast({
+          title: 'Data odblokowana',
+          description: 'Klienci mogą znowu planować zamówienia na ten dzień',
+        })
+        fetchData()
+      }
+    } catch (err) {
+      console.log('[v0] Error in removeBlockedDate:', err)
       toast({
-        title: 'Data odblokowana',
-        description: 'Klienci mogą znowu planować zamówienia na ten dzień',
+        title: 'Błąd',
+        description: 'Nie udało się odblokować daty',
+        variant: 'destructive',
       })
-      fetchData()
     }
   }
 

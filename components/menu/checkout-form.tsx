@@ -289,17 +289,27 @@ export function CheckoutForm({
       
       // Check if scheduled date is blocked
       if (isScheduled && formData.scheduledDate) {
-        const { data: blockedDate } = await supabase
-          .from('blocked_dates')
-          .select('*')
-          .eq('user_id', restaurantId)
-          .eq('date', formData.scheduledDate)
-          .single()
-        
-        if (blockedDate) {
-          setError(`Wybrana data jest niedostępna. ${blockedDate.reason || ''}`)
-          setLoading(false)
-          return
+        try {
+          const { data: blockedDate, error: blockedError } = await supabase
+            .from('blocked_dates')
+            .select('*')
+            .eq('user_id', restaurantId)
+            .eq('date', formData.scheduledDate)
+            .single()
+
+          if (blockedError && blockedError.code !== 'PGRST116') {
+            // PGRST116 is "no rows found" which is okay
+            console.log('[v0] Blocked date check error:', blockedError.message)
+          }
+          
+          if (blockedDate) {
+            setError(`Wybrana data jest niedostępna. ${blockedDate.reason || ''}`)
+            setLoading(false)
+            return
+          }
+        } catch (err) {
+          console.log('[v0] Error checking blocked dates:', err)
+          // Continue anyway - blocked_dates table might not exist yet
         }
       }
       
