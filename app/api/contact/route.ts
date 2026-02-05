@@ -1,10 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
-
 export async function POST(request: NextRequest) {
   try {
+    // Sprawdzenie API key
+    if (!process.env.RESEND_API_KEY) {
+      console.error('[v0] RESEND_API_KEY nie jest ustawiony')
+      return NextResponse.json(
+        { error: 'Konfiguracja serwera - brak RESEND_API_KEY' },
+        { status: 500 }
+      )
+    }
+
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    
     const { name, email, subject, message } = await request.json()
 
     // Walidacja
@@ -23,6 +32,8 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       )
     }
+
+    console.log('[v0] Wysyłanie e-maila do kontakt@zamowtu.pl...')
 
     // Wysłanie e-maila do support
     const supportEmailResponse = await resend.emails.send({
@@ -51,38 +62,47 @@ export async function POST(request: NextRequest) {
     if (supportEmailResponse.error) {
       console.error('[v0] Błąd wysyłania e-maila do support:', supportEmailResponse.error)
       return NextResponse.json(
-        { error: 'Nie udało się wysłać wiadomości. Spróbuj ponownie.' },
+        { error: `Błąd Resend: ${supportEmailResponse.error.message}` },
         { status: 500 }
       )
     }
 
+    console.log('[v0] E-mail do support wysłany, ID:', supportEmailResponse.data?.id)
+
     // Wysłanie potwierdzenia do użytkownika
-    await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: email,
-      subject: 'ZamówTu - Potwierdzenie otrzymania wiadomości',
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">Dziękujemy za wiadomość!</h2>
-          <p>Cześć ${escapeHtml(name)},</p>
-          <p>Potwierdzamy, że otrzymaliśmy Twoją wiadomość o temacie: <strong>"${escapeHtml(subject)}"</strong></p>
-          <p>Nasz zespół skontaktuje się z Tobą wkrótce.</p>
-          <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-          <p style="color: #666; font-size: 12px;">
-            Jeśli nie wysłałeś tej wiadomości, zignoruj ten e-mail.
-          </p>
-        </div>
-      `,
-    })
+    try {
+      await resend.emails.send({
+        from: 'onboarding@resend.dev',
+        to: email,
+        subject: 'ZamówTu - Potwierdzenie otrzymania wiadomości',
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #333;">Dziękujemy za wiadomość!</h2>
+            <p>Cześć ${escapeHtml(name)},</p>
+            <p>Potwierdzamy, że otrzymaliśmy Twoją wiadomość o temacie: <strong>"${escapeHtml(subject)}"</strong></p>
+            <p>Nasz zespół skontaktuje się z Tobą wkrótce.</p>
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+            <p style="color: #666; font-size: 12px;">
+              Jeśli nie wysłałeś tej wiadomości, zignoruj ten e-mail.
+            </p>
+          </div>
+        `,
+      })
+      console.log('[v0] E-mail potwierdzenia wysłany do:', email)
+    } catch (confirmError) {
+      console.error('[v0] Błąd wysyłania potwierdzenia:', confirmError)
+      // Nie przerywiemy procesu jeśli potwierdzenie się nie wyśle
+    }
 
     return NextResponse.json(
       { success: true, message: 'Wiadomość została wysłana' },
       { status: 200 }
     )
   } catch (error) {
-    console.error('Błąd wysyłania e-maila:', error)
+    console.error('[v0] Błąd wysyłania e-maila:', error)
+    const errorMessage = error instanceof Error ? error.message : 'Nieznany błąd'
     return NextResponse.json(
-      { error: 'Nie udało się wysłać wiadomości. Spróbuj ponownie.' },
+      { error: `Nie udało się wysłać wiadomości: ${errorMessage}` },
       { status: 500 }
     )
   }

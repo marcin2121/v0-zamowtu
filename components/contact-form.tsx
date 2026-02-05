@@ -40,6 +40,11 @@ export function ContactForm() {
         body: JSON.stringify(formData)
       })
 
+      const contentType = response.headers.get('content-type')
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error(`Błąd serwera: odpowiedź nie jest JSON (${response.status})`)
+      }
+
       const data = await response.json()
 
       if (!response.ok) {
@@ -58,6 +63,7 @@ export function ContactForm() {
         message: ''
       })
     } catch (error) {
+      console.error('[v0] Błąd formularza:', error)
       toast({
         title: 'Błąd',
         description: error instanceof Error ? error.message : 'Coś poszło nie tak',
