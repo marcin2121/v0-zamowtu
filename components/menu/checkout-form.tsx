@@ -308,47 +308,45 @@ export function CheckoutForm({
         scheduledFor = new Date(`${formData.scheduledDate}T${formData.scheduledTime}`).toISOString()
       }
 
-      // Create order
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .insert({
-          restaurant_user_id: restaurantId,
-          customer_name: formData.name,
-          customer_email: formData.email || null,
-          customer_phone: formData.phone,
-          delivery_address: orderType === 'delivery' ? formData.address : 'Odbior osobisty',
-          delivery_notes: formData.notes || null,
-          order_type: orderType,
-          status: 'pending',
-          scheduled_for: scheduledFor,
-          subtotal: subtotal,
-          delivery_fee: orderType === 'delivery' ? deliveryFee : 0,
-          discount_code: discountApplied?.code || null,
-          discount_amount: discountApplied?.amount || 0,
-          loyalty_discount: loyaltyDiscount,
-          customer_email_for_loyalty: formData.email?.toLowerCase() || null,
-          total: finalTotal,
-        })
-        .select()
-        .single()
-
-      if (orderError) throw orderError
-
-      // Create order items
+      // Prepare order items
       const orderItems = items.map((item) => ({
-        order_id: order.id,
-        menu_item_id: item.id,
+        id: item.id,
         name: item.name,
         price: item.price,
         quantity: item.quantity,
         notes: item.notes || null,
       }))
 
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems)
+      // Create order via API (uses service_role to bypass RLS)
+      const createOrderRes = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurantId,
+          customerName: formData.name,
+          customerEmail: formData.email || null,
+          customerPhone: formData.phone,
+          deliveryAddress: orderType === 'delivery' ? formData.address : 'Odbior osobisty',
+          deliveryNotes: formData.notes || null,
+          orderType,
+          scheduledFor,
+          subtotal,
+          deliveryFee: orderType === 'delivery' ? deliveryFee : 0,
+          discountCode: discountApplied?.code || null,
+          discountAmount: discountApplied?.amount || 0,
+          loyaltyDiscount,
+          customerEmailForLoyalty: formData.email?.toLowerCase() || null,
+          total: finalTotal,
+          orderItems,
+        }),
+      })
 
-      if (itemsError) throw itemsError
+      if (!createOrderRes.ok) {
+        const errorData = await createOrderRes.json()
+        throw new Error(errorData.error || 'Nie udało się utworzyć zamówienia')
+      }
+
+      const { orderId } = await createOrderRes.json()
 
       // Update discount code usage count
       if (discountApplied) {
@@ -381,7 +379,7 @@ export function CheckoutForm({
       }
 
       // Redirect to order confirmation
-      const orderUrl = restaurantSlug ? `/r/${restaurantSlug}/order/${order.id}` : `/order/${order.id}`
+      const orderUrl = restaurantSlug ? `/r/${restaurantSlug}/order/${orderId}` : `/order/${orderId}`
       router.push(orderUrl)
       onSuccess()
     } catch (err) {
