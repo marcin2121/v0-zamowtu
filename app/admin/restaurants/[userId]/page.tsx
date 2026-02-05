@@ -87,8 +87,8 @@ export default async function RestaurantDetailPage({
   const createdAt = new Date(restaurant.created_at)
   const createdDaysAgo = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
 
-  // Get subscription plan (check both fields)
-  const currentPlan = (restaurant.subscription_plan || restaurant.subscription_tier || 'starter').toLowerCase()
+  // Get subscription plan
+  const currentPlan = (restaurant.subscription_plan || 'starter').toLowerCase()
   const isPro = currentPlan === 'pro'
 
   // Server action to change subscription plan
@@ -104,7 +104,6 @@ export default async function RestaurantDetailPage({
       .from('restaurant_settings')
       .update({ 
         subscription_plan: newPlan,
-        subscription_tier: newPlan,
         updated_at: new Date().toISOString()
       })
       .eq('user_id', userId)

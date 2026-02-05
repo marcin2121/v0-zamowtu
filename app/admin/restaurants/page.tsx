@@ -25,7 +25,6 @@ export default async function AdminRestaurantsPage() {
       restaurant_name,
       slug,
       subscription_plan,
-      subscription_tier,
       is_open,
       address,
       phone,
@@ -67,8 +66,7 @@ export default async function AdminRestaurantsPage() {
 
   // Helper function to get subscription plan
   const getSubscriptionPlan = (restaurant: typeof restaurantsWithStats[0]) => {
-    // Check subscription_plan first, then subscription_tier
-    const plan = restaurant.subscription_plan || restaurant.subscription_tier || 'starter'
+    const plan = restaurant.subscription_plan || 'starter'
     return plan.toLowerCase()
   }
 
