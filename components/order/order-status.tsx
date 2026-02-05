@@ -586,7 +586,7 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
               </div>
             )}
 
-            {order.scheduled_for && (
+            {order.scheduled_for && mounted && (
               <div>
                 <p className="text-sm text-muted-foreground">Zaplanowane na</p>
                 <p className="font-medium">
@@ -637,9 +637,11 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
           </CardContent>
         </Card>
 
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          Data zamowienia: {new Date(order.created_at).toLocaleString('pl-PL')}
-        </p>
+        {mounted && (
+          <p className="text-center text-xs text-muted-foreground mt-6">
+            Data zamowienia: {new Date(order.created_at).toLocaleString('pl-PL')}
+          </p>
+        )}
       </div>
     </div>
   )
