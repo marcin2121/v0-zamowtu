@@ -3,6 +3,14 @@ import { type NextRequest, NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 
 export async function middleware(request: NextRequest) {
+  // Handle Supabase auth callback - redirect code parameter to auth callback page
+  const code = request.nextUrl.searchParams.get('code')
+  if (code && request.nextUrl.pathname === '/') {
+    const redirectUrl = new URL('/auth/callback', request.url)
+    redirectUrl.searchParams.set('code', code)
+    return NextResponse.redirect(redirectUrl)
+  }
+
   const response = await updateSession(request)
   
   // Protect dashboard routes

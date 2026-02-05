@@ -23,25 +23,28 @@ export default function ResetPasswordPage() {
   })
 
   useEffect(() => {
-    // Supabase automatycznie przetwarza token z URL i ustawia sesję
-    // Sprawdzamy tylko czy użytkownik ma aktywną sesję resetowania
-    const checkSession = async () => {
+    // Obsługa kodu z URL - wymiana na sesję
+    const exchangeCodeForSession = async () => {
+      const code = searchParams.get('code')
       const supabase = createClient()
-      const { data: { session } } = await supabase.auth.getSession()
       
-      // Jeśli nie ma sesji, link mógł wygasnąć
-      if (!session) {
-        // Dajemy chwilę na przetworzenie tokenu przez Supabase
-        setTimeout(async () => {
-          const { data: { session: retrySession } } = await supabase.auth.getSession()
-          if (!retrySession) {
-            setError('Link resetowania wygasł lub jest nieprawidłowy. Spróbuj ponownie.')
-          }
-        }, 1000)
+      if (code) {
+        // Wymień kod na sesję
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        if (error) {
+          setError('Link resetowania wygasł lub jest nieprawidłowy. Spróbuj ponownie.')
+          return
+        }
+      } else {
+        // Sprawdź czy mamy już aktywną sesję
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) {
+          setError('Brak kodu resetowania. Spróbuj ponownie.')
+        }
       }
     }
     
-    checkSession()
+    exchangeCodeForSession()
   }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -99,13 +102,13 @@ export default function ResetPasswordPage() {
         <CardContent>
           {success ? (
             <div className="space-y-4 text-center">
-              <div className="p-4 bg-accent/10 border border-accent rounded-lg">
-                <p className="text-sm font-medium text-accent-foreground">
-                  ✓ Hasło zostało zmienione!
+              <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm font-medium text-green-800">
+                  Haslo zostalo zmienione!
                 </p>
               </div>
               <p className="text-sm text-muted-foreground">
-                Zostaniesz przekierowany do logowania za chwilę...
+                Zostaniesz przekierowany do logowania za chwile...
               </p>
             </div>
           ) : (
