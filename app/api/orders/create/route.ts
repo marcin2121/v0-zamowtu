@@ -3,9 +3,21 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('[v0] Order API called')
     const body = await request.json()
+    console.log('[v0] Order data received:', { ...body, orderItems: body.orderItems?.length })
+
+    // Check environment variables
+    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+      console.error('[v0] Missing Supabase environment variables')
+      return NextResponse.json(
+        { error: 'Błąd konfiguracji serwera' },
+        { status: 500 }
+      )
+    }
 
     const supabase = createAdminClient()
+    console.log('[v0] Admin client created')
 
     // Create order using service_role (bypass RLS)
     const { data: order, error: orderError } = await supabase

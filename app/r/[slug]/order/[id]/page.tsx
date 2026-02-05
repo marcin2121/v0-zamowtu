@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import { OrderStatus } from '@/components/order/order-status'
 
@@ -8,7 +8,7 @@ export default async function OrderPage({
   params: Promise<{ id: string; slug: string }>
 }) {
   const { id, slug } = await params
-  const supabase = await createClient()
+  const supabase = createAdminClient()
 
   const { data: order } = await supabase
     .from('orders')
