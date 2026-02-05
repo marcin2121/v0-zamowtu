@@ -10,7 +10,7 @@ export interface RestaurantSettings {
   opening_hours: Record<string, { open: string; close: string }>
   address: string | null
   phone: string | null
-  subscription_plan: 'starter' | 'pro'
+  subscription_plan: 'starter' | 'professional'
   // Menu customization fields
   logo_url: string | null
   banner_url: string | null

@@ -1,5 +1,23 @@
 import { createServerClient } from '@supabase/ssr'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+
+/**
+ * Admin client that bypasses RLS using the service role key.
+ * Use only in server actions/route handlers for admin operations.
+ */
+export function createAdminClient() {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  )
+}
 
 /**
  * Especially important if using Fluid compute: Don't put this client in a

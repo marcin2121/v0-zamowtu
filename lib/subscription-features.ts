@@ -17,7 +17,7 @@ export const PROFESSIONAL_FEATURES = [
 ]
 
 export function hasFeature(plan: string, feature: string): boolean {
-  if (plan === 'pro') {
+  if (plan === 'professional') {
     return PROFESSIONAL_FEATURES.includes(feature)
   }
   return STARTER_FEATURES.includes(feature)

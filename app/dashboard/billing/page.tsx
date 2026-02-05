@@ -111,12 +111,12 @@ export default async function BillingPage() {
 
         {/* Pro Plan */}
         <Card
-          className={currentPlan === 'pro' ? 'border-accent' : 'border-input'}
+          className={currentPlan === 'professional' ? 'border-accent' : 'border-input'}
         >
           <CardHeader>
             <div className="flex items-center justify-between">
               <CardTitle>Pro</CardTitle>
-              {currentPlan === 'pro' && (
+              {currentPlan === 'professional' && (
                 <Badge className="bg-accent">Aktywny</Badge>
               )}
             </div>

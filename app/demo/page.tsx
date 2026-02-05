@@ -168,11 +168,11 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 }
 
 export default function DemoPage() {
-  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'pro'>('pro')
+  const [selectedPlan, setSelectedPlan] = useState<'starter' | 'professional'>('professional')
   const [activeSection, setActiveSection] = useState('orders')
   const [isPaused, setIsPaused] = useState(false)
 
-  const isPro = selectedPlan === 'pro'
+  const isPro = selectedPlan === 'professional'
 
   const renderContent = () => {
     // Check if section requires Pro
@@ -186,7 +186,7 @@ export default function DemoPage() {
             {navItem.label} to funkcja dostępna tylko w planie Pro. 
             Przełącz na plan Pro aby zobaczyć tę sekcję.
           </p>
-          <Button onClick={() => setSelectedPlan('pro')}>
+          <Button onClick={() => setSelectedPlan('professional')}>
             Przełącz na Pro
           </Button>
         </div>
@@ -784,9 +784,9 @@ export default function DemoPage() {
                   Starter (99 zł)
                 </button>
                 <button
-                  onClick={() => setSelectedPlan('pro')}
+                  onClick={() => setSelectedPlan('professional')}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    selectedPlan === 'pro' 
+                    selectedPlan === 'professional' 
                       ? 'bg-accent text-white' 
                       : 'text-muted-foreground hover:text-foreground'
                   }`}

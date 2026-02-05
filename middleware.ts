@@ -5,13 +5,39 @@ import { createServerClient } from '@supabase/ssr'
 export async function middleware(request: NextRequest) {
   // Handle Supabase auth callback - redirect code parameter to auth callback page
   const code = request.nextUrl.searchParams.get('code')
+  const type = request.nextUrl.searchParams.get('type')
+  
+  // Jeśli mamy code (z Supabase auth), przechowaj go w auth/callback
   if (code && request.nextUrl.pathname === '/') {
     const redirectUrl = new URL('/auth/callback', request.url)
     redirectUrl.searchParams.set('code', code)
+    if (type) redirectUrl.searchParams.set('type', type)
     return NextResponse.redirect(redirectUrl)
   }
 
   const response = await updateSession(request)
+  
+  // Protect admin routes
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return request.cookies.getAll()
+          },
+          setAll() {},
+        },
+      }
+    )
+    
+    const { data: { user } } = await supabase.auth.getUser()
+    
+    if (!user) {
+      return NextResponse.redirect(new URL('/auth/login', request.url))
+    }
+  }
   
   // Protect dashboard routes
   if (request.nextUrl.pathname.startsWith('/dashboard')) {
