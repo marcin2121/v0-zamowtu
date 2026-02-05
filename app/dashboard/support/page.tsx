@@ -462,6 +462,7 @@ export default function RestaurantSupportPage() {
               </div>
               <div>
                 <p className="font-medium text-foreground">Telefon</p>
+                <p className="text-sm text-muted-foreground">665 430 469</p>
               </div>
             </a>
           </div>
