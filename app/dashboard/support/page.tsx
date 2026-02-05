@@ -269,7 +269,7 @@ export default function RestaurantSupportPage() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Zgloszenie problemu</DialogTitle>
+              <DialogTitle>Zgłoszenie problemu</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <div>
@@ -278,7 +278,7 @@ export default function RestaurantSupportPage() {
                   className="mt-1"
                   value={newTicket.subject}
                   onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
-                  placeholder="Np. Problem z wyswietlaniem menu"
+                  placeholder="Np. Problem z wyświetlaniem menu"
                 />
               </div>
               <div>
