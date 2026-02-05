@@ -312,7 +312,7 @@ export default function RestaurantSupportPage() {
                 disabled={!newTicket.subject || !newTicket.message || creating}
                 className="w-full"
               >
-                {creating ? 'Wysylanie...' : 'Wyslij zgloszenie'}
+                {creating ? 'Wysylanie...' : 'Wyślij zgłoszenie'}
               </Button>
             </div>
           </DialogContent>
@@ -328,7 +328,7 @@ export default function RestaurantSupportPage() {
             </div>
             <div>
               <p className="text-2xl font-bold text-foreground">{tickets.length}</p>
-              <p className="text-xs text-muted-foreground">Wszystkich zgloszen</p>
+              <p className="text-xs text-muted-foreground">Wszystkich zgłoszen</p>
             </div>
           </CardContent>
         </Card>
@@ -350,7 +350,7 @@ export default function RestaurantSupportPage() {
             </div>
             <div>
               <p className="text-2xl font-bold text-foreground">{resolvedCount}</p>
-              <p className="text-xs text-muted-foreground">Rozwiazanych</p>
+              <p className="text-xs text-muted-foreground">Rozwiązanych</p>
             </div>
           </CardContent>
         </Card>
@@ -361,21 +361,21 @@ export default function RestaurantSupportPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5" />
-            Twoje zgloszenia
+            Twoje zgłoszenia
           </CardTitle>
           <CardDescription>
-            Lista Twoich zgloszen do pomocy technicznej
+            Lista Twoich zgłoszen do pomocy technicznej
           </CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-center text-muted-foreground py-8">Ladowanie...</p>
+            <p className="text-center text-muted-foreground py-8">Ładowanie...</p>
           ) : tickets.length === 0 ? (
             <div className="text-center py-12">
               <HelpCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="font-medium text-foreground">Brak zgloszen</p>
+              <p className="font-medium text-foreground">Brak zgłoszen</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Masz problem lub pytanie? Kliknij &ldquo;Nowe zgloszenie&rdquo; aby sie z nami skontaktowac.
+                Masz problem lub pytanie? Kliknij &ldquo;Nowe zgłoszenie&rdquo; aby się z nami skontaktować.
               </p>
             </div>
           ) : (
