@@ -12,7 +12,7 @@ export default async function AdminRestaurantsPage() {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Check if user is admin (you can modify this based on your admin logic)
-  if (!user?.email?.endsWith('@admin.zamowtu.pl')) {
+  if (user?.email !== 'kontakt@zamowtu.pl') {
     redirect('/dashboard')
   }
 

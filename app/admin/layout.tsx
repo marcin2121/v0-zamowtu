@@ -13,7 +13,7 @@ export default async function AdminLayout({
   const { data: { user } } = await supabase.auth.getUser()
 
   // Check if user is admin
-  if (!user?.email?.endsWith('@admin.zamowtu.pl')) {
+  if (user?.email !== 'kontakt@zamowtu.pl') {
     redirect('/dashboard')
   }
 

@@ -104,7 +104,7 @@ export function DashboardNav({ user, settings }: DashboardNavProps) {
 
       <nav className="flex-1 p-4 space-y-1">
         {/* Admin link - only show if user is admin */}
-        {user?.email?.endsWith('@admin.zamowtu.pl') && (
+        {user?.email === 'kontakt@zamowtu.pl' && (
           <Link
             href="/admin/restaurants"
             onClick={() => setMobileOpen(false)}
