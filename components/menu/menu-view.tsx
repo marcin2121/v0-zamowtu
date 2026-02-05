@@ -21,6 +21,7 @@ import type { MenuItem, MenuCategory, RestaurantSettings, Review } from '@/lib/t
 
 interface MenuViewProps {
   restaurantId: string | null
+  restaurantSlug?: string | null
   settings: RestaurantSettings | null
   categories: MenuCategory[]
   menuItems: MenuItem[]
@@ -50,7 +51,7 @@ function getFontFamily(font: string): string {
   return fonts[font] || fonts.default
 }
 
-export function MenuView({ restaurantId, settings, categories, menuItems, reviews = [], averageRating = 0 }: MenuViewProps) {
+export function MenuView({ restaurantId, restaurantSlug, settings, categories, menuItems, reviews = [], averageRating = 0 }: MenuViewProps) {
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
   const [cartOpen, setCartOpen] = useState(false)
   const [showInfo, setShowInfo] = useState(false)
@@ -451,8 +452,9 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
         open={cartOpen} 
         onClose={() => setCartOpen(false)} 
         restaurantId={restaurantId}
+        restaurantSlug={restaurantSlug}
         settings={settings}
-        menuItems={menuItems}
+        customStyles={customStyles}
       />
     </div>
   )

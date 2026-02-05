@@ -84,6 +84,7 @@ export default async function RestaurantPage({ params }: PageProps) {
     <div className="light">
       <MenuView
         restaurantId={settings.user_id}
+        restaurantSlug={slug}
         settings={settings as RestaurantSettings}
         categories={(categories || []) as MenuCategory[]}
         menuItems={(menuItems || []) as MenuItem[]}
