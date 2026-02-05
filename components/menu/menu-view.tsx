@@ -438,7 +438,7 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
               color: customStyles.textColor
             }}
           >
-            <ShoppingCart className="w-5 h-5 mr-2" />
+            <ShoppingCart className="w-5 h-5 mr-2 text-background" />
             <span className="font-semibold text-background">
               Koszyk ({itemCount})
             </span>
