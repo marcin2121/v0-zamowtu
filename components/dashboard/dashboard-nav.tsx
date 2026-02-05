@@ -23,6 +23,7 @@ import {
   Palette,
   Calendar,
   Lightbulb,
+  Shield,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -102,6 +103,22 @@ export function DashboardNav({ user, settings }: DashboardNavProps) {
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
+        {/* Admin link - only show if user is admin */}
+        {user?.email === 'kontakt@zamowtu.pl' && (
+          <Link
+            href="/admin/restaurants"
+            onClick={() => setMobileOpen(false)}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors mb-3 border border-primary/30 ${
+              pathname === '/admin/restaurants'
+                ? 'bg-primary text-primary-foreground'
+                : 'text-primary hover:bg-primary/10'
+            }`}
+          >
+            <Shield className="w-5 h-5" />
+            Panel Admina
+          </Link>
+        )}
+
         {navItems.map((item) => {
           const isActive = pathname === item.href
           const hasAccess = canAccessFeature(settings, item.feature)
