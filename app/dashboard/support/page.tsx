@@ -291,10 +291,10 @@ export default function RestaurantSupportPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="low">Niski - ogolne pytanie</SelectItem>
-                    <SelectItem value="normal">Normalny - maly problem</SelectItem>
-                    <SelectItem value="high">Wysoki - wazny problem</SelectItem>
-                    <SelectItem value="urgent">Pilny - system nie dziala</SelectItem>
+                    <SelectItem value="low">Niski - ogólne pytanie</SelectItem>
+                    <SelectItem value="normal">Normalny - mały problem</SelectItem>
+                    <SelectItem value="high">Wysoki - ważny problem</SelectItem>
+                    <SelectItem value="urgent">Pilny - system nie działa</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -304,7 +304,7 @@ export default function RestaurantSupportPage() {
                   className="mt-1 min-h-[120px]"
                   value={newTicket.message}
                   onChange={(e) => setNewTicket({ ...newTicket, message: e.target.value })}
-                  placeholder="Opisz dokladnie co sie dzieje, kiedy to wystepuje i jakie kroki podejmowales..."
+                  placeholder="Opisz dokładnie co się dzieje"
                 />
               </div>
               <Button
@@ -312,7 +312,7 @@ export default function RestaurantSupportPage() {
                 disabled={!newTicket.subject || !newTicket.message || creating}
                 className="w-full"
               >
-                {creating ? 'Wysylanie...' : 'Wyślij zgłoszenie'}
+                {creating ? 'Wysyłanie...' : 'Wyślij zgłoszenie'}
               </Button>
             </div>
           </DialogContent>
