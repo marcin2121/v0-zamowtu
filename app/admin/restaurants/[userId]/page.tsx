@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, createAdminClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -98,20 +98,21 @@ export default async function RestaurantDetailPage({
     const newPlan = formData.get('plan') as string
     const actionUserId = formData.get('userId') as string
     
-    console.log('[v0] changeSubscriptionPlan called:', { newPlan, actionUserId })
-    
+    // Verify caller is admin
     const supabase = await createClient()
+    const { data: { user: adminUser } } = await supabase.auth.getUser()
+    if (!adminUser || adminUser.email !== 'kontakt@zamowtu.pl') return
     
-    const { data, error } = await supabase
+    // Use admin client to bypass RLS
+    const adminSupabase = createAdminClient()
+    
+    await adminSupabase
       .from('restaurant_settings')
       .update({ 
         subscription_plan: newPlan,
         updated_at: new Date().toISOString()
       })
       .eq('user_id', actionUserId)
-      .select()
-    
-    console.log('[v0] Update result:', { data, error })
     
     revalidatePath(`/admin/restaurants/${actionUserId}`)
     revalidatePath('/admin/restaurants')
