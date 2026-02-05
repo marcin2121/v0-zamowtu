@@ -98,11 +98,18 @@ export default function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm">
-            <span className="text-muted-foreground">Nie masz konta? </span>
-            <Link href="/auth/sign-up" className="text-primary font-medium hover:underline">
-              Zarejestruj restauracje
-            </Link>
+          <div className="mt-6 space-y-3 text-center text-sm">
+            <div>
+              <span className="text-muted-foreground">Nie masz konta? </span>
+              <Link href="/auth/sign-up" className="text-primary font-medium hover:underline">
+                Zarejestruj restauracje
+              </Link>
+            </div>
+            <div>
+              <Link href="/auth/forgot-password" className="text-muted-foreground hover:text-primary transition-colors text-xs">
+                Zapomniałem hasła
+              </Link>
+            </div>
           </div>
         </CardContent>
       </Card>
