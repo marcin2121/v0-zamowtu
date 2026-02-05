@@ -23,7 +23,7 @@ export default function ForgotPasswordPage() {
     try {
       const supabase = createClient()
       
-      // Supabase Password Reset
+      // Supabase Password Reset - profesjonalne rozwiązanie
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
       })
@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
       setSuccess(true)
       setEmail('')
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Nie udało się wysłać linku resetowania'
+      const message = err instanceof Error ? err.message : 'Nie udalo sie wyslac linku resetowania'
       setError(message)
     } finally {
       setLoading(false)
@@ -56,7 +56,7 @@ export default function ForgotPasswordPage() {
           {success ? (
             <div className="space-y-4">
               <div className="p-4 bg-accent/10 border border-accent rounded-lg text-center">
-                <p className="text-sm font-medium text-accent-foreground">
+                <p className="text-sm font-medium text-foreground">
                   ✓ Link resetowania hasła został wysłany na Twój email!
                 </p>
               </div>

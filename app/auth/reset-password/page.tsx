@@ -23,11 +23,25 @@ export default function ResetPasswordPage() {
   })
 
   useEffect(() => {
-    // Sprawdzenie czy token jest w URL
-    const token = searchParams.get('token')
-    if (!token) {
-      setError('Brakuje tokenu resetowania. Link może być wygasły.')
+    // Supabase automatycznie przetwarza token z URL i ustawia sesję
+    // Sprawdzamy tylko czy użytkownik ma aktywną sesję resetowania
+    const checkSession = async () => {
+      const supabase = createClient()
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      // Jeśli nie ma sesji, link mógł wygasnąć
+      if (!session) {
+        // Dajemy chwilę na przetworzenie tokenu przez Supabase
+        setTimeout(async () => {
+          const { data: { session: retrySession } } = await supabase.auth.getSession()
+          if (!retrySession) {
+            setError('Link resetowania wygasł lub jest nieprawidłowy. Spróbuj ponownie.')
+          }
+        }, 1000)
+      }
     }
+    
+    checkSession()
   }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -36,18 +50,19 @@ export default function ResetPasswordPage() {
     setError(null)
 
     try {
-      // Walidacja haseł
+      // Walidacja hasel
       if (formData.password !== formData.confirmPassword) {
-        throw new Error('Hasła nie są identyczne')
+        throw new Error('Hasla nie sa identyczne')
       }
 
       if (formData.password.length < 6) {
-        throw new Error('Hasło musi mieć co najmniej 6 znaków')
+        throw new Error('Haslo musi miec co najmniej 6 znakow')
       }
 
       const supabase = createClient()
       
-      // Aktualizacja hasła
+      // Aktualizacja hasla - Supabase automatycznie wie ktorego uzytkownika zaktualizowac
+      // dzieki sesji ustawionej przez token w URL
       const { error } = await supabase.auth.updateUser({
         password: formData.password,
       })
@@ -62,7 +77,7 @@ export default function ResetPasswordPage() {
         router.push('/auth/login')
       }, 2000)
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Nie udało się zresetować hasła'
+      const message = err instanceof Error ? err.message : 'Nie udalo sie zresetowac hasla'
       setError(message)
     } finally {
       setLoading(false)
