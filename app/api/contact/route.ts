@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
     console.log('[v0] Dane:', { name, email, subject, message })
 
     // Wysyłanie przez Formspree
-    const formspreeResponse = await fetch('https://formspree.io/f/mkgwawvn', {
+    const formspreeResponse = await fetch('https://formspree.io/f/mgolwyqk', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
