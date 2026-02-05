@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Building2, Mail, Phone, MapPin, TrendingUp, ShoppingBag, Users, CreditCard, Calendar, BarChart3, Crown, Star } from 'lucide-react'
+import { Building2, Phone, MapPin, TrendingUp, ShoppingBag, CreditCard, Calendar, BarChart3, Crown, Star } from 'lucide-react'
 import Link from 'next/link'
 import type { RestaurantSettings } from '@/lib/types'
 
@@ -28,7 +28,6 @@ export default async function AdminRestaurantsPage() {
       is_open,
       address,
       phone,
-      email,
       created_at,
       updated_at
     `)
@@ -260,12 +259,7 @@ export default async function AdminRestaurantsPage() {
                           </div>
                         )}
                         
-                        {restaurant.email && (
-                          <div className="flex items-center gap-1">
-                            <Mail className="w-4 h-4" />
-                            <span className="truncate">{restaurant.email}</span>
-                          </div>
-                        )}
+
                         
                         {restaurant.phone && (
                           <div className="flex items-center gap-1">
