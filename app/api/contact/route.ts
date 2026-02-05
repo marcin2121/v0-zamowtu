@@ -1,19 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Resend } from 'resend'
 
 export async function POST(request: NextRequest) {
   try {
-    // Sprawdzenie API key
-    if (!process.env.RESEND_API_KEY) {
-      console.error('[v0] RESEND_API_KEY nie jest ustawiony')
-      return NextResponse.json(
-        { error: 'Konfiguracja serwera - brak RESEND_API_KEY' },
-        { status: 500 }
-      )
-    }
-
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    
     const { name, email, subject, message } = await request.json()
 
     // Walidacja
@@ -33,66 +21,37 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log('[v0] Wysyłanie e-maila do kontakt@zamowtu.pl...')
+    console.log('[v0] Wysyłanie e-maila przez Formspree...')
+    console.log('[v0] Dane:', { name, email, subject, message })
 
-    // Wysłanie e-maila do support
-    const supportEmailResponse = await resend.emails.send({
-      from: 'onboarding@resend.dev',
-      to: 'kontakt@zamowtu.pl',
-      subject: `ZamówTu - Nowa wiadomość: ${subject}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #333;">Nowa wiadomość z formularza kontaktowego</h2>
-          <div style="background-color: #f5f5f5; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>Imię i nazwisko:</strong> ${escapeHtml(name)}</p>
-            <p><strong>E-mail:</strong> ${escapeHtml(email)}</p>
-            <p><strong>Temat:</strong> ${escapeHtml(subject)}</p>
-            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-            <p><strong>Wiadomość:</strong></p>
-            <p style="white-space: pre-wrap; word-wrap: break-word;">${escapeHtml(message)}</p>
-          </div>
-          <p style="color: #666; font-size: 12px; margin-top: 30px;">
-            Ta wiadomość została wysłana z formularza kontaktowego na stronie ZamówTu
-          </p>
-        </div>
-      `,
-      replyTo: email,
+    // Wysyłanie przez Formspree
+    const formspreeResponse = await fetch('https://formspree.io/f/mkgwawvn', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        subject,
+        message,
+        _replyto: email,
+      })
     })
 
-    if (supportEmailResponse.error) {
-      console.error('[v0] Błąd wysyłania e-maila do support:', supportEmailResponse.error)
+    console.log('[v0] Formspree odpowiedź status:', formspreeResponse.status)
+
+    if (!formspreeResponse.ok) {
+      const errorData = await formspreeResponse.text()
+      console.error('[v0] Błąd Formspree:', errorData)
       return NextResponse.json(
-        { error: `Błąd Resend: ${supportEmailResponse.error.message}` },
+        { error: 'Nie udało się wysłać wiadomości' },
         { status: 500 }
       )
     }
 
-    console.log('[v0] E-mail do support wysłany, ID:', supportEmailResponse.data?.id)
-
-    // Wysłanie potwierdzenia do użytkownika
-    try {
-      await resend.emails.send({
-        from: 'onboarding@resend.dev',
-        to: email,
-        subject: 'ZamówTu - Potwierdzenie otrzymania wiadomości',
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2 style="color: #333;">Dziękujemy za wiadomość!</h2>
-            <p>Cześć ${escapeHtml(name)},</p>
-            <p>Potwierdzamy, że otrzymaliśmy Twoją wiadomość o temacie: <strong>"${escapeHtml(subject)}"</strong></p>
-            <p>Nasz zespół skontaktuje się z Tobą wkrótce.</p>
-            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-            <p style="color: #666; font-size: 12px;">
-              Jeśli nie wysłałeś tej wiadomości, zignoruj ten e-mail.
-            </p>
-          </div>
-        `,
-      })
-      console.log('[v0] E-mail potwierdzenia wysłany do:', email)
-    } catch (confirmError) {
-      console.error('[v0] Błąd wysyłania potwierdzenia:', confirmError)
-      // Nie przerywiemy procesu jeśli potwierdzenie się nie wyśle
-    }
+    const result = await formspreeResponse.json()
+    console.log('[v0] Formspree wynik:', result)
 
     return NextResponse.json(
       { success: true, message: 'Wiadomość została wysłana' },
@@ -106,16 +65,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-}
-
-// Funkcja do escapowania HTML
-function escapeHtml(text: string): string {
-  const map: { [key: string]: string } = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  }
-  return text.replace(/[&<>"']/g, m => map[m])
 }
