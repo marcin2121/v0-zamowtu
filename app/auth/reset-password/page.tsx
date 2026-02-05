@@ -23,25 +23,28 @@ export default function ResetPasswordPage() {
   })
 
   useEffect(() => {
-    // Supabase automatycznie przetwarza token z URL i ustawia sesję
-    // Sprawdzamy tylko czy użytkownik ma aktywną sesję resetowania
-    const checkSession = async () => {
+    // Obsługa kodu z URL - wymiana na sesję
+    const exchangeCodeForSession = async () => {
+      const code = searchParams.get('code')
       const supabase = createClient()
-      const { data: { session } } = await supabase.auth.getSession()
       
-      // Jeśli nie ma sesji, link mógł wygasnąć
-      if (!session) {
-        // Dajemy chwilę na przetworzenie tokenu przez Supabase
-        setTimeout(async () => {
-          const { data: { session: retrySession } } = await supabase.auth.getSession()
-          if (!retrySession) {
-            setError('Link resetowania wygasł lub jest nieprawidłowy. Spróbuj ponownie.')
-          }
-        }, 1000)
+      if (code) {
+        // Wymień kod na sesję
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+        if (error) {
+          setError('Link resetowania wygasł lub jest nieprawidłowy. Spróbuj ponownie.')
+          return
+        }
+      } else {
+        // Sprawdź czy mamy już aktywną sesję
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session) {
+          setError('Brak kodu resetowania. Spróbuj ponownie.')
+        }
       }
     }
     
-    checkSession()
+    exchangeCodeForSession()
   }, [searchParams])
 
   const handleSubmit = async (e: React.FormEvent) => {
