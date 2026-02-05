@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
+import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { 
@@ -12,7 +13,12 @@ import {
   ShoppingBag,
   TrendingUp,
   ArrowLeft,
-  Clock
+  Clock,
+  Crown,
+  Star,
+  ExternalLink,
+  Settings,
+  CreditCard
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -81,6 +87,32 @@ export default async function RestaurantDetailPage({
   const createdAt = new Date(restaurant.created_at)
   const createdDaysAgo = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
 
+  // Get subscription plan (check both fields)
+  const currentPlan = (restaurant.subscription_plan || restaurant.subscription_tier || 'starter').toLowerCase()
+  const isPro = currentPlan === 'pro'
+
+  // Server action to change subscription plan
+  async function changeSubscriptionPlan(formData: FormData) {
+    'use server'
+    
+    const newPlan = formData.get('plan') as string
+    const userId = formData.get('userId') as string
+    
+    const supabase = await createClient()
+    
+    await supabase
+      .from('restaurant_settings')
+      .update({ 
+        subscription_plan: newPlan,
+        subscription_tier: newPlan,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', userId)
+    
+    revalidatePath(`/admin/restaurants/${userId}`)
+    revalidatePath('/admin/restaurants')
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -104,10 +136,23 @@ export default async function RestaurantDetailPage({
             </div>
             <div className="flex gap-2">
               <Badge variant={restaurant.is_open ? 'default' : 'secondary'}>
-                {restaurant.is_open ? 'Otwarte' : 'Zamknięte'}
+                {restaurant.is_open ? 'Otwarte' : 'Zamkniete'}
               </Badge>
-              <Badge variant={restaurant.subscription_plan === 'pro' ? 'default' : 'outline'}>
-                {restaurant.subscription_plan === 'pro' ? 'Pro' : 'Starter'}
+              <Badge 
+                variant={isPro ? 'default' : 'outline'}
+                className={isPro ? 'bg-amber-500 hover:bg-amber-600 text-white' : ''}
+              >
+                {isPro ? (
+                  <span className="flex items-center gap-1">
+                    <Crown className="w-3 h-3" />
+                    Pro
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1">
+                    <Star className="w-3 h-3" />
+                    Starter
+                  </span>
+                )}
               </Badge>
             </div>
           </div>
@@ -167,6 +212,88 @@ export default async function RestaurantDetailPage({
           )}
         </CardContent>
       </Card>
+
+      {/* Subscription Management */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="w-5 h-5" />
+            Zarzadzanie subskrypcja
+          </CardTitle>
+          <CardDescription>
+            Zmien plan subskrypcji dla tej restauracji
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col md:flex-row gap-4">
+            {/* Current Plan */}
+            <div className={`flex-1 p-4 rounded-lg border-2 ${isPro ? 'border-muted bg-muted/30' : 'border-primary bg-primary/5'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <Star className="w-5 h-5 text-slate-500" />
+                <h3 className="font-semibold">Plan Starter</h3>
+                {!isPro && <Badge variant="outline" className="ml-auto">Aktywny</Badge>}
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Podstawowe funkcje dla malych restauracji
+              </p>
+              <ul className="text-sm space-y-1 text-muted-foreground mb-4">
+                <li>- Do 50 produktow w menu</li>
+                <li>- Podstawowe statystyki</li>
+                <li>- Powiadomienia email</li>
+              </ul>
+              {isPro && (
+                <form action={changeSubscriptionPlan}>
+                  <input type="hidden" name="plan" value="starter" />
+                  <input type="hidden" name="userId" value={params.userId} />
+                  <Button type="submit" variant="outline" size="sm" className="w-full bg-transparent">
+                    Zmien na Starter
+                  </Button>
+                </form>
+              )}
+            </div>
+
+            {/* Pro Plan */}
+            <div className={`flex-1 p-4 rounded-lg border-2 ${isPro ? 'border-amber-500 bg-amber-50 dark:bg-amber-950/20' : 'border-muted bg-muted/30'}`}>
+              <div className="flex items-center gap-2 mb-2">
+                <Crown className="w-5 h-5 text-amber-500" />
+                <h3 className="font-semibold">Plan Pro</h3>
+                {isPro && <Badge className="ml-auto bg-amber-500 text-white">Aktywny</Badge>}
+              </div>
+              <p className="text-sm text-muted-foreground mb-3">
+                Pelne funkcje dla rozwijajacych sie restauracji
+              </p>
+              <ul className="text-sm space-y-1 text-muted-foreground mb-4">
+                <li>- Nieograniczona liczba produktow</li>
+                <li>- Zaawansowane statystyki</li>
+                <li>- Kody rabatowe i promocje</li>
+                <li>- Program lojalnosciowy</li>
+                <li>- Priorytetowe wsparcie</li>
+              </ul>
+              {!isPro && (
+                <form action={changeSubscriptionPlan}>
+                  <input type="hidden" name="plan" value="pro" />
+                  <input type="hidden" name="userId" value={params.userId} />
+                  <Button type="submit" size="sm" className="w-full bg-amber-500 hover:bg-amber-600 text-white">
+                    Aktywuj Pro
+                  </Button>
+                </form>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Quick Actions */}
+      <div className="flex flex-wrap gap-2">
+        {restaurant.slug && (
+          <Button variant="outline" asChild>
+            <Link href={`/r/${restaurant.slug}`} target="_blank">
+              <ExternalLink className="w-4 h-4 mr-2" />
+              Zobacz menu
+            </Link>
+          </Button>
+        )}
+      </div>
 
       {/* Statistics */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
