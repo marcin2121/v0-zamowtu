@@ -5,9 +5,13 @@ import { createServerClient } from '@supabase/ssr'
 export async function middleware(request: NextRequest) {
   // Handle Supabase auth callback - redirect code parameter to auth callback page
   const code = request.nextUrl.searchParams.get('code')
+  const type = request.nextUrl.searchParams.get('type')
+  
+  // Jeśli mamy code (z Supabase auth), przechowaj go w auth/callback
   if (code && request.nextUrl.pathname === '/') {
     const redirectUrl = new URL('/auth/callback', request.url)
     redirectUrl.searchParams.set('code', code)
+    if (type) redirectUrl.searchParams.set('type', type)
     return NextResponse.redirect(redirectUrl)
   }
 
