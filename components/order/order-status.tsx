@@ -46,6 +46,7 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
   const [countdown, setCountdown] = useState<string | null>(null)
   const [isCountdownExpired, setIsCountdownExpired] = useState(false)
   const [confirmingDelivery, setConfirmingDelivery] = useState(false)
+  const [mounted, setMounted] = useState(false)
   
   // Review state
   const [showReviewForm, setShowReviewForm] = useState(false)
@@ -92,10 +93,15 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
   }, [order.estimated_delivery_at])
 
   useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
     updateCountdown()
     const interval = setInterval(updateCountdown, 1000)
     return () => clearInterval(interval)
-  }, [updateCountdown])
+  }, [updateCountdown, mounted])
 
   useEffect(() => {
     const supabase = createClient()
@@ -312,7 +318,7 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
             )}
 
             {/* Countdown Timer */}
-            {showCountdown && (
+            {showCountdown && mounted && (
               <div className={`p-4 rounded-lg mb-6 text-center ${isCountdownExpired ? 'bg-amber-100 border border-amber-300' : 'bg-primary/10'}`}>
                 <div className="flex items-center justify-center gap-2 mb-2">
                   <Timer className={`w-5 h-5 ${isCountdownExpired ? 'text-amber-600' : 'text-primary'}`} />
