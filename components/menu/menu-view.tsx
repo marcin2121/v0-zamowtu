@@ -439,7 +439,7 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
             }}
           >
             <ShoppingCart className="w-5 h-5 mr-2" />
-            <span className="font-semibold">
+            <span className="font-semibold text-background">
               Koszyk ({itemCount})
             </span>
           </Button>
