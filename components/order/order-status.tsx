@@ -167,16 +167,26 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
 
       const data = await response.json()
 
-      if (data.error) {
-        alert(`Błąd: ${data.error}`)
+      if (!response.ok || data.error) {
+        // Hide payment option if not configured
+        if (response.status === 400 && data.error?.includes('nie są skonfigurowane')) {
+          alert('Ta metoda płatności nie jest obecnie dostępna. Spróbuj innej metody lub zapłać przy odbiorze.')
+          setShowPaymentOptions(false)
+          return
+        }
+        alert(`Błąd: ${data.error || 'Nieznany błąd'}`)
         return
       }
 
       // Redirect to payment gateway
-      window.location.href = data.redirectUrl
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl
+      } else {
+        alert('Błąd: Brak linku do płatności')
+      }
     } catch (error) {
       console.error('[v0] Payment error:', error)
-      alert('Błąd podczas inicjowania płatności')
+      alert('Błąd podczas inicjowania płatności. Sprawdź połączenie internetowe.')
     } finally {
       setProcessingPayment(false)
     }
