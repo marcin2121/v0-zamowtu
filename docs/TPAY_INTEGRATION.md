@@ -4,12 +4,12 @@
 
 Dodaj do sekcji **Vars** w v0 (lub do `.env.local`):
 
-```
+\`\`\`
 TPAY_CLIENT_ID=your_test_client_id
 TPAY_CLIENT_SECRET=your_test_client_secret
 TPAY_MERCHANT_ID=your_test_merchant_id
 TPAY_SANDBOX=true
-```
+\`\`\`
 
 ## 2. Pozyskanie testowych danych z TPay
 
