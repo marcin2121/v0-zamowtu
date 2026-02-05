@@ -310,19 +310,19 @@ export default function SupportPage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground">Pomoc techniczna</h1>
           <p className="text-muted-foreground mt-1">
-            Zarzadzaj zgloszeniami i komunikuj sie z restauracjami
+            Zarządzaj zgłoszeniami i komunikuj się z restauracjami
           </p>
         </div>
         <Dialog open={showNewTicket} onOpenChange={setShowNewTicket}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              Nowe zgloszenie
+              Nowe zgłoszenie
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Nowe zgloszenie pomocy</DialogTitle>
+              <DialogTitle>Nowe zgłoszenie pomocy</DialogTitle>
             </DialogHeader>
             <div className="space-y-4 mt-4">
               <div>
@@ -349,7 +349,7 @@ export default function SupportPage() {
                   className="mt-1"
                   value={newTicket.subject}
                   onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
-                  placeholder="Np. Problem z zamowieniami"
+                  placeholder="Np. Problem z zamówieniami"
                 />
               </div>
               <div>
@@ -370,12 +370,12 @@ export default function SupportPage() {
                 </Select>
               </div>
               <div>
-                <Label>Wiadomosc poczatkowa</Label>
+                <Label>Wiadomość początkowa</Label>
                 <Textarea
                   className="mt-1 min-h-[100px]"
                   value={newTicket.message}
                   onChange={(e) => setNewTicket({ ...newTicket, message: e.target.value })}
-                  placeholder="Opisz problem lub powod kontaktu..."
+                  placeholder="Opisz problem lub powód kontaktu..."
                 />
               </div>
               <Button
@@ -383,7 +383,7 @@ export default function SupportPage() {
                 disabled={!newTicket.restaurant_user_id || !newTicket.subject}
                 className="w-full"
               >
-                Utworz zgloszenie
+                Utwórz zgłoszenie
               </Button>
             </div>
           </DialogContent>
@@ -441,7 +441,7 @@ export default function SupportPage() {
                 <p className="text-2xl font-bold text-foreground">
                   {tickets.filter((t) => t.status === "resolved").length}
                 </p>
-                <p className="text-xs text-muted-foreground">Rozwiazane</p>
+                <p className="text-xs text-muted-foreground">Rozwiązane</p>
               </div>
             </div>
           </CardContent>
@@ -468,7 +468,7 @@ export default function SupportPage() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="w-5 h-5" />
-            Zgloszenia
+            Zgłoszenia
           </CardTitle>
           <CardDescription>
             {filterStatus === "all" ? "Wszystkie zgloszenia" : `Filtr: ${statusConfig[filterStatus]?.label || filterStatus}`}
@@ -476,13 +476,13 @@ export default function SupportPage() {
         </CardHeader>
         <CardContent>
           {loading ? (
-            <p className="text-center text-muted-foreground py-8">Ladowanie...</p>
+            <p className="text-center text-muted-foreground py-8">Ładowanie...</p>
           ) : tickets.length === 0 ? (
             <div className="text-center py-12">
               <Headset className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-              <p className="text-muted-foreground">Brak zgloszen</p>
+              <p className="text-muted-foreground">Brak zgłoszeń</p>
               <p className="text-sm text-muted-foreground mt-1">
-                Kliknij &ldquo;Nowe zgloszenie&rdquo; aby rozpoczac kontakt z restauracja
+                Kliknij &ldquo;Nowe zgłoszenie&rdquo; aby rozpocząc kontakt z restauracją
               </p>
             </div>
           ) : (

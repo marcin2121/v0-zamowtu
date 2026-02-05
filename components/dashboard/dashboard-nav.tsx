@@ -24,6 +24,7 @@ import {
   Calendar,
   Lightbulb,
   Shield,
+  Headset
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -57,6 +58,7 @@ const navItems = [
   { href: '/dashboard/reviews', label: 'Opinie', icon: Star, feature: 'reviews' },
   { href: '/dashboard/history', label: 'Historia', icon: History, feature: 'menu' },
   { href: '/dashboard/stats', label: 'Statystyki', icon: BarChart3, feature: 'statistics' },
+  { href: '/dashboard/support', label: 'Pomoc', icon: Headset, feature: 'menu' },
   { href: '/dashboard/settings', label: 'Ustawienia', icon: Settings, feature: 'menu' },
   { href: '/dashboard/billing', label: 'Rozliczenia', icon: CreditCard, feature: 'menu' },
 ] as const
