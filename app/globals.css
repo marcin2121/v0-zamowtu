@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -198,8 +197,8 @@
   }
 }
 
-/* Simple fade animations for animate-in/out */
-@keyframes fade-in {
+/* Animation utilities - these are now handled by tw-animate-css, but keeping the block in case of custom additions later */
+/* @keyframes fade-in {
   from { opacity: 0; }
   to { opacity: 1; }
 }
@@ -209,17 +208,9 @@
   to { opacity: 0; }
 }
 
-.animate-in {
-  animation-duration: 150ms;
-  animation-timing-function: ease-out;
-  animation-fill-mode: both;
-}
-
-.animate-out {
-  animation-duration: 150ms;
-  animation-timing-function: ease-in;
-  animation-fill-mode: both;
-}
-
-.fade-in-0 { animation-name: fade-in; }
-.fade-out-0 { animation-name: fade-out; }
+@utility {
+  .animate-in { animation-duration: 150ms; animation-timing-function: ease-out; animation-fill-mode: both; }
+  .animate-out { animation-duration: 150ms; animation-timing-function: ease-in; animation-fill-mode: both; }
+  .fade-in-0 { animation-name: fade-in; }
+  .fade-out-0 { animation-name: fade-out; }
+} */

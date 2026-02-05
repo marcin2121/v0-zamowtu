@@ -225,14 +225,63 @@ export function CheckoutForm({
     try {
       const supabase = createClient()
       
-      // Check if restaurant is open
+      // Get restaurant settings
       const { data: settings } = await supabase
         .from('restaurant_settings')
-        .select('is_open')
+        .select('is_open, opening_hours')
         .eq('user_id', restaurantId)
         .single()
       
-      if (!settings?.is_open) {
+      if (!settings) {
+        setError('Nie można znaleźć restauracji.')
+        setLoading(false)
+        return
+      }
+
+      // Determine the time to check
+      let dateToCheck = new Date()
+      
+      if (isScheduled && formData.scheduledDate && formData.scheduledTime) {
+        dateToCheck = new Date(`${formData.scheduledDate}T${formData.scheduledTime}`)
+      }
+
+      // Check if restaurant is open at the specified time
+      const dayOfWeek = dateToCheck.getDay()
+      const dayNames = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday']
+      const dayName = dayNames[dayOfWeek]
+
+      if (settings.opening_hours && settings.opening_hours[dayName]) {
+        const dayHours = settings.opening_hours[dayName]
+        const openTime = dayHours.open || dayHours.openTime
+        const closeTime = dayHours.close || dayHours.closeTime
+
+        if (!openTime || !closeTime) {
+          const timeDescription = isScheduled ? 'Restauracja nie pracuje w wybranym dniu.' : 'Restauracja jest obecnie zamknięta.'
+          setError(timeDescription)
+          setLoading(false)
+          return
+        }
+
+        // Parse times
+        const [openHour, openMin] = openTime.split(':').map(Number)
+        const [closeHour, closeMin] = closeTime.split(':').map(Number)
+        const checkHour = dateToCheck.getHours()
+        const checkMin = dateToCheck.getMinutes()
+
+        const openTimeInMinutes = openHour * 60 + openMin
+        const closeTimeInMinutes = closeHour * 60 + closeMin
+        const checkTimeInMinutes = checkHour * 60 + checkMin
+
+        if (checkTimeInMinutes < openTimeInMinutes || checkTimeInMinutes > closeTimeInMinutes) {
+          const timeDescription = isScheduled 
+            ? `Restauracja nie pracuje o wybranej godzinie. Godziny otwarcia: ${openTime}-${closeTime}`
+            : `Restauracja jest Currently closed. Godziny otwarcia: ${openTime}-${closeTime}`
+          setError(timeDescription)
+          setLoading(false)
+          return
+        }
+      } else if (!isScheduled && !settings.is_open) {
+        // If not scheduled, check current open status
         setError('Restauracja jest obecnie zamknięta i nie przyjmuje zamówień.')
         setLoading(false)
         return
@@ -259,47 +308,45 @@ export function CheckoutForm({
         scheduledFor = new Date(`${formData.scheduledDate}T${formData.scheduledTime}`).toISOString()
       }
 
-      // Create order
-      const { data: order, error: orderError } = await supabase
-        .from('orders')
-        .insert({
-          restaurant_user_id: restaurantId,
-          customer_name: formData.name,
-          customer_email: formData.email || null,
-          customer_phone: formData.phone,
-          delivery_address: orderType === 'delivery' ? formData.address : 'Odbior osobisty',
-          delivery_notes: formData.notes || null,
-          order_type: orderType,
-          status: 'pending',
-          scheduled_for: scheduledFor,
-          subtotal: subtotal,
-          delivery_fee: orderType === 'delivery' ? deliveryFee : 0,
-          discount_code: discountApplied?.code || null,
-          discount_amount: discountApplied?.amount || 0,
-          loyalty_discount: loyaltyDiscount,
-          customer_email_for_loyalty: formData.email?.toLowerCase() || null,
-          total: finalTotal,
-        })
-        .select()
-        .single()
-
-      if (orderError) throw orderError
-
-      // Create order items
+      // Prepare order items
       const orderItems = items.map((item) => ({
-        order_id: order.id,
-        menu_item_id: item.id,
+        id: item.id,
         name: item.name,
         price: item.price,
         quantity: item.quantity,
         notes: item.notes || null,
       }))
 
-      const { error: itemsError } = await supabase
-        .from('order_items')
-        .insert(orderItems)
+      // Create order via API (uses service_role to bypass RLS)
+      const createOrderRes = await fetch('/api/orders/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          restaurantId,
+          customerName: formData.name,
+          customerEmail: formData.email || null,
+          customerPhone: formData.phone,
+          deliveryAddress: orderType === 'delivery' ? formData.address : 'Odbior osobisty',
+          deliveryNotes: formData.notes || null,
+          orderType,
+          scheduledFor,
+          subtotal,
+          deliveryFee: orderType === 'delivery' ? deliveryFee : 0,
+          discountCode: discountApplied?.code || null,
+          discountAmount: discountApplied?.amount || 0,
+          loyaltyDiscount,
+          customerEmailForLoyalty: formData.email?.toLowerCase() || null,
+          total: finalTotal,
+          orderItems,
+        }),
+      })
 
-      if (itemsError) throw itemsError
+      if (!createOrderRes.ok) {
+        const errorData = await createOrderRes.json()
+        throw new Error(errorData.error || 'Nie udało się utworzyć zamówienia')
+      }
+
+      const { orderId } = await createOrderRes.json()
 
       // Update discount code usage count
       if (discountApplied) {
@@ -332,7 +379,7 @@ export function CheckoutForm({
       }
 
       // Redirect to order confirmation
-      const orderUrl = restaurantSlug ? `/r/${restaurantSlug}/order/${order.id}` : `/order/${order.id}`
+      const orderUrl = restaurantSlug ? `/r/${restaurantSlug}/order/${orderId}` : `/order/${orderId}`
       router.push(orderUrl)
       onSuccess()
     } catch (err) {
@@ -519,30 +566,39 @@ export function CheckoutForm({
           />
         </div>
 
-        {isScheduled && (
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-2">
-              <Label htmlFor="scheduledDate">Data</Label>
-              <Input
-                id="scheduledDate"
-                type="date"
-                required={isScheduled}
-                value={formData.scheduledDate}
-                onChange={(e) => setFormData({ ...formData, scheduledDate: e.target.value })}
-                min={new Date().toISOString().split('T')[0]}
-              />
+        {isScheduled ? (
+          <>
+            <p className="text-sm text-muted-foreground">
+              Wybierz dzień i godzinę, na którą chciałbyś zamawiać. Restauracja musi być otwarta o wybranym terminie.
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="space-y-2">
+                <Label htmlFor="scheduledDate">Data</Label>
+                <Input
+                  id="scheduledDate"
+                  type="date"
+                  required={isScheduled}
+                  value={formData.scheduledDate}
+                  onChange={(e) => setFormData({ ...formData, scheduledDate: e.target.value })}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="scheduledTime">Godzina</Label>
+                <Input
+                  id="scheduledTime"
+                  type="time"
+                  required={isScheduled}
+                  value={formData.scheduledTime}
+                  onChange={(e) => setFormData({ ...formData, scheduledTime: e.target.value })}
+                />
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label htmlFor="scheduledTime">Godzina</Label>
-              <Input
-                id="scheduledTime"
-                type="time"
-                required={isScheduled}
-                value={formData.scheduledTime}
-                onChange={(e) => setFormData({ ...formData, scheduledTime: e.target.value })}
-              />
-            </div>
-          </div>
+          </>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Włącz aby zamawiać na przyszły termin, nawet gdy restauracja jest teraz zamknięta.
+          </p>
         )}
       </div>
 

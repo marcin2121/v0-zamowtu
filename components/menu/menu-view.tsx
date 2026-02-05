@@ -162,7 +162,7 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
               <Clock className="w-5 h-5 text-yellow-600 dark:text-yellow-500 shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-yellow-900 dark:text-yellow-100">Restauracja jest obecnie zamknięta</p>
-                <p className="text-xs text-yellow-700 dark:text-yellow-300">Obecnie nie przyjmujemy zamówień. Sprawdź godziny otwarcia poniżej.</p>
+                <p className="text-xs text-yellow-700 dark:text-yellow-300">Możesz zamawiać na przyszły termin, gdy restauracja będzie otwarta. Sprawdź godziny otwarcia poniżej.</p>
               </div>
             </div>
           </div>
@@ -438,8 +438,8 @@ export function MenuView({ restaurantId, settings, categories, menuItems, review
               color: customStyles.textColor
             }}
           >
-            <ShoppingCart className="w-5 h-5 mr-2" />
-            <span className="font-semibold">
+            <ShoppingCart className="w-5 h-5 mr-2 text-background" />
+            <span className="font-semibold text-background">
               Koszyk ({itemCount})
             </span>
           </Button>

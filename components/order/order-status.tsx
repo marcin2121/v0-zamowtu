@@ -15,12 +15,14 @@ import {
   PartyPopper,
   Star,
   Send,
+  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Textarea } from '@/components/ui/textarea'
 import { Label } from '@/components/ui/label'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import type { Order } from '@/lib/types'
 import { createClient } from '@/lib/supabase/client'
 
@@ -53,6 +55,11 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
   const [submittingReview, setSubmittingReview] = useState(false)
   const [reviewSubmitted, setReviewSubmitted] = useState(false)
   const [existingReview, setExistingReview] = useState<boolean>(false)
+
+  // Payment state
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false)
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'p24' | 'tpay'>('p24')
+  const [processingPayment, setProcessingPayment] = useState(false)
 
   const getStatusIndex = (status: string) => {
     return ORDER_STATUSES.findIndex(s => s.key === status)
@@ -143,6 +150,36 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
       .update({ status: 'delivered', updated_at: new Date().toISOString() })
       .eq('id', order.id)
     setConfirmingDelivery(false)
+  }
+
+  const processPayment = async (method: 'p24' | 'tpay') => {
+    setProcessingPayment(true)
+    try {
+      const endpoint = `/api/payments/${method}/create`
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId: order.id,
+          returnUrl: window.location.href,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (data.error) {
+        alert(`Błąd: ${data.error}`)
+        return
+      }
+
+      // Redirect to payment gateway
+      window.location.href = data.redirectUrl
+    } catch (error) {
+      console.error('[v0] Payment error:', error)
+      alert('Błąd podczas inicjowania płatności')
+    } finally {
+      setProcessingPayment(false)
+    }
   }
 
   const submitReview = async () => {
@@ -314,18 +351,82 @@ export function OrderStatus({ order: initialOrder, restaurantName, restaurantPho
               <div className="p-4 bg-accent/10 rounded-lg mb-6">
                 <div className="flex items-center gap-3 mb-3">
                   <CreditCard className="w-5 h-5 text-accent" />
-                  <span className="font-medium">Platnosc oczekuje</span>
+                  <span className="font-medium">Płatność oczekuje</span>
                 </div>
-                <p className="text-sm text-muted-foreground mb-3">
-                  Restauracja zaakceptowala zamowienie. Skontaktuj sie z nia, aby dokonac platnosci.
-                </p>
+                
+                {!showPaymentOptions ? (
+                  <>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Restauracja zaakceptowała zamówienie. Wybierz metodę płatności.
+                    </p>
+                    <Button 
+                      className="w-full"
+                      onClick={() => setShowPaymentOptions(true)}
+                    >
+                      Dokonaj płatności online
+                    </Button>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    <p className="text-sm text-muted-foreground">
+                      Wybierz metodę płatności:
+                    </p>
+                    <RadioGroup value={selectedPaymentMethod} onValueChange={(v) => setSelectedPaymentMethod(v as 'p24' | 'tpay')}>
+                      <div className="flex items-center space-x-2 p-2 border border-border rounded-lg">
+                        <RadioGroupItem value="p24" id="p24" />
+                        <Label htmlFor="p24" className="cursor-pointer flex-1">
+                          Przelewy24
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2 p-2 border border-border rounded-lg">
+                        <RadioGroupItem value="tpay" id="tpay" />
+                        <Label htmlFor="tpay" className="cursor-pointer flex-1">
+                          TPay
+                        </Label>
+                      </div>
+                    </RadioGroup>
+
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline"
+                        className="flex-1 bg-transparent"
+                        onClick={() => {
+                          setShowPaymentOptions(false)
+                          setSelectedPaymentMethod('p24')
+                        }}
+                      >
+                        Anuluj
+                      </Button>
+                      <Button
+                        className="flex-1"
+                        onClick={() => processPayment(selectedPaymentMethod)}
+                        disabled={processingPayment}
+                      >
+                        {processingPayment ? (
+                          <>
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            Przetwarzanie...
+                          </>
+                        ) : (
+                          `Zapłać ${selectedPaymentMethod === 'p24' ? 'Przelewy24' : 'TPay'}`
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
                 {restaurantPhone && (
-                  <Button asChild className="w-full">
-                    <a href={`tel:${restaurantPhone}`}>
-                      <Phone className="w-4 h-4 mr-2" />
-                      Zadzwon: {restaurantPhone}
-                    </a>
-                  </Button>
+                  <div className="mt-3 pt-3 border-t border-border">
+                    <p className="text-xs text-muted-foreground mb-2">
+                      Masz problem? Skontaktuj się z restauracją
+                    </p>
+                    <Button asChild variant="outline" className="w-full bg-transparent">
+                      <a href={`tel:${restaurantPhone}`}>
+                        <Phone className="w-4 h-4 mr-2" />
+                        Zadzwoń: {restaurantPhone}
+                      </a>
+                    </Button>
+                  </div>
                 )}
               </div>
             )}
