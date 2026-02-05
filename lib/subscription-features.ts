@@ -13,11 +13,11 @@ export const PROFESSIONAL_FEATURES = [
   'reviews',
   'statistics',
   'payments',
-  'professional',
+  'pro',
 ]
 
 export function hasFeature(plan: string, feature: string): boolean {
-  if (plan === 'professional') {
+  if (plan === 'pro') {
     return PROFESSIONAL_FEATURES.includes(feature)
   }
   return STARTER_FEATURES.includes(feature)

@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ThemeSwitcher } from '@/components/theme-switcher'
+import { ContactForm } from '@/components/contact-form'
 import { 
   Utensils, 
   ShoppingBag, 
@@ -86,7 +87,7 @@ const pricingPlans = [
   {
     name: 'Starter',
     price: '99',
-    description: 'Standard',
+    description: 'Plan podstawowy',
     features: [
       'Płatności online (Przelewy24)',
       'Menu i zamówienia',
@@ -101,9 +102,9 @@ const pricingPlans = [
     link: '/auth/sign-up?plan=starter'
   },
   {
-    name: 'Professional',
+    name: 'Pro',
     price: '199',
-    description: 'Premium',
+    description: 'Plan premium',
     features: [
       'Wszystko w Starter +',
       'Zaawansowane statystyki',
@@ -113,10 +114,10 @@ const pricingPlans = [
       'Personalizacja menu (kolory, logo)',
       'Priorytetowe wsparcie'
     ],
-    cta: 'Wybierz Professional',
+    cta: 'Wybierz Pro',
     highlight: true,
     price_period: 'zł/mies.',
-    link: '/auth/sign-up?plan=professional'
+    link: '/auth/sign-up?plan=pro'
   },
   {
     name: 'Enterprise',
@@ -141,7 +142,7 @@ const pricingPlans = [
   {
     name: 'Anna Kowalska',
     restaurant: 'Pizzeria Roma',
-    content: 'Od kiedy korzystamy z ZamówTu, liczba zamówień online wzrosła o 40%. Program lojalności bardzo pomaga klientom powracać.',
+    content: 'Od kiedy korzystamy z ZamówTu, liczba zamówień online wzrosła o 40%. Program lojalności bardzo zachęca klientów do powrotu.',
     rating: 5
   },
   {
@@ -179,6 +180,9 @@ export default function LandingPage() {
             <a href="#opinie" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Opinie
             </a>
+            <a href="#kontakt" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Kontakt
+            </a>
             <Link href="/demo" className="text-sm text-primary font-medium hover:text-primary/80 transition-colors">
               Demo
             </Link>
@@ -204,7 +208,7 @@ export default function LandingPage() {
               Zwiększ z nami swoją sprzedaż
             </div>
             <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-foreground mb-6 text-balance">
-              System zamówień online który pomaga Ci zdobywać klientów
+              System zamówień online, który pomaga Ci zdobywać klientów
             </h1>
             <p className="text-xl text-muted-foreground mb-8 text-balance leading-relaxed">
               Od 99 zł/mies. otrzymujesz płatności online, menu, zamówienia i harmonogram. Za 199 zł/mies. dodajemy kody rabatowe, program lojalności i zaawansowane statystyki.
@@ -258,7 +262,7 @@ export default function LandingPage() {
 
           {/* Pro Features */}
           <div>
-            <h3 className="text-lg font-semibold text-foreground mb-8 text-center">Tylko w planie Professional</h3>
+            <h3 className="text-lg font-semibold text-foreground mb-8 text-center">Tylko w planie Pro</h3>
             <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
               {features.filter(f => f.pro).map((feature) => (
                 <div key={feature.title} className="flex gap-4 p-4 rounded-lg border border-primary/20 bg-primary/5 hover:border-primary/50 transition-colors">
@@ -287,7 +291,7 @@ export default function LandingPage() {
               Prosty cennik dla każdej restauracji
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Zacznij z bazowym planem za 99 zł. Przejdź na Professional kiedy chcesz.
+              Zacznij z bazowym planem za 99 zł. Przejdź na Pro kiedy chcesz.
             </p>
           </div>
           <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
@@ -364,6 +368,27 @@ export default function LandingPage() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="kontakt" className="py-20 bg-muted/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Masz pytania?
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              Skontaktuj się z nami. Odpowiemy jak najszybciej.
+            </p>
+          </div>
+          <div className="flex justify-center">
+            <Card className="w-full max-w-md">
+              <CardContent className="pt-6">
+                <ContactForm />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

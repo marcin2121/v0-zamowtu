@@ -50,7 +50,7 @@ const navItems = [
   { href: '/dashboard/scheduled', label: 'Zaplanowane', icon: Calendar, feature: 'menu' },
   { href: '/dashboard/menu', label: 'Menu', icon: UtensilsCrossed, feature: 'menu' },
   { href: '/dashboard/suggestions', label: 'Sugestie', icon: Lightbulb, feature: 'statistics' },
-  { href: '/dashboard/customize', label: 'Personalizacja', icon: Palette, feature: 'professional' },
+  { href: '/dashboard/customize', label: 'Personalizacja', icon: Palette, feature: 'pro' },
   { href: '/dashboard/discounts', label: 'Kody rabatowe', icon: Tag, feature: 'discount_codes' },
   { href: '/dashboard/loyalty', label: 'Lojalność', icon: Crown, feature: 'loyalty_program' },
   { href: '/dashboard/reviews', label: 'Opinie', icon: Star, feature: 'reviews' },
@@ -131,7 +131,7 @@ export function DashboardNav({ user, settings }: DashboardNavProps) {
         <div className="p-3 bg-primary/10 border border-primary/20 rounded-lg dark:bg-primary/5 dark:border-primary/10">
           <p className="text-xs text-muted-foreground mb-1">Aktualny plan:</p>
           <p className="font-semibold text-foreground mb-2">
-            {settings?.subscription_plan === 'professional' ? 'Professional (199 zł/mies.)' : 'Starter (99 zł/mies.)'}
+            {settings?.subscription_plan === 'pro' ? 'Pro (199 zł/mies.)' : 'Starter (99 zł/mies.)'}
           </p>
           {settings?.subscription_plan === 'starter' && (
             <Button 
@@ -140,7 +140,7 @@ export function DashboardNav({ user, settings }: DashboardNavProps) {
               className="w-full text-xs"
             >
               <Link href="/dashboard/billing">
-                Upgrade do Professional
+                Upgrade do Pro
               </Link>
             </Button>
           )}

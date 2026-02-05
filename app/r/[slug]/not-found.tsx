@@ -13,13 +13,13 @@ export default function NotFound() {
           Restauracja nie znaleziona
         </h1>
         <p className="text-muted-foreground mb-8 max-w-md">
-          Przepraszamy, nie znalezlismy restauracji o podanym adresie. 
-          Sprawdz czy adres jest poprawny lub wyszukaj restauracje na naszej stronie.
+          Przepraszamy, nie znaleźliśmy restauracji o podanej nazwie. 
+          Sprawdź czy adres jest poprawny lub wyszukaj restauracje na naszej stronie.
         </p>
         <Link href="/">
           <Button>
             <Home className="w-4 h-4 mr-2" />
-            Wróć na stronę glowną
+            Wróć na stronę główną
           </Button>
         </Link>
       </div>
