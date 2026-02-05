@@ -41,9 +41,9 @@ export function CartDrawer({ open, onClose, settings, restaurantId, restaurantSl
   const missingAmount = settings.min_order_value - subtotal
   const progressPercent = Math.min((subtotal / settings.min_order_value) * 100, 100)
 
-  const primaryColor = customStyles?.primaryColor || '#ea580c'
-  const accentColor = customStyles?.accentColor || '#16a34a'
-  const secondaryColor = customStyles?.secondaryColor || '#1c1917'
+  const primaryColor = customStyles?.primaryColor || '#1c1917'
+  const accentColor = customStyles?.accentColor || '#1c1917'
+  const secondaryColor = customStyles?.secondaryColor || '#ffffff'
   const textColor = customStyles?.textColor || '#1c1917'
 
   const drawerStyle = customStyles ? {

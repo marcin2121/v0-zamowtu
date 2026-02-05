@@ -1,11 +1,11 @@
-import { createClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
-    const supabase = await createClient()
+    const supabase = createAdminClient()
 
     // Create order using service_role (bypass RLS)
     const { data: order, error: orderError } = await supabase
