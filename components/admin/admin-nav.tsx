@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Building2, BarChart3, Headset, Shield } from 'lucide-react'
 
@@ -22,7 +23,13 @@ export function AdminNav() {
               href="/admin/restaurants"
               className="flex items-center gap-2 font-bold text-foreground"
             >
-              <Shield className="w-5 h-5 text-primary" />
+              <Image 
+                src="/logo1.png" 
+                alt="Admin Logo" 
+                width={20} 
+                height={20}
+                className="w-5 h-5 rounded"
+              />
               <span>Admin Panel</span>
             </Link>
             <nav className="flex items-center gap-1">

@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   LayoutDashboard,
   ShoppingBag,
@@ -89,10 +90,17 @@ export function DashboardNav({ user, settings }: DashboardNavProps) {
   const NavContent = () => (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border dark:border-slate-800">
+      <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
+                <Utensils className="w-5 h-5 text-primary-foreground" />
+              </div>
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
-            <UtensilsCrossed className="w-5 h-5 text-primary-foreground" />
-          </div>
+          <Image 
+            src="/logo.png" 
+            alt="Logo" 
+            width={40} 
+            height={40}
+            className="w-10 h-10 rounded-lg"
+          />
           <div className="flex-1 min-w-0">
             <h2 className="font-semibold text-foreground truncate">
               {settings?.restaurant_name || 'Moja Restauracja'}

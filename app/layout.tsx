@@ -16,15 +16,15 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: '/favicon-32x32.png',
+        url: '/logo1.png',
         media: '(prefers-color-scheme: light)',
       },
       {
-        url: '/favicon-32x32.png',
+        url: '/logo1.png',
         media: '(prefers-color-scheme: dark)',
       },
     ],
-    apple: '/favicon-32x32.png',
+    apple: '/logo1.png',
   },
     generator: 'v0.app'
 }
