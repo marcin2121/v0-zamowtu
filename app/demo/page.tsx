@@ -2,89 +2,41 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-// DODANO IMPORTY FRAMER-MOTION
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
-  UtensilsCrossed, 
-  ShoppingBag,
-  Tag,
-  Crown,
-  BarChart3,
-  Star,
-  Palette,
-  Settings,
-  History,
-  CreditCard,
-  ArrowLeft,
-  Sparkles,
-  Clock,
-  Check,
-  X,
-  Phone,
-  MapPin,
-  Truck,
-  ChefHat,
-  Lock,
-  TrendingUp,
-  Users,
-  ShoppingCart,
-  ExternalLink,
-  Pause,
-  Play,
-  Calendar,
-  Lightbulb,
-  Menu as MenuIcon
+  UtensilsCrossed, ShoppingBag, Tag, Crown, BarChart3, Star, Palette, Settings, 
+  History, CreditCard, ArrowLeft, Sparkles, Clock, Check, X, Phone, MapPin, 
+  Truck, ChefHat, Lock, TrendingUp, Users, ShoppingCart, ExternalLink, 
+  Play, Calendar, Lightbulb, Menu as MenuIcon 
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 
+// Konfiguracja nawigacji
 const navItems = [
   { id: 'orders', label: 'Zamówienia', icon: ShoppingBag, pro: false },
-  { id: 'scheduled', label: 'Zaplanowane', icon: Calendar, pro: false },
+  { id: 'stats', label: 'Statystyki', icon: BarChart3, pro: true },
   { id: 'menu', label: 'Menu', icon: UtensilsCrossed, pro: false },
-  { id: 'suggestions', label: 'Sugestie', icon: Lightbulb, pro: true },
-  { id: 'customize', label: 'Personalizacja', icon: Palette, pro: true },
-  { id: 'discounts', label: 'Kody rabatowe', icon: Tag, pro: true },
+  { id: 'scheduled', label: 'Zaplanowane', icon: Calendar, pro: false },
   { id: 'loyalty', label: 'Lojalność', icon: Crown, pro: true },
   { id: 'reviews', label: 'Opinie', icon: Star, pro: true },
-  { id: 'history', label: 'Historia', icon: History, pro: false },
-  { id: 'stats', label: 'Statystyki', icon: BarChart3, pro: true },
-  { id: 'settings', label: 'Ustawienia', icon: Settings, pro: false },
   { id: 'billing', label: 'Rozliczenia', icon: CreditCard, pro: false },
+  { id: 'settings', label: 'Ustawienia', icon: Settings, pro: false },
 ]
 
+// Dane Demo
 const demoOrders = [
-  { id: '1', customer_name: 'Jan Kowalski', customer_phone: '123 456 789', customer_address: 'ul. Warszawska 15/3, 00-001 Warszawa', status: 'pending', total: 89.00, delivery_type: 'delivery', created_at: '12:45', items: [{ name: 'Pizza Margherita', quantity: 2, price: 32.00 }, { name: 'Cola 0.5L', quantity: 2, price: 8.00 }, { name: 'Tiramisu', quantity: 1, price: 17.00 }] },
-  { id: '2', customer_name: 'Anna Nowak', customer_phone: '987 654 321', customer_address: null, status: 'preparing', total: 76.00, delivery_type: 'pickup', created_at: '12:30', items: [{ name: 'Pizza Pepperoni', quantity: 1, price: 38.00 }, { name: 'Spaghetti Carbonara', quantity: 1, price: 34.00 }, { name: 'Woda mineralna', quantity: 1, price: 6.00 }] },
-  { id: '3', customer_name: 'Piotr Wiśniewski', customer_phone: '555 123 456', customer_address: 'ul. Krakowska 42, 00-025 Warszawa', status: 'ready', total: 122.00, delivery_type: 'delivery', created_at: '12:15', items: [{ name: 'Pizza Quattro Formaggi', quantity: 2, price: 42.00 }, { name: 'Sałatka Cesarska', quantity: 1, price: 32.00 }, { name: 'Tiramisu', quantity: 1, price: 17.00 }] }
+  { id: '1', customer_name: 'Jan Kowalski', customer_phone: '123 456 789', status: 'pending', total: 89.00, created_at: '12:45', items: [{ name: 'Pizza Margherita', quantity: 2, price: 32.00 }] },
+  { id: '2', customer_name: 'Anna Nowak', customer_phone: '987 654 321', status: 'preparing', total: 76.00, created_at: '12:30', items: [{ name: 'Spaghetti Carbonara', quantity: 1, price: 34.00 }] }
 ]
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  pending: { label: 'Nowe', color: 'bg-yellow-500 text-white' },
-  accepted: { label: 'Przyjęte', color: 'bg-blue-500 text-white' },
-  preparing: { label: 'W przygotowaniu', color: 'bg-purple-500 text-white' },
-  ready: { label: 'Gotowe', color: 'bg-green-500 text-white' },
-}
-
-const demoStats = {
-  revenue: 12450,
-  orders: 156,
-  avgOrder: 79.81,
-  returningCustomers: 42,
-  topProducts: [
-    { name: 'Pizza Margherita', orders: 45, revenue: 1440 },
-    { name: 'Pizza Pepperoni', orders: 38, revenue: 1444 },
-    { name: 'Spaghetti Carbonara', orders: 29, revenue: 986 },
-  ]
-}
+const demoStats = { revenue: '12 450', orders: 156, avgOrder: 79, returning: 42 }
 
 export default function DemoPage() {
   const [selectedPlan, setSelectedPlan] = useState<'starter' | 'professional'>('professional')
   const [activeSection, setActiveSection] = useState('orders')
-  const [isPaused, setIsPaused] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-
   const isPro = selectedPlan === 'professional'
 
   const NavContent = () => (
@@ -92,41 +44,19 @@ export default function DemoPage() {
       {navItems.map((item) => {
         const isActive = activeSection === item.id
         const isLocked = item.pro && !isPro
-        
         return (
           <button
             key={item.id}
-            onClick={() => {
-                if(!isLocked) {
-                    setActiveSection(item.id)
-                    setIsMobileMenuOpen(false)
-                }
-            }}
-            className={`w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-lg transition-colors text-left text-sm ${
-              isActive
-                ? 'bg-orange-600 text-white'
-                : isLocked
-                  ? 'text-muted-foreground/40 cursor-not-allowed'
-                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-            }`}
+            onClick={() => { if(!isLocked) { setActiveSection(item.id); setIsMobileMenuOpen(false); } }}
+            className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all text-left text-sm ${isActive ? 'bg-orange-600 text-white shadow-lg shadow-orange-900/20' : isLocked ? 'opacity-30 cursor-not-allowed text-zinc-500' : 'text-zinc-400 hover:bg-white/5 hover:text-white'}`}
             disabled={isLocked}
           >
-            <item.icon className="w-5 h-5 shrink-0" />
-            <span className="flex-1 font-medium">{item.label}</span>
-            {isLocked && <Lock className="w-4 h-4" />}
+            <item.icon size={18} />
+            <span className="flex-1 font-bold">{item.label}</span>
+            {isLocked && <Lock size={14} />}
           </button>
         )
       })}
-      
-      <div className="pt-4 border-t mt-auto">
-        <Link 
-          href="/r/demo" 
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-colors text-sm"
-        >
-          <ExternalLink className="w-5 h-5" />
-          <span className="flex-1">Strona klienta</span>
-        </Link>
-      </div>
     </nav>
   )
 
@@ -134,15 +64,11 @@ export default function DemoPage() {
     const navItem = navItems.find(item => item.id === activeSection)
     if (navItem?.pro && !isPro) {
       return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-          <Lock className="w-16 h-16 text-muted-foreground mb-4 opacity-20" />
-          <h2 className="text-2xl font-bold mb-2 text-white">Funkcja Pro</h2>
-          <p className="text-muted-foreground mb-6 max-w-xs text-sm">
-            {navItem.label} to funkcja dostępna tylko w planie Pro.
-          </p>
-          <Button onClick={() => setSelectedPlan('professional')} className="bg-orange-600 hover:bg-orange-700 font-black uppercase text-xs">
-            Przełącz na Pro
-          </Button>
+        <div className="flex flex-col items-center justify-center min-h-[50vh] text-center p-6">
+          <div className="w-20 h-20 bg-orange-600/10 rounded-full flex items-center justify-center mb-6"><Lock className="text-orange-500" size={32} /></div>
+          <h2 className="text-2xl font-black text-white mb-2 uppercase italic">Funkcja Professional</h2>
+          <p className="text-zinc-500 mb-8 max-w-xs text-sm">Sekcja {navItem.label} jest dostępna dla restauracji z aktywnym planem Pro.</p>
+          <Button onClick={() => setSelectedPlan('professional')} className="bg-orange-600 hover:bg-orange-700 font-black uppercase text-[10px] tracking-widest px-8 h-12 rounded-full">Przełącz na PRO</Button>
         </div>
       )
     }
@@ -150,65 +76,33 @@ export default function DemoPage() {
     switch (activeSection) {
       case 'orders':
         return (
-          <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold text-white tracking-tight">Aktywne zamówienia</h1>
-              <p className="text-muted-foreground text-sm">Zarządzaj bieżącymi zamówieniami klientów</p>
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex flex-col gap-1">
+                <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">Zamówienia</h1>
+                <p className="text-zinc-500 text-xs font-bold uppercase tracking-widest">Bieżąca obsługa kuchni</p>
             </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-yellow-500/10 border border-yellow-500/20">
-                <div className="flex items-center gap-3 text-yellow-600 dark:text-yellow-500">
-                  <Clock className="w-5 h-5" />
-                  <span className="font-bold text-sm">Nowe</span>
-                </div>
-                <span className="text-2xl font-black text-yellow-600">2</span>
-              </div>
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-purple-500/10 border border-purple-500/20">
-                <div className="flex items-center gap-3 text-purple-600 dark:text-purple-500">
-                  <ChefHat className="w-5 h-5" />
-                  <span className="font-bold text-sm">W kuchni</span>
-                </div>
-                <span className="text-2xl font-black text-purple-600">1</span>
-              </div>
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-green-500/10 border border-green-500/20">
-                <div className="flex items-center gap-3 text-green-600 dark:text-green-500">
-                  <Check className="w-5 h-5" />
-                  <span className="font-bold text-sm">Gotowe</span>
-                </div>
-                <span className="text-2xl font-black text-green-600">1</span>
-              </div>
-            </div>
-
             <div className="grid gap-4">
               {demoOrders.map((order) => (
-                <Card key={order.id} className="overflow-hidden border-white/5 bg-zinc-900/40 backdrop-blur-sm rounded-2xl">
+                <Card key={order.id} className="border-white/5 bg-zinc-900/50 rounded-3xl overflow-hidden backdrop-blur-md">
                   <CardContent className="p-0">
-                    <div className="p-4 border-b border-white/5 bg-white/5 flex items-start justify-between">
-                        <div className="flex flex-col gap-1">
-                            <span className="font-bold text-base text-white">{order.customer_name}</span>
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                                <Phone className="w-3 h-3 text-orange-500" /> {order.customer_phone}
-                            </span>
-                        </div>
-                        <div className="flex flex-col items-end gap-1">
-                            <Badge className={`${statusLabels[order.status].color} border-none font-black text-[9px] uppercase tracking-widest px-2 h-5`}>
-                                {statusLabels[order.status].label}
-                            </Badge>
-                            <span className="text-lg font-black text-orange-500 tracking-tighter">{order.total.toFixed(2)} zł</span>
-                        </div>
+                    <div className="p-5 border-b border-white/5 bg-white/5 flex justify-between items-start">
+                      <div className="space-y-1">
+                        <p className="text-white font-black text-lg leading-none">{order.customer_name}</p>
+                        <p className="text-zinc-500 text-xs flex items-center gap-1 font-bold"><Phone size={12} className="text-orange-500"/> {order.customer_phone}</p>
+                      </div>
+                      <div className="text-right space-y-2">
+                        <Badge className={`${order.status === 'pending' ? 'bg-yellow-500' : 'bg-blue-500'} text-white font-black text-[9px] uppercase tracking-widest border-none`}>{order.status === 'pending' ? 'Nowe' : 'W kuchni'}</Badge>
+                        <p className="text-xl font-black text-orange-500 tracking-tighter">{order.total.toFixed(2)} zł</p>
+                      </div>
                     </div>
-                    <div className="p-4 space-y-2 text-zinc-300">
-                      {order.items.map((item, i) => (
-                        <div key={i} className="flex justify-between text-sm">
-                          <span><span className="text-white font-bold">{item.quantity}x</span> {item.name}</span>
-                          <span className="font-medium text-white">{(item.quantity * item.price).toFixed(2)} zł</span>
+                    <div className="p-5 space-y-3">
+                        {order.items.map((item, i) => (
+                            <div key={i} className="flex justify-between text-sm"><span className="text-zinc-400 font-medium"><span className="text-white font-black">{item.quantity}x</span> {item.name}</span><span className="text-white font-bold">{item.price.toFixed(2)} zł</span></div>
+                        ))}
+                        <div className="flex gap-2 pt-2">
+                            <Button className="flex-1 bg-orange-600 hover:bg-orange-700 font-black uppercase text-[10px] tracking-widest h-12 rounded-2xl">Przyjmij</Button>
+                            <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 h-12 px-5 rounded-2xl"><X size={18}/></Button>
                         </div>
-                      ))}
-                    </div>
-                    <div className="p-4 pt-0 flex gap-2">
-                      <Button size="sm" className="flex-1 bg-orange-600 hover:bg-orange-700 font-black uppercase text-[10px] tracking-widest h-10">PRZYJMIJ</Button>
-                      <Button size="sm" variant="outline" className="border-white/10 text-white hover:bg-white/5 h-10 px-4"><X className="w-4 h-4" /></Button>
                     </div>
                   </CardContent>
                 </Card>
@@ -216,132 +110,134 @@ export default function DemoPage() {
             </div>
           </div>
         )
+      case 'stats':
+        return (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 text-white">
+            <h1 className="text-3xl font-black italic uppercase tracking-tighter">Statystyki</h1>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { label: 'Przychód', val: `${demoStats.revenue} zł`, icon: TrendingUp },
+                { label: 'Zamówienia', val: demoStats.orders, icon: ShoppingBag },
+                { label: 'Śr. Koszyk', val: `${demoStats.avgOrder} zł`, icon: ShoppingCart },
+                { label: 'Powracający', val: `${demoStats.returning}%`, icon: Users },
+              ].map((s, i) => (
+                <div key={i} className="p-5 rounded-3xl bg-white/5 border border-white/5 flex flex-col items-center text-center">
+                  <s.icon className="text-orange-500 mb-2" size={20} />
+                  <span className="text-lg font-black tracking-tighter">{s.val}</span>
+                  <span className="text-[9px] uppercase font-black text-zinc-500 tracking-widest">{s.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      case 'menu':
+        return (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="flex items-end justify-between">
+                <h1 className="text-3xl font-black text-white italic uppercase tracking-tighter">Menu</h1>
+                <Button className="bg-white text-black font-black text-[10px] uppercase h-8 px-4 rounded-full">Dodaj +</Button>
+            </div>
+            <div className="grid gap-3">
+                {['Pizza Margherita', 'Pizza Pepperoni', 'Carbonara'].map((item, i) => (
+                    <div key={i} className="p-4 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-zinc-800 rounded-xl flex items-center justify-center text-xl">🍕</div>
+                            <div>
+                                <p className="text-white font-black text-sm">{item}</p>
+                                <p className="text-orange-500 font-bold text-xs">32.00 zł</p>
+                            </div>
+                        </div>
+                        <Badge className="bg-green-500/10 text-green-500 border-none text-[8px] font-black uppercase">Aktywny</Badge>
+                    </div>
+                ))}
+            </div>
+          </div>
+        )
       default:
         return (
-          <div className="flex flex-col items-center justify-center min-h-[40vh] text-center opacity-30">
-            <Settings className="w-12 h-12 mb-4 text-zinc-500 animate-spin-slow" />
-            <p className="font-black text-white uppercase tracking-[0.2em] text-[10px]">Sekcja w przygotowaniu</p>
+          <div className="flex flex-col items-center justify-center min-h-[40vh] opacity-20">
+            <Settings className="animate-spin-slow mb-4 text-white" size={40} />
+            <p className="font-black text-white uppercase tracking-widest text-[10px]">Synchronizacja danych...</p>
           </div>
         )
     }
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 font-sans selection:bg-orange-500 selection:text-white">
-      {/* Dynamicznie ułożony Header dla Mobile */}
-      <header className="sticky top-0 z-[100] bg-zinc-900/90 border-b border-white/5 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-2 lg:gap-4 overflow-hidden">
-            <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden text-white hover:bg-white/5">
-              <MenuIcon className="w-6 h-6" />
+    <div className="min-h-screen bg-zinc-950 font-sans selection:bg-orange-500">
+      {/* NAGŁÓWEK - USUNIĘTO POWRÓT */}
+      <header className="sticky top-0 z-[100] bg-zinc-900/90 border-b border-white/5 backdrop-blur-xl h-16 sm:h-20 flex items-center">
+        <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(true)} className="lg:hidden text-white hover:bg-white/5 rounded-xl">
+              <MenuIcon size={24} />
             </Button>
-            <Link href="/" className="shrink-0">
-                <Button variant="ghost" size="sm" className="text-zinc-400 hover:text-white gap-2 px-0 sm:px-3">
-                    <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline font-bold">Powrót</span>
-                </Button>
-            </Link>
-            <div className="flex items-center gap-2 border-l border-white/10 pl-2 lg:pl-4 truncate">
-              <Sparkles className="w-4 h-4 text-orange-500 shrink-0" />
-              <span className="font-black text-[10px] sm:text-xs uppercase text-white tracking-tighter truncate">Panel Demo</span>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-orange-600/20"><UtensilsCrossed size={20}/></div>
+              <div className="flex flex-col -space-y-1">
+                <span className="font-black text-white uppercase tracking-tighter italic text-sm sm:text-base">Pizzeria Demo</span>
+                <div className="flex items-center gap-1.5"><div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"/><span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">Live Preview</span></div>
+              </div>
             </div>
           </div>
           
           <div className="flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/10">
-              <button onClick={() => setSelectedPlan('starter')} className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all ${selectedPlan === 'starter' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' : 'text-zinc-500'}`}>Starter</button>
-              <button onClick={() => setSelectedPlan('professional')} className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase transition-all ${selectedPlan === 'professional' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' : 'text-zinc-500'}`}>Pro</button>
+            <div className="hidden md:flex bg-white/5 p-1 rounded-full border border-white/5">
+              {['starter', 'professional'].map(p => (
+                <button key={p} onClick={() => setSelectedPlan(p as any)} className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase transition-all ${selectedPlan === p ? 'bg-orange-600 text-white shadow-lg' : 'text-zinc-500'}`}>{p}</button>
+              ))}
             </div>
-            <Button className="bg-orange-600 hover:bg-orange-700 text-[10px] font-black uppercase tracking-widest px-4 h-10 shadow-lg shadow-orange-600/10">Zapisz się</Button>
+            <Button className="bg-orange-600 hover:bg-orange-700 text-[10px] font-black uppercase tracking-[0.2em] px-6 h-10 sm:h-12 rounded-2xl shadow-xl shadow-orange-600/10">Zapisz się</button>
           </div>
-        </div>
-
-        {/* Pasek planu na mobile pod headerem */}
-        <div className="md:hidden flex px-4 pb-3 pt-1 gap-2">
-            <button 
-                onClick={() => setSelectedPlan('starter')} 
-                className={`flex-1 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${selectedPlan === 'starter' ? 'bg-orange-600 border-orange-600 text-white' : 'bg-white/5 border-white/5 text-zinc-500'}`}
-            >
-                Starter (99zł)
-            </button>
-            <button 
-                onClick={() => setSelectedPlan('professional')} 
-                className={`flex-1 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest border transition-all ${selectedPlan === 'professional' ? 'bg-orange-600 border-orange-600 text-white' : 'bg-white/5 border-white/5 text-zinc-500'}`}
-            >
-                Professional (199zł)
-            </button>
         </div>
       </header>
 
-      {/* Drawer Mobilny (Wysuwany z lewej) */}
-      <AnimatePresence>
-        {isMobileMenuOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }} 
-              animate={{ opacity: 1 }} 
-              exit={{ opacity: 0 }} 
-              onClick={() => setIsMobileMenuOpen(false)} 
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[150] lg:hidden" 
-            />
-            <motion.div 
-              initial={{ x: '-100%' }} 
-              animate={{ x: 0 }} 
-              exit={{ x: '-100%' }} 
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }} 
-              className="fixed left-0 top-0 bottom-0 w-[280px] bg-zinc-900 z-[200] lg:hidden flex flex-col border-r border-white/5 shadow-2xl p-6"
-            >
-              <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 bg-orange-600 rounded-lg flex items-center justify-center text-white"><UtensilsCrossed size={18}/></div>
-                  <span className="font-black text-sm uppercase text-white tracking-tight">Pizzeria Demo</span>
-                </div>
-                <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} className="text-zinc-500 hover:text-white"><X/></Button>
-              </div>
-              <div className="flex-1 overflow-y-auto no-scrollbar">
-                <NavContent />
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* PASEK PLANU NA MOBILE */}
+      <div className="lg:hidden flex px-6 py-3 gap-2 border-b border-white/5 bg-zinc-950">
+        {['starter', 'professional'].map(p => (
+            <button key={p} onClick={() => setSelectedPlan(p as any)} className={`flex-1 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest border transition-all ${selectedPlan === p ? 'bg-orange-600 border-orange-600 text-white shadow-lg shadow-orange-900/20' : 'bg-white/5 border-white/5 text-zinc-500'}`}>{p === 'starter' ? 'Starter (99zł)' : 'Pro (199zł)'}</button>
+        ))}
+      </div>
 
-      <div className="flex max-w-7xl mx-auto">
-        {/* Desktop Sidebar (Zostaje bez zmian) */}
-        <aside className="w-64 min-h-[calc(100vh-64px)] border-r border-white/5 sticky top-16 hidden lg:flex flex-col p-4 bg-zinc-950">
-          <div className="p-4 mb-4 bg-white/5 rounded-2xl border border-white/5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center shadow-lg shadow-orange-600/20"><UtensilsCrossed className="w-5 h-5 text-white" /></div>
-              <div>
-                <h2 className="font-black text-xs uppercase text-white leading-none mb-1">Pizzeria Demo</h2>
-                <Badge className="bg-green-500/20 text-green-500 text-[8px] font-black uppercase h-4 border-none px-1.5">Online</Badge>
-              </div>
-            </div>
-          </div>
+      <div className="flex max-w-7xl mx-auto px-6">
+        {/* SIDEBAR DESKTOP */}
+        <aside className="w-64 min-h-[calc(100vh-80px)] border-r border-white/5 sticky top-20 hidden lg:flex flex-col py-8 pr-6">
           <NavContent />
-          <div className="p-4 mt-auto border-t border-white/5">
-             <p className="text-[10px] text-zinc-600 font-black uppercase tracking-widest mb-1">Plan</p>
-             <p className="text-xs font-bold text-orange-500 uppercase">{selectedPlan}</p>
+          <div className="mt-auto p-5 rounded-3xl bg-orange-600/5 border border-orange-600/10 text-center">
+             <Sparkles className="mx-auto text-orange-500 mb-2" size={20} />
+             <p className="text-[10px] text-zinc-400 font-black uppercase tracking-widest mb-1">Twoja Restauracja</p>
+             <p className="text-sm font-black text-white italic uppercase tracking-tighter">Już od 99 zł / mc</p>
           </div>
         </aside>
 
-        {/* Główne okno treści */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-10 min-w-0">
-          <div className="max-w-4xl mx-auto">
+        {/* MAIN CONTENT */}
+        <main className="flex-1 py-8 lg:py-12 lg:pl-12">
+          <div className="max-w-3xl">
             {renderContent()}
           </div>
         </main>
       </div>
 
+      {/* DRAWER MOBILE */}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMobileMenuOpen(false)} className="fixed inset-0 bg-black/90 backdrop-blur-md z-[150]" />
+            <motion.div initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="fixed left-0 top-0 bottom-0 w-[300px] bg-zinc-900 z-[200] flex flex-col border-r border-white/5 shadow-2xl p-8" >
+              <div className="flex items-center justify-between mb-10">
+                <div className="flex items-center gap-3"><div className="w-10 h-10 bg-orange-600 rounded-xl flex items-center justify-center text-white"><UtensilsCrossed size={20}/></div><span className="font-black text-lg text-white italic uppercase tracking-tighter">Panel Demo</span></div>
+                <Button variant="ghost" size="icon" onClick={() => setIsMobileMenuOpen(false)} className="text-zinc-500 hover:text-white rounded-full bg-white/5"><X/></Button>
+              </div>
+              <NavContent />
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
       <style jsx global>{`
         .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        @keyframes spin-slow {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        .animate-spin-slow {
-          animation: spin-slow 8s linear infinite;
-        }
+        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .animate-spin-slow { animation: spin-slow 12s linear infinite; }
       `}</style>
     </div>
   )
