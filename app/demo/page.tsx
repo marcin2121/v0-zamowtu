@@ -165,7 +165,6 @@ export default function DemoPage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 font-sans selection:bg-orange-500">
-      {/* NAGŁÓWEK - USUNIĘTO POWRÓT */}
       <header className="sticky top-0 z-[100] bg-zinc-900/90 border-b border-white/5 backdrop-blur-xl h-16 sm:h-20 flex items-center">
         <div className="max-w-7xl mx-auto px-6 w-full flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -187,12 +186,11 @@ export default function DemoPage() {
                 <button key={p} onClick={() => setSelectedPlan(p as any)} className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase transition-all ${selectedPlan === p ? 'bg-orange-600 text-white shadow-lg' : 'text-zinc-500'}`}>{p}</button>
               ))}
             </div>
-            <Button className="bg-orange-600 hover:bg-orange-700 text-[10px] font-black uppercase tracking-[0.2em] px-6 h-10 sm:h-12 rounded-2xl shadow-xl shadow-orange-600/10">Zapisz się</button>
+            <Button className="bg-orange-600 hover:bg-orange-700 text-[10px] font-black uppercase tracking-[0.2em] px-6 h-10 sm:h-12 rounded-2xl shadow-xl shadow-orange-600/10">Zapisz się</Button>
           </div>
         </div>
       </header>
 
-      {/* PASEK PLANU NA MOBILE */}
       <div className="lg:hidden flex px-6 py-3 gap-2 border-b border-white/5 bg-zinc-950">
         {['starter', 'professional'].map(p => (
             <button key={p} onClick={() => setSelectedPlan(p as any)} className={`flex-1 py-3 rounded-2xl text-[9px] font-black uppercase tracking-widest border transition-all ${selectedPlan === p ? 'bg-orange-600 border-orange-600 text-white shadow-lg shadow-orange-900/20' : 'bg-white/5 border-white/5 text-zinc-500'}`}>{p === 'starter' ? 'Starter (99zł)' : 'Pro (199zł)'}</button>
@@ -200,7 +198,6 @@ export default function DemoPage() {
       </div>
 
       <div className="flex max-w-7xl mx-auto px-6">
-        {/* SIDEBAR DESKTOP */}
         <aside className="w-64 min-h-[calc(100vh-80px)] border-r border-white/5 sticky top-20 hidden lg:flex flex-col py-8 pr-6">
           <NavContent />
           <div className="mt-auto p-5 rounded-3xl bg-orange-600/5 border border-orange-600/10 text-center">
@@ -210,7 +207,6 @@ export default function DemoPage() {
           </div>
         </aside>
 
-        {/* MAIN CONTENT */}
         <main className="flex-1 py-8 lg:py-12 lg:pl-12">
           <div className="max-w-3xl">
             {renderContent()}
@@ -218,7 +214,6 @@ export default function DemoPage() {
         </main>
       </div>
 
-      {/* DRAWER MOBILE */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
@@ -234,11 +229,15 @@ export default function DemoPage() {
         )}
       </AnimatePresence>
 
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        .animate-spin-slow { animation: spin-slow 12s linear infinite; }
-      `}</style>
+      {/* BEZPIECZNE STYLE CSS, omijające parser styled-jsx */}
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          .no-scrollbar::-webkit-scrollbar { display: none; }
+          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+          @keyframes spin-slow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+          .animate-spin-slow { animation: spin-slow 12s linear infinite; }
+        `
+      }} />
     </div>
   )
 }
